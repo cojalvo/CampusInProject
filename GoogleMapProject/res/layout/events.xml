@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="?android:attr/activatedBackgroundIndicator"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="#e1dddd"
+        android:gravity="right"
+        android:paddingRight="10dp" >
+
+        <ImageView
+            android:id="@+id/deleteEvent"
+            android:layout_width="38dp"
+            android:layout_height="33dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="8dp"
+            android:onClick="deleteEvent"
+            android:padding="5dp"
+            android:src="@drawable/delete_ico" />
+
+        <ImageView
+            android:id="@+id/addEvent"
+            android:layout_width="38dp"
+            android:layout_height="33dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="8dp"
+            android:onClick="createEvent"
+            android:padding="5dp"
+            android:src="@drawable/add_event_ico" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:choiceMode="singleChoice"
+        android:listSelector="@drawable/my_list_selector" />
+
+</LinearLayout>

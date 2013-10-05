@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"  >
+    <PreferenceCategory
+        android:key="my_area"
+        android:title="האזור שלי">
+
+        <CheckBoxPreference android:icon="@drawable/marker_icon" android:key="display_me" android:summary="@string/show_hidw_mee" android:title="@string/show_hide_me_title" /><Preference
+            android:icon="@drawable/calendar_icon"
+            android:key="my_calendar"
+            android:summary="ערוך את מערכת השעות"
+            android:title="מערכת השעות שלי" />
+
+        <Preference
+            android:icon="@drawable/test_icon"
+            android:key="my_tests"
+            android:summary="ערוך את לוח המבחנים שלי"
+            android:title="לוח המבחנים שלי" />
+        
+    </PreferenceCategory>
+</PreferenceScreen>
