@@ -6,6 +6,23 @@ public class CampusInUserLocation
 	private CampusInLocation location;
 	//the parse user id
 	private String userID;
+	private String userName;
+	public String getUserName()
+	{
+		return userName;
+	}
+	public void setUserName(String userName)
+	{
+		this.userName = userName;
+	}
+	public String getFaceBookId()
+	{
+		return faceBookId;
+	}
+	public void setFaceBookId(String faceBookId)
+	{
+		this.faceBookId = faceBookId;
+	}
 	private String faceBookId;
 	
 	public CampusInLocation getLocation() {

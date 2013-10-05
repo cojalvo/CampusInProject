@@ -4,7 +4,6 @@ package il.ac.shenkar.cadan;
 
 import il.ac.shenkar.cadan.PrefsFragment.OnPreferenceSelectedListener;
 import il.ac.shenkar.common.CampusInConstant;
-import il.ac.shenkar.common.MapManager;
 import il.ac.shenkar.in.services.LocationReporterServise;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -90,42 +89,26 @@ public class Main extends Activity  implements OnPreferenceSelectedListener {
         getActionBar().setHomeButtonEnabled(true);
         mapManager=new MapManager(((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 		        .getMap(), GoogleMap.MAP_TYPE_NONE);
-		    Marker hamburg = map.addMarker(new MarkerOptions().position(HAMBURG)
-		        .title("Jacob Amsalem"));
-		    Marker kiel = map.addMarker(new MarkerOptions()
-		        .position(KIEL)
-		        .title("Cadan Ojalvo")
-		        .snippet("My status at facebook"));
 		    
-		 
-		    BitmapDescriptor image = BitmapDescriptorFactory.fromResource(R.drawable.shenkarmap_1); // get an image.
-		    LatLngBounds bounds = new LatLngBounds(new LatLng(0, 0),new LatLng(40, 50)); // get a bounds
-		    // Adds a ground overlay with 50% transparency.
-		    GroundOverlay groundOverlay = map.addGroundOverlay(new GroundOverlayOptions()
-		        .image(image)
-		        .positionFromBounds(bounds)
-		        .transparency((float) 0.1));
-		    UiSettings us=map.getUiSettings();
-		    //us.setScrollGesturesEnabled(false);
-		    // Move the camera instantly to hamburg with a zoom of 15.
-		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(20, 25), 15));
-		    // Zoom in, animating the camera.
-		    map.animateCamera(CameraUpdateFactory.zoomTo(2), 2000, null);
-		    map.setOnCameraChangeListener(new OnCameraChangeListener() {	
-				@Override
-				public void onCameraChange(CameraPosition position) {
-					if(position.target.latitude<0||position.target.latitude>40||position.target.longitude<0||position.target.longitude>50)
-					{
-						map.moveCamera(CameraUpdateFactory.newCameraPosition(lastPos));
-					}
-					else
-					{
-						lastPos=position;
-					}
-					// TODO Auto-generated method stub
-					
+		mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(0, 0), new LatLng(40, 50), (float) 0.1);
+		mapManager.moveCameraToLocation(new LatLng(20, 25), 15);
+	   /* // Move the camera instantly to hamburg with a zoom of 15.
+	    map.setOnCameraChangeListener(new OnCameraChangeListener() {	
+			@Override
+			public void onCameraChange(CameraPosition position) {
+				if(position.target.latitude<0||position.target.latitude>40||position.target.longitude<0||position.target.longitude>50)
+				{
+					map.moveCamera(CameraUpdateFactory.newCameraPosition(lastPos));
 				}
-			});
+				else
+				{
+					lastPos=position;
+				}
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		*/
 		    
 		    // Get the SearchView and set the searchable configuration
 		    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -137,16 +120,6 @@ public class Main extends Activity  implements OnPreferenceSelectedListener {
 		    }
 		    searchView.setSearchableInfo(searchInfo);
 		    searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
-			map.setOnMarkerClickListener(new OnMarkerClickListener() {
-				
-				@Override
-				public boolean onMarkerClick(Marker marker) {
-					// TODO Auto-generated method stub
-					
-					return false;
-				}
-			});
-			
 			//if the bundle is null than it the first time the application is running
 			//if not check if the locationServiceStart flag is true; (this might be redundant but maybe in the future we will need to use it
 			if(savedInstanceState==null || !savedInstanceState.getBoolean("locationServiceStart"))

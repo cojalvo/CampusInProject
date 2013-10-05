@@ -4,7 +4,9 @@
         android:key="my_area"
         android:title="האזור שלי">
 
-        <CheckBoxPreference android:icon="@drawable/marker_icon" android:key="display_me" android:summary="@string/show_hidw_mee" android:title="@string/show_hide_me_title" /><Preference
+        <CheckBoxPreference android:icon="@drawable/marker_icon" android:key="display_me" android:summary="@string/show_hidw_mee" android:title="@string/show_hide_me_title" />
+        <CheckBoxPreference android:icon="@drawable/group_icon" android:key="display_my_friend_only" android:summary="הצג את כולם/את חברי בלבד" android:title="הצג רק את חברי" />
+        <Preference
             android:icon="@drawable/calendar_icon"
             android:key="my_calendar"
             android:summary="ערוך את מערכת השעות"
