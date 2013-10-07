@@ -10,6 +10,7 @@ public interface IDataAccesObject extends IProvider
 	public void putPersonalSettings(PersonalSettings ps);
 	public List<CampusInEvent> getEvents();
 	public List<CampusInMessage> getMessages();
+	public List<CampusInUserLocation> getUsers();
 	public void sendMessage(CampusInMessage message);
 	public void sendEvent(CampusInEvent event);
 	public void updateLocation(CampusInUserLocation userLoction);

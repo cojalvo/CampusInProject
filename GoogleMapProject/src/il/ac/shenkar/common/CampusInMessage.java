@@ -8,7 +8,7 @@ public class CampusInMessage
 	private CampusInLocation location;
 	//the parse owner id 
 	private String ownerId;	
-	//global messages will be available for all, only the owner can delete the event
+	//global messages will be available for all, only the owner can delete the message
 	private boolean isGlobal;	
 	//the user that receive the message, if there is no receiver this will be the same as 
 	// the owner id, only a global message can be without receiver,

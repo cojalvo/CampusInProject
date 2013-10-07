@@ -9,6 +9,7 @@ import il.ac.shenkar.common.CampusInUserLocation;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -19,17 +20,35 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapManager implements OnMarkerClickListener
+public class MapManager
 {
 	private GoogleMap map = null;
 	private HashMap<String, Marker> personMarkerdictionary;
 	private HashMap<String, Marker> eventMarkerdictionary;
 	private HashMap<String, Marker> messageMarkerdictionary;
+	private LatLng lastlongClicked=null;
+	public void resetLastLongClicked()
+	{
+		lastlongClicked=null;
+	}
+	public void setOnMapLongClickListener(OnMapLongClickListener listener)
+	{
+		if(listener!=null)
+			this.map.setOnMapLongClickListener(listener);	
+	}
+	public void setOnMarkerClickListener(OnMarkerClickListener listener)
+	{
+		if(listener!=null)
+			this.map.setOnMarkerClickListener(listener);	
+	}
+	public LatLng getLastLongClicked()
+	{
+		return lastlongClicked;
+	}
 	public MapManager(GoogleMap map, int mapType)
 	{
 		this.map = map;
 		this.map.setMapType(mapType);
-		this.map.setOnMarkerClickListener(this);
 		personMarkerdictionary = new HashMap<String, Marker>();
 		eventMarkerdictionary = new HashMap<String, Marker>();
 	}
@@ -90,11 +109,5 @@ public class MapManager implements OnMarkerClickListener
 	public void removeMessageMarker(String id)
 	{
 
-	}
-	@Override
-	public boolean onMarkerClick(Marker marker)
-	{
-		// TODO Auto-generated method stub
-		return false;
 	}
 }

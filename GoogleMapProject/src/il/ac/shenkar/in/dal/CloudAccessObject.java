@@ -173,6 +173,12 @@ public class CloudAccessObject implements IDataAccesObject
 				observer.actionFail(code);
 		}
 	}
+	@Override
+	public List<CampusInUserLocation> getUsers()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 		
 }
