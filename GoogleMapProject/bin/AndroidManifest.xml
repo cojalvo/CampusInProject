@@ -82,6 +82,10 @@
         </activity>
         <activity android:name="il.ac.shenkar.cadan.EventsActivity" >
         </activity>
+        <activity android:name="il.ac.shenkar.cadan.JacobEventActivity" >
+        </activity>
+        <activity android:name="il.ac.shenkar.cadan.AddNewEventActivity" >
+        </activity>
 
         <service
             android:name="il.ac.shenkar.in.services.LocationReporterServise"

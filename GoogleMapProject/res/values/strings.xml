@@ -30,4 +30,11 @@
     <string name="action_websearch">Web search</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
 	<string name="do_somthing">Do Somthing</string>
+	<string name="event_type_prompt">בחר סוג אירוע</string>
+	 
+	 <string-array name="event_types_array">
+        <item>בחינה</item>
+        <item>שיעור</item>
+        <item>פגישה</item>
+    </string-array>
 </resources>

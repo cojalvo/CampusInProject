@@ -115,7 +115,7 @@ public class Main extends Activity
 		};
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setHomeButtonEnabled(true);
+		//getActionBar().setHomeButtonEnabled(true);
 		mapManager = new MapManager(((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
 
@@ -197,15 +197,28 @@ public class Main extends Activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		// Pass the event to ActionBarDrawerToggle, if it returns
+		/*// Pass the event to ActionBarDrawerToggle, if it returns
 		// true, then it has handled the app icon touch event
 		if (mDrawerToggle.onOptionsItemSelected(item))
 		{
 			return true;
-		}
-		// Handle your other action bar items...
-
-		return super.onOptionsItemSelected(item);
+		}*/
+		
+		// Handle presses on the action bar items
+		Intent intent;
+	    switch (item.getItemId())
+	    {
+	        case R.id.action_add_event:
+	            intent = new Intent(this,AddNewEventActivity.class);
+	            startActivity(intent);
+	            return true;
+	        case R.id.action_show_all_events:
+	        	intent = new Intent(this, JacobEventActivity.class);
+	        	startActivity(intent);
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 
 	@Override
@@ -218,8 +231,9 @@ public class Main extends Activity
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 	@Override
 	public void onPreferenceSelected(String selected)
@@ -262,7 +276,7 @@ public class Main extends Activity
 
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
-		alertDialog.setPositiveButton("כן", new OnClickListener()
+		alertDialog.setPositiveButton("׳›׳�", new OnClickListener()
 		{
 
 			@Override
@@ -274,9 +288,9 @@ public class Main extends Activity
 			}
 		});
 
-		alertDialog.setNegativeButton("לא", null);
+		alertDialog.setNegativeButton("׳�׳�", null);
 
-		alertDialog.setMessage("האם אתה בטוח שברצונך לצאת?");
+		alertDialog.setMessage("׳”׳�׳� ׳�׳×׳” ׳‘׳˜׳•׳— ׳©׳‘׳¨׳¦׳•׳ ׳� ׳�׳¦׳�׳×?");
 		alertDialog.setTitle(" ");
 		alertDialog.setIcon(R.drawable.campusin_logo);
 		alertDialog.show();

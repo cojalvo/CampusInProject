@@ -74,6 +74,6 @@ public class CampusInEvent {
 
 	public enum CampusInEventType
 	{
-		TEST,MEETING
+		TEST,MEETING,CLASS
 	}
 }
