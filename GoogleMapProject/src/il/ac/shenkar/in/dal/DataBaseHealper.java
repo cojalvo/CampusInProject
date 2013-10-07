@@ -4,8 +4,14 @@ package il.ac.shenkar.in.dal;
 import il.ac.shenkar.common.JacocDBLocation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.parse.CountCallback;
+
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -16,10 +22,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  * @author Jacob
  *
  */
-public class DataBaseHealper extends SQLiteOpenHelper
+public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealper
 {
 	private static DataBaseHealper instance = null;
-	private ArrayList<JacocDBLocation> locationList;
+	private Collection<JacocDBLocation> locationList;
 
 	// DataBase Members
 	private static final int DATABASE_VERSION =1;
@@ -38,8 +44,9 @@ public class DataBaseHealper extends SQLiteOpenHelper
 	{
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		
+		// allocate the location list and populate it from the DB
 		locationList = new ArrayList<JacocDBLocation>();
-		
+		initArrayList();
 		
 	}
 	
@@ -67,8 +74,6 @@ public class DataBaseHealper extends SQLiteOpenHelper
 				HIGH_SPEC +" REAL," +
 				LOW_SPEC + "REAL)";
 		db.execSQL(CREATE_LOCATION_TABLE);
-		
-
 	}
 
 	@Override
@@ -82,9 +87,77 @@ public class DataBaseHealper extends SQLiteOpenHelper
 
 	}
 	
+	// this method is been called every time an instance of this type is created
+	// this method populate the Collection from the DB records
 	private void initArrayList()
 	{
-		// here i will insert the code that populate the Array List
+		SQLiteDatabase db = getWritableDatabase();
+		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+		
+		if (cursor.moveToFirst())
+		{
+			do 
+			{
+				JacocDBLocation newLocation = new JacocDBLocation();
+				newLocation.setLocationName(cursor.getString(0));
+				newLocation.setRealLocation(new LatLng(cursor.getDouble(1), cursor.getDouble(2)));
+				newLocation.setMapLocation(new LatLng(cursor.getInt(3), cursor.getInt(4)));
+				newLocation.setHighSpectrumRange(cursor.getDouble(5));
+				newLocation.setLowSpectrumRange(cursor.getDouble(6));
+				
+				// adding the new Location to the collection
+				locationList.add(newLocation);
+			}while (cursor.moveToNext()); // move to the next row in the DB
+		
+		}
+		cursor.close();
+		db.close();
+	}
+	
+	private boolean writeLocationObjectToDB(JacocDBLocation toAdd)
+	{
+		// add the location to the DB
+		SQLiteDatabase db = this.getWritableDatabase();
+		
+		ContentValues values = new ContentValues();
+		values.put(this.LOCATION_NAME, toAdd.getLocationName());
+		values.put(this.REAL_LAT, toAdd.getRealLocation().latitude);
+		values.put(this.REAL_LNG, toAdd.getRealLocation().longitude);
+		values.put(this.MAP_LAT, toAdd.getMapLocation().latitude);
+		values.put(this.MAP_LNG, toAdd.getMapLocation().longitude);
+		values.put(this.HIGH_SPEC, toAdd.getHighSpectrumRange());
+		values.put(this.LOW_SPEC, toAdd.getLowSpectrumRange());
+		
+		db.insert(TABLE_NAME, null, values);
+		db.close(); // Closing database connection
+		
+		return true;
+	}
+
+	@Override
+	public boolean addNewLocation(JacocDBLocation toAdd) 
+	{
+		// adding the task to the list 
+		locationList.add(toAdd);
+		
+		return writeLocationObjectToDB(toAdd);
+	}
+
+	@Override
+	public boolean addNewLocation	(String locationName, LatLng realLocation,
+									LatLng mapLocation, double highSpectrumRange,
+									double lowSpectrumRange) {
+		// create JacobDBLocationObject
+		JacocDBLocation toAdd = new JacocDBLocation(locationName,realLocation, mapLocation, highSpectrumRange, lowSpectrumRange);
+		
+		// add it to the DB by calling the "addNewLocation(JacocDBLocation toAdd)" 
+		return this.addNewLocation(toAdd);
+	}
+
+	@Override
+	public Collection<?> getAllLocations() 
+	{
+		return this.locationList;
 	}
 
 }
