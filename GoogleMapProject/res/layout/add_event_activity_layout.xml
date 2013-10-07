@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+   	android:layout_height="match_parent"
+    android:id="@+id/add_event_activity_layout">
+    
+    	<TextView
+     	    android:id="@+id/event_type_text_view"
+     	    android:paddingTop="5dp"
+     	    android:text="בחר סוג אירע"
+     	    android:layout_alignParentRight="true"
+     	    android:layout_width="wrap_content"
+     	    android:layout_height="wrap_content"
+     	    android:textAppearance="?android:attr/textAppearanceLarge"
+     	    android:layout_gravity="right"
+     	    android:gravity="right" />
+        
+     	<Spinner 
+        	android:id="@+id/event_type_spinner"
+        	android:entries="@array/event_types_array" 
+        	android:prompt="@string/event_type_prompt"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:layout_below="@+id/event_type_text_view"/>
+
+
+</RelativeLayout>
