@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
+    android:padding="0dp"
+    android:gravity="center"
     android:orientation="horizontal" >
 
     <ImageView
@@ -11,6 +12,7 @@
         android:layout_height="wrap_content"
         android:onClick="addEventClicked"
         android:padding="10dp"
+        android:paddingTop="0dp"
         android:src="@drawable/calendar_ico2" />
 
     <ImageView
@@ -18,6 +20,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
+        android:paddingTop="0dp"
+        android:onClick="addMessageClicked"
         android:src="@drawable/messages_ico" />
+    
+        <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:paddingTop="0dp"
+        android:onClick="addTestClicked"
+        android:src="@drawable/test" />
 
 </LinearLayout>

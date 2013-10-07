@@ -25,6 +25,7 @@ import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -52,6 +53,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
@@ -74,6 +76,7 @@ public class Main extends Activity
 	static final LatLng KIEL = new LatLng(15, 10);
 	private PopupWindow pwindo;
 	private MapManager mapManager = null;
+	private Vibrator vibrator = null;
 	FragmentManager fm;
 
 	@Override
@@ -83,6 +86,7 @@ public class Main extends Activity
 		Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE",
 				"UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 		ParseFacebookUtils.initialize("635010643194002");
+		vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		// inflate the drawerLayour
 		this.mDrawerLayout = (DrawerLayout) this.getLayoutInflater().inflate(
 				R.layout.main, null);
@@ -280,6 +284,7 @@ public class Main extends Activity
 	@Override
 	public void onMapLongClick(LatLng point)
 	{
+		vibrator.vibrate(50);
 		lastMapLongClick = point;
 		initiatePopupWindow();
 	}
@@ -297,6 +302,9 @@ public class Main extends Activity
 		inflater.inflate(R.menu.main, popup.getMenu());
 		popup.show();
 	}
+	/*
+	 * popup the menu in long press on the map
+	 */
 	private void initiatePopupWindow()
 	{
 		try
@@ -305,13 +313,12 @@ public class Main extends Activity
 			LayoutInflater inflater = (LayoutInflater) Main.this
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			View layout = inflater.inflate(R.layout.popup_menu, null);
-			pwindo = new PopupWindow(layout, 500, 350, true);
+			pwindo = new PopupWindow(layout, 750, 350, true);
 			pwindo.setAnimationStyle(R.style.Animation);
 			pwindo.setFocusable(true);
-			pwindo.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-			pwindo.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
-			
-
+			ColorDrawable bcolor=new ColorDrawable();
+			pwindo.setBackgroundDrawable(bcolor);
+			pwindo.showAtLocation(layout, Gravity.BOTTOM,0, 0);
 		}
 		catch (Exception e)
 		{
@@ -320,8 +327,24 @@ public class Main extends Activity
 	}
 	public void addEventClicked(View v)
 	{
-		Toast.makeText(this, "add event was clicked", 300).show();
+		Toast.makeText(this, "add event was clicked on location: lat:" +lastMapLongClick.latitude+ " long: "+lastMapLongClick.longitude, 300).show();
 		pwindo.dismiss();
 		lastMapLongClick=null;
+	}
+	public void addMessageClicked(View v)
+	{
+		Toast.makeText(this, "add message was clicked", 300).show();
+		pwindo.dismiss();
+		lastMapLongClick=null;
+	}
+	public void addTestClicked(View v)
+	{
+		Toast.makeText(this, "add test was clicked", 300).show();
+		pwindo.dismiss();
+		lastMapLongClick=null;
+	}
+	private void createEventProcess()
+	{
+		
 	}
 }

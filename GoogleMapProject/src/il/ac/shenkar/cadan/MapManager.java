@@ -49,6 +49,7 @@ public class MapManager
 	{
 		this.map = map;
 		this.map.setMapType(mapType);
+		this.map.getUiSettings().setZoomControlsEnabled(false);
 		personMarkerdictionary = new HashMap<String, Marker>();
 		eventMarkerdictionary = new HashMap<String, Marker>();
 	}
