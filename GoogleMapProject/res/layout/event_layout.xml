@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+	<TextView
+	    android:id="@+id/eventTitle"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:paddingTop="10dp"
+	    android:textColor="#000000"
+	    android:textSize="25sp"
+	    android:textStyle="bold">
+	</TextView>
+		
+	<TextView
+	    android:id="@+id/eventDescription"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/eventTitle"	    
+	    android:paddingTop="5dp"
+	    android:textColor="#000000"
+	    android:textSize="15sp" >
+	</TextView>
+	
+	<Button
+	    android:id="@+id/eventButton"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentTop="true"
+	    android:text="@string/do_somthing"
+	    android:layout_marginTop="12sp"
+	    android:onClick="eventButtonClick">
+	</Button>
+
+	
+    
+
+</RelativeLayout>

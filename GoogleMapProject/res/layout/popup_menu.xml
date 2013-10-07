@@ -31,6 +31,6 @@
         android:padding="10dp"
         android:paddingTop="0dp"
         android:onClick="addTestClicked"
-        android:src="@drawable/test" />
+        android:src="@drawable/test_icon" />
 
 </LinearLayout>
