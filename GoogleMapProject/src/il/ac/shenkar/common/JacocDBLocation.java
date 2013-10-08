@@ -1,13 +1,22 @@
 package il.ac.shenkar.common;
 
-import com.google.android.gms.maps.model.LatLng;
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
+import il.ac.shenkar.common.LatLng;
+
+@Root
 public class JacocDBLocation
 {
+	@Element
 	private String locationName;
+	@Element
 	private LatLng realLocation;
+	@Element
 	private LatLng mapLocation;
+	@Element
 	private double highSpectrumRange;
+	@Element
 	private double lowSpectrumRange;
 	
 	

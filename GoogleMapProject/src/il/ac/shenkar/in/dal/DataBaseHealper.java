@@ -6,7 +6,7 @@ import il.ac.shenkar.common.JacocDBLocation;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.google.android.gms.maps.model.LatLng;
+import il.ac.shenkar.common.LatLng;
 import com.parse.CountCallback;
 
 import android.content.ContentValues;
@@ -72,10 +72,11 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 				MAP_LAT +" INTEGER,"+
 				MAP_LNG +" INTEGER,"+
 				HIGH_SPEC +" REAL," +
-				LOW_SPEC + "REAL)";
+				LOW_SPEC + " REAL)";
 		db.execSQL(CREATE_LOCATION_TABLE);
 	}
 
+	
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 	{
@@ -121,10 +122,10 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 		
 		ContentValues values = new ContentValues();
 		values.put(this.LOCATION_NAME, toAdd.getLocationName());
-		values.put(this.REAL_LAT, toAdd.getRealLocation().latitude);
-		values.put(this.REAL_LNG, toAdd.getRealLocation().longitude);
-		values.put(this.MAP_LAT, toAdd.getMapLocation().latitude);
-		values.put(this.MAP_LNG, toAdd.getMapLocation().longitude);
+		values.put(this.REAL_LAT, toAdd.getRealLocation().getLat());
+		values.put(this.REAL_LNG, toAdd.getRealLocation().getLng());
+		values.put(this.MAP_LAT, toAdd.getMapLocation().getLat());
+		values.put(this.MAP_LNG, toAdd.getMapLocation().getLng());
 		values.put(this.HIGH_SPEC, toAdd.getHighSpectrumRange());
 		values.put(this.LOW_SPEC, toAdd.getLowSpectrumRange());
 		
@@ -158,6 +159,27 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 	public Collection<?> getAllLocations() 
 	{
 		return this.locationList;
+	}
+
+	@Override
+	public void cleanDB() 
+	{
+		SQLiteDatabase db = getWritableDatabase();
+		String DROP_TABLE = "DROP TABLE IF EXISTS "+ DATABASE_NAME + "." + TABLE_NAME;
+		db.execSQL(DROP_TABLE);
+		
+
+		String CREATE_LOCATION_TABLE  =
+				"CREATE TABLE IF NOT EXISTS " + TABLE_NAME +
+				" (id INTEGER PRIMARY KEY AUTOINCREMENT,"+
+				LOCATION_NAME + " TEXT, "+
+				REAL_LAT + " REAL,"+
+				REAL_LNG +" REAL,"+
+				MAP_LAT +" INTEGER,"+
+				MAP_LNG +" INTEGER,"+
+				HIGH_SPEC +" REAL," +
+				LOW_SPEC + " REAL)";
+		db.execSQL(CREATE_LOCATION_TABLE);
 	}
 
 }

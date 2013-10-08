@@ -2,6 +2,7 @@ package il.ac.shenkar.cadan;
 
 import il.ac.shenkar.cadan.PrefsFragment.OnPreferenceSelectedListener;
 import il.ac.shenkar.common.CampusInConstant;
+import il.ac.shenkar.in.services.InitLocations;
 import il.ac.shenkar.in.services.LocationReporterServise;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -82,6 +83,9 @@ public class Main extends Activity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		//start the Async Task 
+		new InitLocations().execute(this);
+		
 		super.onCreate(savedInstanceState);
 		Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE",
 				"UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
