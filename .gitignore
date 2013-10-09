@@ -24,3 +24,8 @@ GoogleMapProject/gen/il/ac/shenkar/cadan/R.java
 *.jar
 
 *.ap_
+
+*.dex
+
+*.apk
+
