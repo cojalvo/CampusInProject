@@ -20,3 +20,7 @@ GoogleMapProject/gen/il/ac/shenkar/cadan/BuildConfig.java
 GoogleMapProject/gen/il/ac/shenkar/cadan/Manifest.java
 
 GoogleMapProject/gen/il/ac/shenkar/cadan/R.java
+
+*.jar
+
+*.ap_

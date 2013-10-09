@@ -13,8 +13,8 @@ public class Model {
     public static void LoadModel() 
     {
     	listItems=new HashMap<Integer, ListItem>();
-    	listItems.put(1,new ListItem(1,R.drawable.message_ico ,"cadan", "ojalvo"));
-    	listItems.put(2, new ListItem(1, R.drawable.message_ico ,"moshe", "dddd"));
+    	listItems.put(1,new ListItem(1,R.drawable.messages_ico ,"cadan", "ojalvo"));
+    	listItems.put(2, new ListItem(1, R.drawable.messages_ico ,"moshe", "dddd"));
     }
 
     public static ListItem GetbyId(int id){
