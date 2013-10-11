@@ -6,5 +6,6 @@ public class CampusInConstant
 	public static String CLOUD_ACTION_LOCATION_UPDATE="il.ac.shenkar.cloud.action.LOCATION_UPDTE";
 	public static String SETTINGS_EVENTS="events";
 	public static String DISPLAY_ME="display_me";
+	public static String DATE_FORMAT="MM/dd/yyyy HH:mm:ss";
 
 }

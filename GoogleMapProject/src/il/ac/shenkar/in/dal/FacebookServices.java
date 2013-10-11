@@ -56,7 +56,7 @@ public class FacebookServices
 	    InputStream inputStream = null;
 
 	    try {
-	        inputStream = new URL("https://graph.facebook.com/" + facebookId + "/picture?type=large").openStream();
+	        inputStream = new URL("https://graph.facebook.com/" + facebookId + "/picture?type=small").openStream();
 	    } catch (Exception e) {        
 	     e.printStackTrace();
 	     return null;
@@ -82,6 +82,5 @@ public class FacebookServices
 		    		callBack );
 		    request.executeAsync();
 	}
-		
 
 }

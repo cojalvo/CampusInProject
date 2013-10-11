@@ -42,5 +42,9 @@ public class CampusInUserLocation
 		this.location = location;
 		this.userID = userID;
 	}
+	public CampusInUserLocation()
+	{
+		super();
+	}
 
 }

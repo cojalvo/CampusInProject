@@ -29,6 +29,11 @@ import android.view.ViewGroup;
 
 public class PrefsFragment extends PreferenceFragment {
 
+	private String userName = null;
+	private String faceId = null;
+	private Drawable profilePic = null;
+	private Bitmap profileAsBitmap = null;
+
 	private class UpdateProfilePictureInBackgroud extends
 			AsyncTask<String, Void, String> {
 		private String userId = null;
@@ -38,23 +43,25 @@ public class PrefsFragment extends PreferenceFragment {
 			userId = id;
 		}
 
-		Drawable pic = null;
-
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
-			pic = FacebookServices.getPictureForFacebookId(userId);
+			PrefsFragment.this.profilePic = FacebookServices
+					.getPictureForFacebookId(userId);
+			Bitmap profileAsBitmap = ((BitmapDrawable) PrefsFragment.this.profilePic)
+					.getBitmap();
+			// Scale it to 50 x 50
+			PrefsFragment.this.profilePic = new BitmapDrawable(getResources(),
+					Bitmap.createScaledBitmap(profileAsBitmap, 150, 130, true));
 			return userId;
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
 			Preference me = (Preference) findPreference("me");
-			// Read your drawable from somewhere
-			Bitmap bitmap = ((BitmapDrawable) pic).getBitmap();
-			// Scale it to 50 x 50
-			Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 150, 130, true));
-			me.setIcon(d);
+			if (me != null) {
+				me.setIcon(PrefsFragment.this.profilePic);
+			}
 		}
 	}
 
@@ -71,7 +78,7 @@ public class PrefsFragment extends PreferenceFragment {
 				"UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 		ParseFacebookUtils.initialize("635010643194002");
 		context = getActivity().getBaseContext();
-		updateMeDetails();
+		// update the full name and the profile picture of current user
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.preference);
 		final CheckBoxPreference showMe = (CheckBoxPreference) findPreference("display_me");
@@ -99,12 +106,12 @@ public class PrefsFragment extends PreferenceFragment {
 						return true;
 					}
 				});
+		updateMeDetails(savedInstanceState);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
@@ -126,7 +133,24 @@ public class PrefsFragment extends PreferenceFragment {
 		}
 	}
 
-	private void updateMeDetails() {
+	private void updateMeDetails(Bundle savedInstanceState) {
+		// use FacebookService object to get the user profile object
+		if (savedInstanceState != null) {
+			faceId=savedInstanceState.getString("faceId");
+			userName=savedInstanceState.getString("userName");
+			Preference me = (Preference) findPreference("me");
+			if (me != null) {
+				me.setTitle(userName);
+
+				if (profilePic == null) {
+				
+					UpdateProfilePictureInBackgroud u = new UpdateProfilePictureInBackgroud(
+							faceId);
+					u.execute("dummy");
+				}
+			}
+			return;
+		}
 		FacebookServices.makeMeRequest(ParseFacebookUtils.getSession(),
 				new GraphUserCallback() {
 
@@ -136,16 +160,28 @@ public class PrefsFragment extends PreferenceFragment {
 						if (ParseFacebookUtils.getSession() == Session
 								.getActiveSession()) {
 							if (user != null) {
-								String facebookId = user.getId();
+
+								faceId = user.getId();
+								// get me preference and update the full name
 								Preference me = (Preference) findPreference("me");
-								me.setTitle(user.getFirstName() + " "
-										+ user.getLastName());
-								
-								UpdateProfilePictureInBackgroud u=new UpdateProfilePictureInBackgroud(user.getId());
-								u.execute("dummy");
+								if (me != null) {
+									PrefsFragment.this.userName = user
+											.getFirstName()
+											+ " "
+											+ user.getLastName();
+									me.setTitle(PrefsFragment.this.userName);
+
+									// use asyncTask obj to update the profile
+									// picture
+									// TODO create AsyncTaskFacrory to manage
+									// all
+									// async task obj in the app
+									UpdateProfilePictureInBackgroud u = new UpdateProfilePictureInBackgroud(
+											faceId);
+									u.execute("dummy");
+								}
 							}
 							;
-							
 
 						}
 						if (response.getError() != null) {
@@ -153,5 +189,12 @@ public class PrefsFragment extends PreferenceFragment {
 						}
 					}
 				});
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putString("userName", userName);
+		outState.putString("faceId", faceId);
+		super.onSaveInstanceState(outState);
 	}
 }
