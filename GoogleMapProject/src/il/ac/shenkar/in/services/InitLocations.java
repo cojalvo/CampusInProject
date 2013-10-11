@@ -33,7 +33,7 @@ public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations
 	@Override
 	protected CampusInLocations doInBackground(Context... params) 
 	{
-		File outputFile = new File(params[0].getFilesDir(), downloadedFile);
+		File outputFile = new File(params[0].getFilesDir(), downloadedFile );
 		File existingXML = new File(params[0].getFilesDir() + existingFile);
 		// this code takes xml configuration file from the internet and save it to local file 
 		try 
