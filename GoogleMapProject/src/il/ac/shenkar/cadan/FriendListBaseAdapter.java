@@ -15,29 +15,33 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Toast;
 
-public class FriendListBaseAdapter extends BaseAdapter {
+public class FriendListBaseAdapter extends BaseAdapter implements Filterable{
 
 	private static ArrayList<CampusInUserChecked> friendsArrayList;
+	private static ArrayList<CampusInUserChecked> filteredFriendsArrayList;
 	private LayoutInflater l_Inflater;
 	
 	public FriendListBaseAdapter(Context contect, ArrayList<CampusInUserChecked> list)
 	{
 		this.friendsArrayList =list;
+		this.filteredFriendsArrayList = list;
 		this.l_Inflater = LayoutInflater.from(contect);
 	}
 	@Override
 	public int getCount() {
-		return friendsArrayList.size();
+		return filteredFriendsArrayList.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return friendsArrayList.get(position);
+		return filteredFriendsArrayList.get(position);
 	}
 
 	@Override
@@ -73,12 +77,12 @@ public class FriendListBaseAdapter extends BaseAdapter {
 			
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				friendsArrayList.get((Integer) buttonView.getTag()).setChecked(isChecked);				
+				filteredFriendsArrayList.get((Integer) buttonView.getTag()).setChecked(isChecked);				
 			}
 		});
 		
-		holder.txt_itemFullName.setText(friendsArrayList.get(position).getUser().getFirstName() + " " + friendsArrayList.get(position).getUser().getLastName());			
-		if (friendsArrayList.get(position).isChecked())
+		holder.txt_itemFullName.setText(filteredFriendsArrayList.get(position).getUser().getFirstName() + " " + filteredFriendsArrayList.get(position).getUser().getLastName());			
+		if (filteredFriendsArrayList.get(position).isChecked())
 		{
 			//currCheckBox = (CheckBox) convertView.findViewById(R.id.friend_check_box);
 			currCheckBox.setChecked(true);
@@ -102,6 +106,51 @@ public class FriendListBaseAdapter extends BaseAdapter {
 	{
 		TextView txt_itemFullName;
 		CheckBox checkBox;
+	}
+
+	@Override
+	public Filter getFilter() 
+	{	
+		return new Filter() {
+			
+			@Override
+			protected void publishResults(CharSequence constraint, FilterResults results) 
+			{
+				filteredFriendsArrayList = (ArrayList<CampusInUserChecked>) results.values;
+				notifyDataSetChanged();
+				
+			}
+			
+			@Override
+			protected FilterResults performFiltering(CharSequence constraint) 
+			{
+				FilterResults results = new FilterResults(); 
+				//If there's nothing to filter on, return the original data for your list
+                if(constraint == null || constraint.length() == 0)
+                {
+                    results.values = friendsArrayList;
+                    results.count = friendsArrayList.size();
+                }
+                else
+                {
+                	//filtering the list 
+                	ArrayList<CampusInUserChecked> filteredData = new ArrayList<CampusInUserChecked>();
+                	CampusInUser user;
+                	for (CampusInUserChecked curr: filteredFriendsArrayList)
+                	{
+                		user = curr.getUser();
+                		if (user.getFirstName().startsWith((String) constraint) || user.getLastName().startsWith((String) constraint))
+                		{
+                			filteredData.add(curr);
+                		}
+                	}
+                	results.values = filteredData;
+                	results.count = filteredData.size();
+                }
+				
+				return results;
+			}
+		};
 	}	
 
 }

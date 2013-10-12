@@ -11,12 +11,17 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class AddFriendsFragment extends DialogFragment 
@@ -78,6 +83,33 @@ public class AddFriendsFragment extends DialogFragment
 			}
 		});*/
 		
+		
+		EditText inputSearch = (EditText) view.findViewById(R.id.inputSearch);
+		inputSearch.addTextChangedListener(new TextWatcher() {
+            
+            @Override
+            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+                // When user changed the Text
+            	ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
+            	FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();     
+            	adapter.getFilter().filter(cs); 
+            }
+             
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
+                    int arg3) {
+                // TODO Auto-generated method stub
+                 
+            }
+
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+             
+        });
+		
 		 
         builder.setView(view);
         return builder.create();
@@ -98,6 +130,13 @@ public class AddFriendsFragment extends DialogFragment
 			curr.setUser(user);
 			toReturn.add(curr);
 		}
+		
+		curr = new CampusInUserChecked();
+		user = new CampusInUser();
+		user.setFirstName("yaki");
+		user.setLastName("Amsalem");
+		curr.setUser(user);
+		toReturn.add(curr);
 		return toReturn;
 	}
 
