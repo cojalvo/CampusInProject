@@ -20,10 +20,11 @@
         	android:id="@+id/event_type_spinner"
         	android:entries="@array/event_types_array" 
         	android:prompt="@string/event_type_prompt"
-        	android:layout_width="fill_parent"
+        	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
-        	android:layout_below="@+id/event_type_text_view"
-        	android:layout_alignRight="@+id/event_type_text_view"/>
+        	android:layout_toLeftOf="@+id/event_type_text_view"
+  			android:layout_alignParentLeft="true"
+        	/>
 
      	<TextView
      	    android:id="@+id/event_name_text_view"
@@ -77,5 +78,23 @@
      	    android:layout_alignBottom="@+id/event_date_text_view"
      	    android:layout_alignParentLeft="true"
      	    android:text="בחר תאריך" />
+     	<TextView
+     	    android:id="@+id/event_Location_text_view"
+     	    android:layout_width="wrap_content"
+     	    android:layout_height="wrap_content"
+     	    android:layout_alignRight="@+id/event_type_text_view"
+     	    android:layout_below="@+id/event_date_text_view"
+     	    android:text="בחר מיקום"
+     	    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+     	<Spinner 
+        	android:id="@+id/event_location_spinner"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:layout_toLeftOf="@+id/event_Location_text_view"
+        	android:layout_alignParentLeft="true"
+        	android:layout_below="@+id/event_pick_date_button"/>
+ 
+     	
 
 </RelativeLayout>

@@ -2,6 +2,7 @@ package il.ac.shenkar.cadan;
 
 import il.ac.shenkar.cadan.PrefsFragment.OnPreferenceSelectedListener;
 import il.ac.shenkar.common.CampusInConstant;
+import il.ac.shenkar.common.CampusInUserChecked;
 import il.ac.shenkar.in.dal.FacebookServices;
 import il.ac.shenkar.in.services.InitLocations;
 import il.ac.shenkar.in.services.LocationReporterServise;
@@ -25,6 +26,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.Context;
@@ -46,6 +48,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.SearchView;
@@ -203,7 +207,6 @@ public class Main extends Activity
 	    switch (item.getItemId())
 	    {
 	        case R.id.action_add_event:
-	            intent = new Intent(this,AddNewEventActivity.class);
 	            android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
 	            android.app.Fragment prev = getFragmentManager().findFragmentByTag("dialog");
 	            if (prev != null) {
@@ -224,6 +227,18 @@ public class Main extends Activity
 	        	overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
 
 	            return true;
+	            
+	        case R.id.action_add_friends:
+	        	 android.app.FragmentTransaction ft1 = getFragmentManager().beginTransaction();
+		         android.app.Fragment prev1 = getFragmentManager().findFragmentByTag("dialog");
+	            if (prev1 != null) {
+	                ft1.remove(prev1);
+	            }
+	            ft1.addToBackStack(null);
+
+	            // Create and show the dialog.
+	            AddFriendsFragment newFragment1 = AddFriendsFragment.newInstance(2);
+	            newFragment1.show(ft1, "dialog");
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
@@ -370,5 +385,17 @@ public class Main extends Activity
 		
 	}
 	
+	public void FriendChoose(View v)
+	{
+		/*CheckBox checkBox = (CheckBox) v;
+		// Fragment fragment = getFragmentManager();
+		
+		ListView friendListView = (ListView) fragment.getView().findViewById(R.id.friends_list_view);
+		CampusInUserChecked item = (CampusInUserChecked) friendListView.getAdapter().getItem((Integer) checkBox.getTag());
+		if (checkBox.isChecked())
+			item.setChecked(true);
+		else
+			item.setChecked(false);*/
+	}
 
 }
