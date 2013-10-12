@@ -3,7 +3,6 @@ package il.ac.shenkar.common;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
-import il.ac.shenkar.common.LatLng;
 
 @Root
 public class JacocDBLocation
@@ -11,9 +10,9 @@ public class JacocDBLocation
 	@Element
 	private String locationName;
 	@Element
-	private LatLng realLocation;
+	private LocationBorder realLocation;
 	@Element
-	private LatLng mapLocation;
+	private LocationBorder mapLocation;
 	@Element
 	private double highSpectrumRange;
 	@Element
@@ -23,10 +22,10 @@ public class JacocDBLocation
 	
 	public JacocDBLocation(){}
 	
-	public JacocDBLocation(String locationName, LatLng realLocation,
-			LatLng mapLocation, double highSpectrumRange,
-			double lowSpectrumRange)
-	{
+	
+	public JacocDBLocation(String locationName, LocationBorder realLocation,
+			LocationBorder mapLocation, double highSpectrumRange,
+			double lowSpectrumRange) {
 		super();
 		this.locationName = locationName;
 		this.realLocation = realLocation;
@@ -34,47 +33,61 @@ public class JacocDBLocation
 		this.highSpectrumRange = highSpectrumRange;
 		this.lowSpectrumRange = lowSpectrumRange;
 	}
-	public String getLocationName()
-	{
+
+
+	
+	
+	public String getLocationName() {
 		return locationName;
 	}
-	public void setLocationName(String locationName)
-	{
+
+
+	public void setLocationName(String locationName) {
 		this.locationName = locationName;
 	}
-	public LatLng getRealLocation()
-	{
+
+
+	public LocationBorder getRealLocation() {
 		return realLocation;
 	}
-	public void setRealLocation(LatLng realLocation)
-	{
+
+
+	public void setRealLocation(LocationBorder realLocation) {
 		this.realLocation = realLocation;
 	}
-	public LatLng getMapLocation()
-	{
+
+
+	public LocationBorder getMapLocation() {
 		return mapLocation;
 	}
-	public void setMapLocation(LatLng mapLocation)
-	{
+
+
+	public void setMapLocation(LocationBorder mapLocation) {
 		this.mapLocation = mapLocation;
 	}
-	public double getHighSpectrumRange()
-	{
+
+
+	public double getHighSpectrumRange() {
 		return highSpectrumRange;
 	}
-	public void setHighSpectrumRange(double highSpectrumRange)
-	{
+
+
+	public void setHighSpectrumRange(double highSpectrumRange) {
 		this.highSpectrumRange = highSpectrumRange;
 	}
-	public double getLowSpectrumRange()
-	{
+
+
+	public double getLowSpectrumRange() {
 		return lowSpectrumRange;
 	}
-	public void setLowSpectrumRange(double lowSpectrumRange)
-	{
+
+
+	public void setLowSpectrumRange(double lowSpectrumRange) {
 		this.lowSpectrumRange = lowSpectrumRange;
 	}
-	
-	
+
+
+
+
 	
 }

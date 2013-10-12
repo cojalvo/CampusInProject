@@ -2,6 +2,7 @@ package il.ac.shenkar.in.dal;
 
 
 import il.ac.shenkar.common.JacocDBLocation;
+import il.ac.shenkar.common.LocationBorder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,10 +33,14 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 	private final static String DATABASE_NAME = "CampusInDB";
 	private final static String TABLE_NAME = "Locations";
 	private final String LOCATION_NAME = "locationName";
-	private final String REAL_LAT = "realLocationLat";
-	private final String REAL_LNG = "realLocationlng";
-	private final String MAP_LAT = "mapLocationlat";
-	private final String MAP_LNG = "mapLocationlng";
+	private final String NE_REAL_LAT = "northEastRealLocationLat";
+	private final String NE_REAL_LNG = "northEastRealLocationlng";
+	private final String SW_REAL_LAT = "southWestRealLocationLat";
+	private final String SW_REAL_LNG = "southWestRealLocationlng";
+	private final String NE_MAP_LAT = "northEastMapLocationlat";
+	private final String NE_MAP_LNG = "northEastMapLocationlng";
+	private final String SW_MAP_LAT = "southWestMapLocationlat";
+	private final String SW_MAP_LNG = "SouthWestMapLocationlng";
 	private final String HIGH_SPEC ="higeSpectrumRange";
 	private final String LOW_SPEC = "lowSpectrumRange";
 	
@@ -63,17 +68,7 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 	@Override
 	public void onCreate(SQLiteDatabase db)
 	{
-		String CREATE_LOCATION_TABLE  =
-				"CREATE TABLE " + TABLE_NAME +
-				"(id INTEGER PRIMARY KEY AUTOINCREMENT,"+
-				LOCATION_NAME + " TEXT, "+
-				REAL_LAT + " REAL,"+
-				REAL_LNG +" REAL,"+
-				MAP_LAT +" INTEGER,"+
-				MAP_LNG +" INTEGER,"+
-				HIGH_SPEC +" REAL," +
-				LOW_SPEC + " REAL)";
-		db.execSQL(CREATE_LOCATION_TABLE);
+		createTable(db);
 	}
 
 	
@@ -101,10 +96,12 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 			{
 				JacocDBLocation newLocation = new JacocDBLocation();
 				newLocation.setLocationName(cursor.getString(0));
-				newLocation.setRealLocation(new LatLng(cursor.getDouble(1), cursor.getDouble(2)));
-				newLocation.setMapLocation(new LatLng(cursor.getInt(3), cursor.getInt(4)));
-				newLocation.setHighSpectrumRange(cursor.getDouble(5));
-				newLocation.setLowSpectrumRange(cursor.getDouble(6));
+				newLocation.setRealLocation(new LocationBorder(new LatLng(cursor.getDouble(1), cursor.getDouble(2)),
+											new LatLng(cursor.getDouble(3), cursor.getDouble(4))));
+				newLocation.setMapLocation(new LocationBorder(new LatLng(cursor.getInt(5), cursor.getInt(6)),
+											new LatLng(cursor.getInt(7), cursor.getInt(8))));
+				newLocation.setHighSpectrumRange(cursor.getDouble(9));
+				newLocation.setLowSpectrumRange(cursor.getDouble(10));
 				
 				// adding the new Location to the collection
 				locationList.add(newLocation);
@@ -122,10 +119,14 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 		
 		ContentValues values = new ContentValues();
 		values.put(this.LOCATION_NAME, toAdd.getLocationName());
-		values.put(this.REAL_LAT, toAdd.getRealLocation().getLat());
-		values.put(this.REAL_LNG, toAdd.getRealLocation().getLng());
-		values.put(this.MAP_LAT, toAdd.getMapLocation().getLat());
-		values.put(this.MAP_LNG, toAdd.getMapLocation().getLng());
+		values.put(this.NE_REAL_LAT, toAdd.getRealLocation().getNorthEast().getLat());
+		values.put(this.NE_REAL_LNG, toAdd.getRealLocation().getNorthEast().getLng());
+		values.put(this.SW_REAL_LAT, toAdd.getRealLocation().getSouthWest().getLat());
+		values.put(this.SW_REAL_LNG, toAdd.getRealLocation().getSouthWest().getLng());	
+		values.put(this.NE_MAP_LAT, toAdd.getMapLocation().getNorthEast().getLat());
+		values.put(this.NE_MAP_LNG, toAdd.getMapLocation().getNorthEast().getLng());
+		values.put(this.SW_MAP_LAT, toAdd.getMapLocation().getSouthWest().getLat());
+		values.put(this.SW_MAP_LNG, toAdd.getMapLocation().getSouthWest().getLng());
 		values.put(this.HIGH_SPEC, toAdd.getHighSpectrumRange());
 		values.put(this.LOW_SPEC, toAdd.getLowSpectrumRange());
 		
@@ -145,8 +146,8 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 	}
 
 	@Override
-	public boolean addNewLocation	(String locationName, LatLng realLocation,
-									LatLng mapLocation, double highSpectrumRange,
+	public boolean addNewLocation	(String locationName, LocationBorder realLocation,
+									LocationBorder mapLocation, double highSpectrumRange,
 									double lowSpectrumRange) {
 		// create JacobDBLocationObject
 		JacocDBLocation toAdd = new JacocDBLocation(locationName,realLocation, mapLocation, highSpectrumRange, lowSpectrumRange);
@@ -165,21 +166,32 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 	public void cleanDB() 
 	{
 		SQLiteDatabase db = getWritableDatabase();
-		String DROP_TABLE = "DROP TABLE IF EXISTS "+ DATABASE_NAME + "." + TABLE_NAME;
+		String DROP_TABLE = "DROP TABLE IF EXISTS "+ TABLE_NAME;
 		db.execSQL(DROP_TABLE);
 		
-
+		createTable(db);
+	}
+	
+	private void createTable(SQLiteDatabase db)
+	{
+		if (db == null)
+			db = getWritableDatabase();	
 		String CREATE_LOCATION_TABLE  =
-				"CREATE TABLE IF NOT EXISTS " + TABLE_NAME +
-				" (id INTEGER PRIMARY KEY AUTOINCREMENT,"+
+				"CREATE TABLE " + TABLE_NAME +
+				"(id INTEGER PRIMARY KEY AUTOINCREMENT,"+
 				LOCATION_NAME + " TEXT, "+
-				REAL_LAT + " REAL,"+
-				REAL_LNG +" REAL,"+
-				MAP_LAT +" INTEGER,"+
-				MAP_LNG +" INTEGER,"+
+				NE_REAL_LAT + " REAL,"+
+				NE_REAL_LNG +" REAL,"+
+				SW_REAL_LAT + " REAL,"+
+				SW_REAL_LNG +" REAL,"+
+				NE_MAP_LAT +" INTEGER,"+
+				NE_MAP_LNG +" INTEGER,"+
+				SW_MAP_LAT +" INTEGER,"+
+				SW_MAP_LNG +" INTEGER,"+
 				HIGH_SPEC +" REAL," +
 				LOW_SPEC + " REAL)";
 		db.execSQL(CREATE_LOCATION_TABLE);
+		
 	}
 
 }

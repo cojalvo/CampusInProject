@@ -1,6 +1,8 @@
 package il.ac.shenkar.common;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -10,6 +12,12 @@ import java.util.Date;
  *
  */
 public class CampusInEvent {
+	public CampusInEvent() {
+		super();
+		this.receiversId=new ArrayList<String>();
+		// TODO Auto-generated constructor stub
+	}
+
 	private String headLine;		
 	private String description;
 	private CampusInLocation location;
@@ -21,7 +29,7 @@ public class CampusInEvent {
 	private boolean isGlobal;	
 	//the user that receive the event, if there is no receiver this will be the same as 
 	// the owner id
-	private String receiverId;
+	private List<String> receiversId;
 	public String getHeadLine() {
 		return headLine;
 	}
@@ -58,11 +66,17 @@ public class CampusInEvent {
 	public void setGlobal(boolean isGlobal) {
 		this.isGlobal = isGlobal;
 	}
-	public String getReceiverId() {
-		return receiverId;
+	public List<String> getReceiversId() {
+		return receiversId;
 	}
-	public void setReceiverId(String receiverId) {
-		this.receiverId = receiverId;
+	public void setReciversList(List<String> rList)
+	{
+		if(rList!=null)
+			this.receiversId=rList;
+	}
+	public void addReciver(String receiverId) {
+		if(receiverId!=null && receiverId!="")
+			this.receiversId.add(receiverId);
 	}
 	
 	public CampusInEventType getEventType() {

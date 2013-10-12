@@ -30,7 +30,6 @@ public class LocationoReporter implements ILocationReporter,IObserver
 	//cloud access
 	private IDataAccesObject dao;
 	private static boolean lastUpdateFinish=true;
-	//determine if the user want to update his location
 	private Context context=null;
 
 	public LocationoReporter(Context context)

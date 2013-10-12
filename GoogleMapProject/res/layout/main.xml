@@ -1,10 +1,11 @@
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent" >
+
     <!-- The main content view -->
-      <RelativeLayout
+
+    <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -23,15 +24,14 @@
             android:layout_alignParentTop="true"
             android:layout_margin="0dp"
             tools:ignore="MissingPrefix" />
-
     </RelativeLayout>
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="start"
         android:background="#b5e5fe"
-         android:layout_gravity="start"
         android:orientation="vertical"
         android:padding="3dp" >
 
@@ -40,8 +40,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:paddingBottom="20dp"
-            android:iconifiedByDefault="false" >
+            android:iconifiedByDefault="false"
+            android:paddingBottom="20dp" >
         </SearchView>
 
         <fragment
@@ -50,7 +50,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="0dp" />
-
     </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>

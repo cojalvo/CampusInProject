@@ -3,8 +3,12 @@ package il.ac.shenkar.cadan;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.facebook.Request.GraphUserCallback;
+import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.Session.NewPermissionsRequest;
 import com.facebook.android.Facebook;
+import com.facebook.model.GraphUser;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -17,10 +21,12 @@ import com.parse.auth.FacebookAuthenticationProvider;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
@@ -36,12 +42,17 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 import il.ac.shenkar.common.CampusInConstant;
+import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.PersonalSettings;
 import il.ac.shenkar.in.bl.*;
 import il.ac.shenkar.in.dal.ActionCode;
 import il.ac.shenkar.in.dal.CloudAccessObject;
+import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
+import il.ac.shenkar.in.dal.FacebookServices;
 import il.ac.shenkar.in.dal.IObserver;
 import il.ac.shenkar.in.dal.IDataAccesObject;
+import il.ac.shenkar.in.services.LocationReporterServise;
+import android.app.AlertDialog;
 
 public class Login extends Activity implements IObserver {
 
@@ -73,6 +84,7 @@ public class Login extends Activity implements IObserver {
 		// if the user is already log in than go the main activity
 		final ParseUser currentUser = ParseUser.getCurrentUser();
 		if (currentUser != null) {
+			CreateCampusInUser();
 			startActivity(new Intent(Login.this, Main.class));
 			finish();
 		}
@@ -96,6 +108,7 @@ public class Login extends Activity implements IObserver {
 				} else if (user.isNew()) {
 					MessageHalper.closeProggresDialog();
 					startSettingsProcess();
+					CreateCampusInUser();
 					startActivity(new Intent(Login.this, Main.class));
 					finish();
 					Log.d("MyApp",
@@ -112,10 +125,6 @@ public class Login extends Activity implements IObserver {
 		});
 	}
 
-	private PersonalSettings getPersonlaSettingsFromCloud() {
-		PersonalSettings ps = null;
-		return ps;
-	}
 
 	private void initSettingDialogs() {
 		stepOneDialog = new Dialog(
@@ -218,8 +227,7 @@ public class Login extends Activity implements IObserver {
 
 	@Override
 	public void actionDone(ActionCode code) {
-		if(code==ActionCode.Settings)
-		{
+		if (code == ActionCode.Settings) {
 			dao.removeObserver(Login.this);
 			MessageHalper.closeProggresDialog();
 		}
@@ -230,6 +238,53 @@ public class Login extends Activity implements IObserver {
 	public void actionFail(ActionCode code) {
 		// TODO Auto-generated method stub
 
+	}
+
+	private void CreateCampusInUser() {
+		FacebookServices.makeMeRequest(ParseFacebookUtils.getSession(),
+				new GraphUserCallback() {
+
+					@Override
+					public void onCompleted(GraphUser user, Response response) {
+						CampusInUser newUser = new CampusInUser();
+						newUser.setFaceBookUserId(user.getId());
+						newUser.setFirstName(user.getFirstName());
+						newUser.setLastName(user.getLastName());
+						newUser.setParseUserId(ParseUser.getCurrentUser()
+								.getObjectId());
+						dao.putCampusInUserInbackground(newUser,
+								new DataAccesObjectCallBack<Integer>() {
+
+									@Override
+									public void done(Integer retObject,
+											Exception e) {
+										if (e != null) {
+											terminateApp();
+										}
+
+									}
+								});
+
+					}
+				});
+
+	}
+	private void terminateApp()
+	{
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+		alertDialog.setPositiveButton("אישור", new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				finish();
+			}
+		});
+		alertDialog.setMessage("אירעה שגיאה בחיבור לשרת,אנא נסה מאוחר יותר");
+		alertDialog.setTitle(" ");
+		alertDialog.setIcon(R.drawable.campus_in_ico);
+		alertDialog.show();
 	}
 
 }

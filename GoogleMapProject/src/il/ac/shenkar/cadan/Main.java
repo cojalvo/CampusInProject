@@ -2,45 +2,38 @@ package il.ac.shenkar.cadan;
 
 import il.ac.shenkar.cadan.PrefsFragment.OnPreferenceSelectedListener;
 import il.ac.shenkar.common.CampusInConstant;
+import il.ac.shenkar.in.dal.FacebookServices;
 import il.ac.shenkar.in.services.InitLocations;
 import il.ac.shenkar.in.services.LocationReporterServise;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
+import com.facebook.Request.GraphUserCallback;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.model.GraphUser;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CameraPositionCreator;
-import com.google.android.gms.maps.model.GroundOverlay;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
-import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.*;
 import android.support.v4.widget.DrawerLayout;
 
@@ -52,10 +45,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnKeyListener;
-import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.SearchView;
@@ -83,9 +72,8 @@ public class Main extends Activity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		//start the Async Task 
-		new InitLocations().execute(this);
 		
+		new InitLocations().execute(this);
 		super.onCreate(savedInstanceState);
 		Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE",
 				"UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
@@ -96,6 +84,7 @@ public class Main extends Activity
 				R.layout.main, null);
 		// set as content view
 		this.setContentView(this.mDrawerLayout);
+			
 		// ActionBarDrawerToggle ties together the the proper interactions
 		// between the sliding drawer and the action bar app icon
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
@@ -201,12 +190,12 @@ public class Main extends Activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		/*// Pass the event to ActionBarDrawerToggle, if it returns
+		// Pass the event to ActionBarDrawerToggle, if it returns
 		// true, then it has handled the app icon touch event
 		if (mDrawerToggle.onOptionsItemSelected(item))
 		{
 			return true;
-		}*/
+		}
 		
 		// Handle presses on the action bar items
 		Intent intent;
@@ -215,10 +204,13 @@ public class Main extends Activity
 	        case R.id.action_add_event:
 	            intent = new Intent(this,AddNewEventActivity.class);
 	            startActivity(intent);
+	            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
 	            return true;
 	        case R.id.action_show_all_events:
 	        	intent = new Intent(this, JacobEventActivity.class);
 	        	startActivity(intent);
+	        	overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
@@ -258,7 +250,7 @@ public class Main extends Activity
 		{
 			Log.d(this.getClass().getName(), "back button pressed");
 			// in case of process of long press than reset it
-			if (pwindo.isShowing()) 
+			if (lastMapLongClick!=null && pwindo.isShowing()) 
 				{
 					lastMapLongClick = null;
 					pwindo.dismiss();
@@ -280,7 +272,7 @@ public class Main extends Activity
 
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
-		alertDialog.setPositiveButton("׳›׳�", new OnClickListener()
+		alertDialog.setPositiveButton("כן", new OnClickListener()
 		{
 
 			@Override
@@ -292,11 +284,11 @@ public class Main extends Activity
 			}
 		});
 
-		alertDialog.setNegativeButton("׳�׳�", null);
+		alertDialog.setNegativeButton("לא", null);
 
-		alertDialog.setMessage("׳”׳�׳� ׳�׳×׳” ׳‘׳˜׳•׳— ׳©׳‘׳¨׳¦׳•׳ ׳� ׳�׳¦׳�׳×?");
+		alertDialog.setMessage("האם אתה בטוח שברצונך לצאת?");
 		alertDialog.setTitle(" ");
-		alertDialog.setIcon(R.drawable.campusin_logo);
+		alertDialog.setIcon(R.drawable.campus_in_ico);
 		alertDialog.show();
 	}
 	@Override
@@ -365,4 +357,7 @@ public class Main extends Activity
 	{
 		
 	}
+	
+	
+
 }

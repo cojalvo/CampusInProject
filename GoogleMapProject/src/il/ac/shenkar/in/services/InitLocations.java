@@ -24,15 +24,18 @@ import il.ac.shenkar.in.dal.DataBaseHealper;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations>
 {
 	private final String downloadedFile = "downloaded.xml";
 	private final String existingFile = "existing.xml";
+	private Context context;
 
 	@Override
 	protected CampusInLocations doInBackground(Context... params) 
 	{
+		context = params[0];
 		File outputFile = new File(params[0].getFilesDir(), downloadedFile );
 		File existingXML = new File(params[0].getFilesDir() + existingFile);
 		// this code takes xml configuration file from the internet and save it to local file 
@@ -152,7 +155,7 @@ public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations
 	{
 		super.onPostExecute(result);
 		
-		// do somthing after async task is done.
+		Toast.makeText(context, "init Locations Async Task Ended", 3000);
 	}
 	
 	private CampusInLocations getObjectsFromXmlFile(File source) throws Throwable
