@@ -30,6 +30,8 @@ public class CampusInEvent {
 	//the user that receive the event, if there is no receiver this will be the same as 
 	// the owner id
 	private List<String> receiversId;
+	
+	
 	public String getHeadLine() {
 		return headLine;
 	}

@@ -45,6 +45,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.SearchView;
@@ -203,8 +204,19 @@ public class Main extends Activity
 	    {
 	        case R.id.action_add_event:
 	            intent = new Intent(this,AddNewEventActivity.class);
-	            startActivity(intent);
-	            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+	            android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+	            android.app.Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+	            if (prev != null) {
+	                ft.remove(prev);
+	            }
+	            ft.addToBackStack(null);
+
+	            // Create and show the dialog.
+	            AddNewEventFragment newFragment = AddNewEventFragment.newInstance(2);
+	            newFragment.show(ft, "dialog");
+	            
+	            /* startActivity(intent);
+	            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);*/
 	            return true;
 	        case R.id.action_show_all_events:
 	        	intent = new Intent(this, JacobEventActivity.class);
@@ -357,7 +369,6 @@ public class Main extends Activity
 	{
 		
 	}
-	
 	
 
 }

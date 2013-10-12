@@ -22,7 +22,60 @@
         	android:prompt="@string/event_type_prompt"
         	android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
-        	android:layout_below="@+id/event_type_text_view"/>
+        	android:layout_below="@+id/event_type_text_view"
+        	android:layout_alignRight="@+id/event_type_text_view"/>
 
+     	<TextView
+     	    android:id="@+id/event_name_text_view"
+     	    android:layout_width="wrap_content"
+     	    android:layout_height="wrap_content"
+     	    android:layout_alignRight="@+id/event_type_text_view"
+     	    android:layout_below="@+id/event_type_spinner"
+     	    android:text="שם האירוע"
+     	    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+     	<EditText
+     	    android:id="@+id/event_name_edit_text"
+     	    android:layout_width="fill_parent"
+     	    android:layout_height="wrap_content"
+     	    android:layout_alignParentRight="true"
+     	    android:layout_below="@+id/event_name_text_view" >
+     	</EditText>   		
+     	
+     	<TextView
+     	    android:id="@+id/event_descroption_text_view"
+     	    android:layout_width="wrap_content"
+     	    android:layout_height="wrap_content"
+     	    android:layout_alignRight="@+id/event_type_text_view"
+     	    android:layout_below="@+id/event_name_edit_text"
+     	    android:text="תיאור האירוע"
+     	    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+     	<EditText
+     	    android:id="@+id/event_description_edit_text"
+     	    android:layout_width="fill_parent"
+     	    android:layout_height="wrap_content"
+     	    android:layout_alignParentRight="true"
+     	    android:layout_below="@+id/event_descroption_text_view" 
+     	    android:hint="שדה רשות">
+     	</EditText>
+     	<TextView
+     	    android:id="@+id/event_date_text_view"
+     	    android:layout_width="wrap_content"
+     	    android:layout_height="wrap_content"
+     	    android:layout_alignRight="@+id/event_type_text_view"
+     	    android:layout_below="@+id/event_description_edit_text"
+     	    android:text="בחר תאריך"
+     	    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+     	<Button
+     	    android:id="@+id/event_pick_date_button"
+     	    android:layout_marginTop="5dp"
+     	    android:layout_width="wrap_content"
+     	    android:layout_height="wrap_content"
+     	    android:layout_alignBaseline="@+id/event_date_text_view"
+     	    android:layout_alignBottom="@+id/event_date_text_view"
+     	    android:layout_alignParentLeft="true"
+     	    android:text="בחר תאריך" />
 
 </RelativeLayout>
