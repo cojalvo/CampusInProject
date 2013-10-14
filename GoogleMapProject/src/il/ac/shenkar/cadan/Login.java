@@ -49,12 +49,11 @@ import il.ac.shenkar.in.dal.ActionCode;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.FacebookServices;
-import il.ac.shenkar.in.dal.IObserver;
 import il.ac.shenkar.in.dal.IDataAccesObject;
 import il.ac.shenkar.in.services.LocationReporterServise;
 import android.app.AlertDialog;
 
-public class Login extends Activity implements IObserver {
+public class Login extends Activity {
 
 	private ProgressDialog pb = null;
 
@@ -72,7 +71,7 @@ public class Login extends Activity implements IObserver {
 	private Button next2 = null;
 	private Button finish = null;
 
-	IDataAccesObject dao = CloudAccessObject.getInstance();
+	IDataAccesObject dao=null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +80,10 @@ public class Login extends Activity implements IObserver {
 				"UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 		ParseFacebookUtils.initialize("635010643194002");
 		setContentView(R.layout.activity_main);
+		dao = CloudAccessObject.getInstance();
 		// if the user is already log in than go the main activity
 		final ParseUser currentUser = ParseUser.getCurrentUser();
 		if (currentUser != null) {
-			CreateCampusInUser();
 			startActivity(new Intent(Login.this, Main.class));
 			finish();
 		}
@@ -105,14 +104,7 @@ public class Login extends Activity implements IObserver {
 					MessageHalper.closeProggresDialog();
 					Log.d("MyApp",
 							"Uh oh. The user cancelled the Facebook login.");
-				} else if (user.isNew()) {
-					MessageHalper.closeProggresDialog();
-					startSettingsProcess();
-					CreateCampusInUser();
-					startActivity(new Intent(Login.this, Main.class));
 					finish();
-					Log.d("MyApp",
-							"User signed up and logged in through Facebook!");
 				} else {
 					Log.d("MyApp", "User logged in through Facebook!");
 					MessageHalper.closeProggresDialog();
@@ -120,6 +112,7 @@ public class Login extends Activity implements IObserver {
 							"User  was logged in through Facebook!",
 							Toast.LENGTH_SHORT);
 					t.show();
+					Login.this.startSettingsProcess();
 				}
 			}
 		});
@@ -161,7 +154,7 @@ public class Login extends Activity implements IObserver {
 				}
 				if (v.getId() == R.id.btnFinish) {
 					stepThreeDialog.hide();
-					createUserSettingsObjectAndSaveTocloud();
+					updateCurrentUserYearTrend();
 				}
 
 			}
@@ -207,68 +200,6 @@ public class Login extends Activity implements IObserver {
 		ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
 	}
 
-	/***
-	 * create the user settings object and save it to the cloud when saving the
-	 * data a progress dialog will appear, this pd will close only after the
-	 * completed data will be save
-	 */
-	private void createUserSettingsObjectAndSaveTocloud() {
-		PersonalSettings ps = new PersonalSettings();
-		ps.setLastUpdate(Calendar.getInstance().getTime());
-		ps.setTrend(String.valueOf(trendSpinner.getSelectedItem()));
-		ps.setUserId(ParseUser.getCurrentUser().getObjectId());
-		ps.setShowAll(displayAllRB.isChecked());
-		ps.setShowMyFriendOnly(displayFriendOnlyRB.isChecked());
-		ps.setYear(String.valueOf(yearSpinner.getSelectedItem()));
-		MessageHalper.showProgressDialog("Saving...", Login.this);
-		dao.addObserver(Login.this);
-		dao.putPersonalSettings(ps);
-	}
-
-	@Override
-	public void actionDone(ActionCode code) {
-		if (code == ActionCode.Settings) {
-			dao.removeObserver(Login.this);
-			MessageHalper.closeProggresDialog();
-		}
-
-	}
-
-	@Override
-	public void actionFail(ActionCode code) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private void CreateCampusInUser() {
-		FacebookServices.makeMeRequest(ParseFacebookUtils.getSession(),
-				new GraphUserCallback() {
-
-					@Override
-					public void onCompleted(GraphUser user, Response response) {
-						CampusInUser newUser = new CampusInUser();
-						newUser.setFaceBookUserId(user.getId());
-						newUser.setFirstName(user.getFirstName());
-						newUser.setLastName(user.getLastName());
-						newUser.setParseUserId(ParseUser.getCurrentUser()
-								.getObjectId());
-						dao.putCampusInUserInbackground(newUser,
-								new DataAccesObjectCallBack<Integer>() {
-
-									@Override
-									public void done(Integer retObject,
-											Exception e) {
-										if (e != null) {
-											terminateApp();
-										}
-
-									}
-								});
-
-					}
-				});
-
-	}
 	private void terminateApp()
 	{
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
@@ -281,10 +212,39 @@ public class Login extends Activity implements IObserver {
 				finish();
 			}
 		});
-		alertDialog.setMessage("אירעה שגיאה בחיבור לשרת,אנא נסה מאוחר יותר");
+		alertDialog.setMessage("אירעה שגיאה בעת החיבור לשרת, אנא נסה במועד מאוחר יותר");
 		alertDialog.setTitle(" ");
 		alertDialog.setIcon(R.drawable.campus_in_ico);
 		alertDialog.show();
 	}
+	 private void updateCurrentUserYearTrend()
+	  {
+	    this.dao.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
+	    {
+	      public void done(CampusInUser currentCampusUser, Exception e)
+	      {
+	        if (e == null)
+	        {
+	          currentCampusUser.setTrend(String.valueOf(Login.this.trendSpinner.getSelectedItem()));
+	          currentCampusUser.setYear(String.valueOf(Login.this.yearSpinner.getSelectedItem()));
+	          MessageHalper.showProgressDialog("Saving...", Login.this);
+	          Login.this.dao.putCurrentCampusInUserInbackground(currentCampusUser, new DataAccesObjectCallBack<Integer>()
+	          {
+	            public void done(Integer retObj, Exception e)
+	            {
+	              MessageHalper.closeProggresDialog();
+	              if (e == null)
+	              {
+	                Login.this.startActivity(new Intent(Login.this, Main.class));
+	                finish();
+	                return;
+	              }
+	              Login.this.terminateApp();
+	            }
+	          });
+	        }
+	      }
+	    });
+	  }
 
 }

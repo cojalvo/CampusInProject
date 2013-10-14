@@ -2,24 +2,40 @@ package il.ac.shenkar.in.dal;
 
 import java.util.List;
 
+import android.graphics.drawable.Drawable;
+
 import com.facebook.model.GraphUser;
 import com.parse.FindCallback;
 import com.parse.ParseObject;
 
 import il.ac.shenkar.common.*;
 
-public interface IDataAccesObject extends IProvider
-{
-	public PersonalSettings getPersonalSettings(String userID);
-	public void putPersonalSettings(PersonalSettings ps);
-	public List<CampusInEvent> getEvents();
-	public List<CampusInMessage> getMessages();
-	public void sendMessage(CampusInMessage message);
-	public void sendEvent(CampusInEvent event);
-	public void updateLocation(CampusInUserLocation userLoction);
+public interface IDataAccesObject {
+	
+	void getEvents(DataAccesObjectCallBack<CampusInEvent> callBack);
+	void getMessages(DataAccesObjectCallBack<CampusInMessage> callback);
+
+	void sendMessage(CampusInMessage message,DataAccesObjectCallBack<Integer> callback);
+
+	void sendEvent(CampusInEvent event,DataAccesObjectCallBack<Integer> callback);
+
+	void updateLocation(CampusInLocation location,
+			DataAccesObjectCallBack<Integer> callBack);
+
 	void getUsersLocationInBackground(
 			DataAccesObjectCallBack<List<CampusInUserLocation>> callBack);
-	void getAllUsersInBackground(DataAccesObjectCallBack<List<CampusInUser>> callBack);
-	void putCampusInUserInbackground(CampusInUser user,DataAccesObjectCallBack<Integer> callback); 
-	
+
+	void getAllUsersInBackground(
+			DataAccesObjectCallBack<List<CampusInUser>> callBack);
+
+	void addFriendToFriendList(CampusInUser CampusInUser,
+			DataAccesObjectCallBack<Integer> callBack);
+
+	void loadCurrentCampusInUser(DataAccesObjectCallBack<CampusInUser> callBack);
+
+	void putCurrentCampusInUserInbackground(CampusInUser currentCampusInUser,
+			DataAccesObjectCallBack<Integer> callBack);
+
+	void getProfilePicture(DataAccesObjectCallBack<Drawable> callBack);
+
 }

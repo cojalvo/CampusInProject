@@ -8,8 +8,8 @@ import il.ac.shenkar.common.CampusInUserLocation;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.in.dal.ActionCode;
 import il.ac.shenkar.in.dal.CloudAccessObject;
+import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.IDataAccesObject;
-import il.ac.shenkar.in.dal.IObserver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +18,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-public class LocationoReporter implements ILocationReporter,IObserver
+public class LocationoReporter implements ILocationReporter
 {
 
 	private String TAG = LocationoReporter.class.getName();
@@ -41,7 +41,6 @@ public class LocationoReporter implements ILocationReporter,IObserver
 	{
 		this.interval = interval;
 		dao = CloudAccessObject.getInstance();
-		dao.addObserver(this);
 		IntentFilter filterSend = new IntentFilter();
 		//set the filter for the intent reciever
 		filterSend.addAction(CampusInConstant.CLOUD_ACTION_LOCATION_UPDATE);
@@ -84,31 +83,31 @@ public class LocationoReporter implements ILocationReporter,IObserver
 		CampusInLocation currerntLoaction = locationProvider.getLoction();
 		// if the location hasn't changed than return;
 		if (currerntLoaction.equals(lastLocation)) return;
-		try
-		{
-			String userId = ParseUser.getCurrentUser().getObjectId();
-			dao.updateLocation(new CampusInUserLocation(currerntLoaction,
-					userId));
-		}
-		catch (Exception e)
-		{
-			// TODO Create a class that will help me find out whether i have
-			// connection to the internet
-			// TODO if not, that create a warning message for the user.
-			Log.i(TAG, "Update location was failed");
-		}
-
+	String userId = ParseUser.getCurrentUser().getObjectId();
+			dao.updateLocation(currerntLoaction, new DataAccesObjectCallBack<Integer>() {
+				
+				@Override
+				public void done(Integer retObject, Exception e) {
+					lastUpdateFinish=true;
+					if(e==null)
+					{
+						Toast.makeText(context, "Update location succed", 15).show();
+					}
+					else
+					{
+						Log.i(TAG, "Update location was failed");
+						Toast.makeText(context, e.getMessage(), 15).show();
+					}
+					
+				}
+			});
 	}
-
-
-
 	/**
 	 * ILocationReporet implementation
 	 */
 	@Override
 	public void start()
 	{
-		
 		Toast.makeText(context, "Location was start", 100).show();
 		//TODO Check if this call in the second time will not effect.
 		autoRefresh.run();
@@ -120,22 +119,4 @@ public class LocationoReporter implements ILocationReporter,IObserver
 		handler.removeCallbacks(autoRefresh);
 		Toast.makeText(context, "Location was stoped", 100).show();
 	}
-
-	@Override
-	public void actionDone(ActionCode settings)
-	{
-		Toast.makeText(context, "Update location succed", 15).show();
-		lastUpdateFinish=true;
-		
-	}
-
-	@Override
-	public void actionFail(ActionCode settings)
-	{
-		Toast.makeText(context, "Update location Failed", 15).show();
-		lastUpdateFinish=true;
-		
-	}
-	
-
 }

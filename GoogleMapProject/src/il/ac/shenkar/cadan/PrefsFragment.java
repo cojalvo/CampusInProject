@@ -8,7 +8,11 @@ import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 
 import il.ac.shenkar.common.CampusInConstant;
+import il.ac.shenkar.common.CampusInUser;
+import il.ac.shenkar.in.dal.CloudAccessObject;
+import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.FacebookServices;
+import il.ac.shenkar.in.dal.IDataAccesObject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +30,7 @@ import android.preference.PreferenceFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class PrefsFragment extends PreferenceFragment {
 
@@ -33,38 +38,6 @@ public class PrefsFragment extends PreferenceFragment {
 	private String faceId = null;
 	private Drawable profilePic = null;
 	private Bitmap profileAsBitmap = null;
-
-	private class UpdateProfilePictureInBackgroud extends
-			AsyncTask<String, Void, String> {
-		private String userId = null;
-
-		UpdateProfilePictureInBackgroud(String id) {
-			super();
-			userId = id;
-		}
-
-		@Override
-		protected String doInBackground(String... params) {
-			// TODO Auto-generated method stub
-			PrefsFragment.this.profilePic = FacebookServices
-					.getPictureForFacebookId(userId);
-			Bitmap profileAsBitmap = ((BitmapDrawable) PrefsFragment.this.profilePic)
-					.getBitmap();
-			// Scale it to 50 x 50
-			PrefsFragment.this.profilePic = new BitmapDrawable(getResources(),
-					Bitmap.createScaledBitmap(profileAsBitmap, 150, 130, true));
-			return userId;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			Preference me = (Preference) findPreference("me");
-			if (me != null) {
-				me.setIcon(PrefsFragment.this.profilePic);
-			}
-		}
-	}
-
 	public static final String ACTION_INTENT = "il.ac.shenkar.CHANGE";
 	OnPreferenceSelectedListener mCallback;
 	private Context context;
@@ -135,66 +108,47 @@ public class PrefsFragment extends PreferenceFragment {
 
 	private void updateMeDetails(Bundle savedInstanceState) {
 		// use FacebookService object to get the user profile object
-		if (savedInstanceState != null) {
-			faceId=savedInstanceState.getString("faceId");
-			userName=savedInstanceState.getString("userName");
-			Preference me = (Preference) findPreference("me");
-			if (me != null) {
-				me.setTitle(userName);
+		final Preference me = (Preference) findPreference("me");
+		final IDataAccesObject dao = CloudAccessObject.getInstance();
+		dao.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
 
-				if (profilePic == null) {
-				
-					UpdateProfilePictureInBackgroud u = new UpdateProfilePictureInBackgroud(
-							faceId);
-					u.execute("dummy");
-				}
-			}
-			return;
-		}
-		FacebookServices.makeMeRequest(ParseFacebookUtils.getSession(),
-				new GraphUserCallback() {
+			@Override
+			public void done(CampusInUser retObject, Exception e) {
+				if (e == null) {
+					userName = retObject.getFirstName() + " "
+							+ retObject.getLastName();
+					me.setTitle(userName);
+					dao.getProfilePicture(new DataAccesObjectCallBack<Drawable>() {
 
-					@Override
-					public void onCompleted(GraphUser user, Response response) {
-						// If the response is successful
-						if (ParseFacebookUtils.getSession() == Session
-								.getActiveSession()) {
-							if (user != null) {
-
-								faceId = user.getId();
-								// get me preference and update the full name
-								Preference me = (Preference) findPreference("me");
-								if (me != null) {
-									PrefsFragment.this.userName = user
-											.getFirstName()
-											+ " "
-											+ user.getLastName();
-									me.setTitle(PrefsFragment.this.userName);
-
-									// use asyncTask obj to update the profile
-									// picture
-									// TODO create AsyncTaskFacrory to manage
-									// all
-									// async task obj in the app
-									UpdateProfilePictureInBackgroud u = new UpdateProfilePictureInBackgroud(
-											faceId);
-									u.execute("dummy");
-								}
+						@Override
+						public void done(Drawable retObject, Exception e) {
+							profilePic = retObject;
+							
+							profilePic=resizePic(profilePic, 150, 130);
+							Toast.makeText(context, "Picture was loaded from facebook", 500).show();
+							if (me != null) {
+								me.setIcon(profilePic);
 							}
-							;
 
 						}
-						if (response.getError() != null) {
-							// Handle error
-						}
-					}
-				});
+					});
+				}
+
+			}
+		});
+
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putString("userName", userName);
-		outState.putString("faceId", faceId);
 		super.onSaveInstanceState(outState);
+	}
+
+	private Drawable resizePic(Drawable paramDrawable, int paramInt1,
+			int paramInt2) {
+		Bitmap localBitmap = ((BitmapDrawable) paramDrawable).getBitmap();
+		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(
+				localBitmap, paramInt1, paramInt2, true));
 	}
 }

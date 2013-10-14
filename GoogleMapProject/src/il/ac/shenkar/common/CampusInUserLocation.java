@@ -1,50 +1,37 @@
 package il.ac.shenkar.common;
 
-public class CampusInUserLocation 
+public class CampusInUserLocation
 {
-	//the location in the campus
-	private CampusInLocation location;
-	//the parse user id
-	private String userID;
-	private String userName;
-	public String getUserName()
-	{
-		return userName;
-	}
-	public void setUserName(String userName)
-	{
-		this.userName = userName;
-	}
-	public String getFaceBookId()
-	{
-		return faceBookId;
-	}
-	public void setFaceBookId(String faceBookId)
-	{
-		this.faceBookId = faceBookId;
-	}
-	private String faceBookId;
-	
-	public CampusInLocation getLocation() {
-		return location;
-	}
-	public void setLocation(CampusInLocation location) {
-		this.location = location;
-	}
-	public String getUserID() {
-		return userID;
-	}
-	public void setUserID(String userID) {
-		this.userID = userID;
-	}
-	public CampusInUserLocation(CampusInLocation location, String userID) {
-		super();
-		this.location = location;
-		this.userID = userID;
-	}
-	public CampusInUserLocation()
-	{
-		super();
-	}
+  private CampusInLocation location;
+  private CampusInUser user;
 
+  public CampusInUserLocation()
+  {
+  }
+
+  public CampusInUserLocation(CampusInLocation paramCampusInLocation, CampusInUser paramCampusInUser)
+  {
+    this.location = paramCampusInLocation;
+    this.user = paramCampusInUser;
+  }
+
+  public CampusInLocation getLocation()
+  {
+    return this.location;
+  }
+
+  public CampusInUser getUser()
+  {
+    return this.user;
+  }
+
+  public void setLocation(CampusInLocation paramCampusInLocation)
+  {
+    this.location = paramCampusInLocation;
+  }
+
+  public void setUser(CampusInUser paramCampusInUser)
+  {
+    this.user = paramCampusInUser;
+  }
 }
