@@ -12,8 +12,8 @@ import il.ac.shenkar.common.*;
 
 public interface IDataAccesObject {
 	
-	void getEvents(DataAccesObjectCallBack<CampusInEvent> callBack);
-	void getMessages(DataAccesObjectCallBack<CampusInMessage> callback);
+	void getEvents(DataAccesObjectCallBack<List<CampusInEvent>> callBack);
+	void getMessages(DataAccesObjectCallBack<List<CampusInMessage>> callback);
 
 	void sendMessage(CampusInMessage message,DataAccesObjectCallBack<Integer> callback);
 

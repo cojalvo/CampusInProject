@@ -10,6 +10,7 @@ import il.ac.shenkar.common.ParsingHelper;
 import il.ac.shenkar.common.PersonalSettings;
 
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
+import com.google.android.gms.internal.cm;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -57,11 +59,98 @@ public class CloudAccessObject implements IDataAccesObject {
 
 
 	@Override
-	public void getEvents(DataAccesObjectCallBack<CampusInEvent> callBack) {
+	public void getEvents(final DataAccesObjectCallBack<List<CampusInEvent>> callBack) 
+	{
+		//load the currentCampusiN user just in case it wasnt loaded yet.
+		loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
+			
+			@Override
+			public void done(CampusInUser retObject, Exception e) {
+				if(e==null)
+				{
+					ParseQuery<ParseObject> dateQuery=ParseQuery.getQuery("Event");
+					dateQuery.whereGreaterThanOrEqualTo("date", new Date());
+					
+					ParseQuery<ParseObject> ownerQuery=ParseQuery.getQuery("Event");
+					ownerQuery.whereEqualTo("ownerParseId", curentCampusInUser.getParseUserId());
+					
+					ParseQuery<ParseObject> recieverQuery=ParseQuery.getQuery("Event");
+					recieverQuery.whereEqualTo("recivers", curentCampusInUser.getParseUserId());
+					
+					ParseQuery<ParseObject> isPublicQuery=ParseQuery.getQuery("Event");
+					isPublicQuery.whereEqualTo("isPublic", true);
+					
+					List<ParseQuery<ParseObject>> queries=new ArrayList<ParseQuery<ParseObject>>();
+					queries.add(isPublicQuery);
+					queries.add(recieverQuery);
+					queries.add(ownerQuery);
+					ParseQuery<ParseObject> orQuery=ParseQuery.or(queries);
+					
+					//this will set the date as and logic ---> (date  && (ownerId||reciverId||isPublic))
+					orQuery.whereGreaterThanOrEqualTo("date", new Date());
+					
+					orQuery.findInBackground(new FindCallback<ParseObject>() {
+						
+						@Override
+						public void done(List<ParseObject> resList, ParseException e) {
+							List<CampusInEvent> eventList=new ArrayList<CampusInEvent>();
+							if(e==null)
+							{
+								for (ParseObject parseEvent : resList)
+								{
+									
+									eventList.add(createCampusInEventFromParseObj(parseEvent));
+								}
+							}
+							if(callBack!=null)
+								callBack.done(eventList, e);
+						}
+					});
+					
+				}
+				
+			}
+		});
+		
+	}
+	
+	private CampusInEvent createCampusInEventFromParseObj(ParseObject parseObj)
+	{
+//		ParseObject theEvent=new ParseObject("Event");
+//		theEvent.add("title", event.getHeadLine());
+//		theEvent.add("description", event.getDescription());
+//		theEvent.add("date", event.getDate());
+//		theEvent.add("locationName",event.getLocation().getName());
+//		theEvent.add("lat", event.getLocation().getMapLocation().latitude);
+//		theEvent.add("long", event.getLocation().getMapLocation().longitude);
+//		theEvent.add("isPublic",event.isGlobal());
+//		theEvent.add("ownerParseId", event.getOwnerId());
+//		theEvent.add("type", event.getEventType());
+//		for (String reciverId : event.getReceiversId()){
+//			theEvent.add("recivers", reciverId);
+		CampusInEvent event=null;
+		if(parseObj!=null)
+		{
+			event=new CampusInEvent();
+			event.setLocation(new CampusInLocation());
+			event.setDate(parseObj.getDate("date"));
+			event.setHeadLine(parseObj.getString("title"));
+			event.setDescription(parseObj.getString("description"));
+			event.getLocation().setMapLocation(new LatLng(parseObj.getDouble("lat"),parseObj.getDouble("long")));
+			event.getLocation().setName(parseObj.getString("locationName"));
+			event.setGlobal(parseObj.getBoolean("isPublic"));
+			event.setOwnerId(parseObj.getString("ownerParseId"));
+			event.setReciversList(new ArrayList<String>());
+			for (Object reciverId : parseObj.getList("recivers")) 
+			{
+				event.getReceiversId().add(reciverId.toString());
+			}
+		}
+		return event;
 	}
 
 	@Override
-	public void getMessages(DataAccesObjectCallBack<CampusInMessage> callBack) {
+	public void getMessages(DataAccesObjectCallBack<List<CampusInMessage>> callBack) {
 
 	}
 
@@ -72,8 +161,38 @@ public class CloudAccessObject implements IDataAccesObject {
 	}
 
 	@Override
-	public void sendEvent(CampusInEvent event,DataAccesObjectCallBack<Integer> callback) {
-		// TODO Auto-generated method stub
+	public void sendEvent(CampusInEvent event,final DataAccesObjectCallBack<Integer> callback) {
+		if(event!=null)
+		{
+			ParseObject theEvent=new ParseObject("Event");
+			theEvent.add("title", event.getHeadLine());
+			theEvent.add("description", event.getDescription());
+			theEvent.add("date", event.getDate());
+			theEvent.add("locationName",event.getLocation().getName());
+			theEvent.add("lat", event.getLocation().getMapLocation().latitude);
+			theEvent.add("long", event.getLocation().getMapLocation().longitude);
+			theEvent.add("isPublic",event.isGlobal());
+			theEvent.add("ownerParseId", event.getOwnerId());
+			theEvent.add("type", event.getEventType());
+			for (String reciverId : event.getReceiversId()){
+				theEvent.add("recivers", reciverId);
+			}
+			theEvent.saveInBackground(new SaveCallback() {
+				
+				@Override
+				public void done(ParseException e) {
+					if(callback!=null)
+					{
+						if(e==null)
+							callback.done(0, e);
+						else
+							callback.done(1, e);
+					}
+					
+				}
+			});
+			
+		}
 
 	}
 
