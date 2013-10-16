@@ -94,7 +94,31 @@
         	android:layout_toLeftOf="@+id/event_Location_text_view"
         	android:layout_alignParentLeft="true"
         	android:layout_below="@+id/event_pick_date_button"/>
- 
-     	
+     	<ToggleButton 
+     	    android:id="@+id/event_is_public_toggle_button"
+     	    android:layout_width="wrap_content"
+     	    android:layout_height="wrap_content"
+     	    android:layout_below="@+id/event_Location_text_view" 
+     	    android:layout_alignRight="@+id/event_Location_text_view"
+     	    android:textOn="פרטי"
+     	    android:textOff="פומבי"/>
+     	<Button 
+     	    android:id="@+id/event_add_friends_button"
+     	    android:layout_width="wrap_content"
+     	    android:layout_height="wrap_content"
+     	    android:layout_below="@+id/event_location_spinner"
+     	    android:layout_alignParentLeft="true"
+     	    android:layout_toLeftOf="@+id/event_is_public_toggle_button"
+     	    android:visibility="invisible"
+     	    android:text="הוסף חברים"/>
+
+     	<Button
+     	    android:id="@+id/event_pick_time"
+     	    android:layout_width="wrap_content"
+     	    android:layout_height="wrap_content"
+     	    android:layout_alignBaseline="@+id/event_pick_date_button"
+     	    android:layout_alignBottom="@+id/event_pick_date_button"
+     	    android:layout_centerHorizontal="true" 
+     	    android:text="בחר שעה"/>
 
 </RelativeLayout>
