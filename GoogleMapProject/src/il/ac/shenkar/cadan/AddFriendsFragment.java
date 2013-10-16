@@ -139,6 +139,10 @@ public class AddFriendsFragment extends DialogFragment
 		toReturn.add(curr);
 		return toReturn;
 	}
+	public interface friendChoice
+	{
+		public void onFriendChosed(ArrayList<CampusInUser> friendChosedList);
+	}
 
 
 }
