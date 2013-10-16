@@ -51,8 +51,8 @@ public class AddNewEventFragment extends DialogFragment
 	{
 		super.onCreateDialog(savedInstanceState);
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-				.setTitle("δερσ ΰιψες ηγω")
-				.setPositiveButton("δερσ", new DialogInterface.OnClickListener() {
+				.setTitle("Χ¦Χ•Χ¨ ΧΧ™Χ¨Χ•ΧΆ")
+				.setPositiveButton("ΧΧ™Χ©Χ•Χ¨", new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) 
@@ -62,7 +62,7 @@ public class AddNewEventFragment extends DialogFragment
 						
 					}
 				})
-				.setNegativeButton("αθμ", new DialogInterface.OnClickListener() {
+				.setNegativeButton("Χ‘Χ™ΧΧ•Χ", new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) 
@@ -100,7 +100,7 @@ public class AddNewEventFragment extends DialogFragment
 			view = inflater.inflate(R.layout.add_event_activity_layout, container, false);
 			
 			// set the title
-			 getDialog().setTitle("δερσ ΰιψες ηγω");
+			 getDialog().setTitle("β€°Γ‚Γ’Γ› β€΅ΓΒ―Γ‚Γ Γβ€Λ");
 			
 	        
 	        // becouse it's a fragment and i want to deal with the events in here i will put listenets manualy - 

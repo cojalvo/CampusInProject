@@ -88,8 +88,8 @@ public class MapManager
 	public void addOrUpdatePersonMarker(CampusInUserLocation user)
 	{
 	    Marker newUser = map.addMarker(new MarkerOptions().position(user.getLocation().getMapLocation())
-		        .title(user.getUserName()));
-	    this.personMarkerdictionary.put(user.getUserID(), newUser);
+		        .title(user.getUser().getFirstName() + " "+ user.getUser().getLastName()));
+	    this.personMarkerdictionary.put(user.getUser().getParseUserId(), newUser);
 	}
 	public void addOrUpdateEventMarker(CampusInEvent event)
 	{
