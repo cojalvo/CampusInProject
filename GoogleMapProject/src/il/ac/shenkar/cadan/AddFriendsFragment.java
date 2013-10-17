@@ -40,7 +40,7 @@ public class AddFriendsFragment extends DialogFragment
         args.putInt("num", num);
         f.setArguments(args);
 
-        return f;
+        return f;//
     }
 	
 	@Override
