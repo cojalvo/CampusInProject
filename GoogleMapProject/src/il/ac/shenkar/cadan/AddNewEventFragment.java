@@ -2,6 +2,11 @@ package il.ac.shenkar.cadan;
 
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInUser;
+import il.ac.shenkar.in.dal.CloudAccessObject;
+import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
+import il.ac.shenkar.in.dal.DataBaseHealper;
+import il.ac.shenkar.in.dal.IDataAccesObject;
+import il.ac.shenkar.in.dal.IDataBaseHealper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +34,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
@@ -37,6 +43,7 @@ public class AddNewEventFragment extends DialogFragment
 	private View view;
 	private ArrayList<CampusInUser> addedFriends;
 	private Calendar cal;
+	private CampusInUser currentUser;
 	onNewEventAdded mCallBack;
 	
 	@Override
@@ -109,6 +116,22 @@ public class AddNewEventFragment extends DialogFragment
 	public Dialog onCreateDialog(Bundle savedInstanceState) 
 	{
 		super.onCreateDialog(savedInstanceState);
+		
+		//get the current logged in user
+		IDataAccesObject DAO = CloudAccessObject.getInstance();
+		DAO.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
+			
+			@Override
+			public void done(CampusInUser retObject, Exception e) {
+				
+				if (e == null && retObject!= null)
+				{
+					currentUser = retObject;
+				}
+				
+			}
+		});
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
 				.setTitle("הוסף אירוע")
 				.setPositiveButton("הוסף", new DialogInterface.OnClickListener() {
@@ -133,6 +156,10 @@ public class AddNewEventFragment extends DialogFragment
 		
 		view = getActivity().getLayoutInflater().inflate(R.layout.add_event_activity_layout, null, false);
 		
+		Spinner locatinSrinner = (Spinner) view.findViewById(R.id.event_location_spinner);
+		IDataBaseHealper DBHelper = DataBaseHealper.getInstance(getActivity());
+		DBHelper.getAllLocations();
+
 		 // becouse it's a fragment and i want to deal with the events in here i will put listenets manualy - 
         //else it will search the method name on the Activity class
         Button dateButton = (Button) view.findViewById(R.id.event_pick_date_button);
