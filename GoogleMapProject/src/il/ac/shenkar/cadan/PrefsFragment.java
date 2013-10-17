@@ -122,16 +122,23 @@ public class PrefsFragment extends PreferenceFragment {
 
 						@Override
 						public void done(Drawable retObject, Exception e) {
-						if(e==null &&retObject!=null)
-						{
-							profilePic = retObject;
-							
-							profilePic=resizePic(profilePic, 150, 130);
-							Toast.makeText(context, "Picture was loaded from facebook", 500).show();
-							if (me != null) {
-								me.setIcon(profilePic);
+							if (e == null && retObject != null) {
+								profilePic = retObject;
+
+								try {
+									profilePic = resizePic(profilePic, 150, 130);
+								} catch (Exception e1) {
+
+									Toast.makeText(getActivity(),
+											e1.getMessage(), 500);
+								}
+								Toast.makeText(context,
+										"Picture was loaded from facebook", 500)
+										.show();
+								if (me != null) {
+									me.setIcon(profilePic);
+								}
 							}
-						}
 
 						}
 					});
@@ -149,7 +156,7 @@ public class PrefsFragment extends PreferenceFragment {
 	}
 
 	private Drawable resizePic(Drawable paramDrawable, int paramInt1,
-			int paramInt2) {
+			int paramInt2) throws Exception {
 		Bitmap localBitmap = ((BitmapDrawable) paramDrawable).getBitmap();
 		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(
 				localBitmap, paramInt1, paramInt2, true));
