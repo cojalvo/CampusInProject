@@ -1,8 +1,13 @@
 package il.ac.shenkar.cadan;
 
+import java.util.List;
+
 import il.ac.shenkar.cadan.PrefsFragment.OnPreferenceSelectedListener;
 import il.ac.shenkar.common.CampusInConstant;
+import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserChecked;
+import il.ac.shenkar.in.dal.CloudAccessObject;
+import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.FacebookServices;
 import il.ac.shenkar.in.services.InitLocations;
 import il.ac.shenkar.in.services.LocationReporterServise;
@@ -379,6 +384,18 @@ public class Main extends Activity
 	public void addTestClicked(View v)
 	{
 		Toast.makeText(this, "add test was clicked", 300).show();
+		CloudAccessObject.getInstance().getCurrentUserFriendsToScool(new DataAccesObjectCallBack<List<CampusInUser>>() {
+			
+			@Override
+			public void done(List<CampusInUser> retObject, Exception e) {
+			if(e==null)
+			{
+				List<CampusInUser> f=null;
+				f=retObject;
+			}
+				
+			}
+		});
 		pwindo.dismiss();
 		lastMapLongClick=null;
 	}

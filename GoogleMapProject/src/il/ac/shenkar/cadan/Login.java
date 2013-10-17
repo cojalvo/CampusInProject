@@ -203,7 +203,6 @@ public class Login extends Activity {
 	private void terminateApp()
 	{
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-
 		alertDialog.setPositiveButton("אישור", new DialogInterface.OnClickListener()
 		{
 			@Override
@@ -223,7 +222,7 @@ public class Login extends Activity {
 	    {
 	      public void done(CampusInUser currentCampusUser, Exception e)
 	      {
-	        if (e == null)
+	        if (e == null && currentCampusUser!=null)
 	        {
 	          currentCampusUser.setTrend(String.valueOf(Login.this.trendSpinner.getSelectedItem()));
 	          currentCampusUser.setYear(String.valueOf(Login.this.yearSpinner.getSelectedItem()));
@@ -242,6 +241,10 @@ public class Login extends Activity {
 	              Login.this.terminateApp();
 	            }
 	          });
+	        }
+	        else
+	        {
+	        	 Login.this.terminateApp();
 	        }
 	      }
 	    });

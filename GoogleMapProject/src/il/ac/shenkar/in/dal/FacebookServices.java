@@ -2,7 +2,6 @@ package il.ac.shenkar.in.dal;
 
 import il.ac.shenkar.cadan.PrefsFragment;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -122,6 +122,8 @@ public class PrefsFragment extends PreferenceFragment {
 
 						@Override
 						public void done(Drawable retObject, Exception e) {
+						if(e==null &&retObject!=null)
+						{
 							profilePic = retObject;
 							
 							profilePic=resizePic(profilePic, 150, 130);
@@ -129,6 +131,7 @@ public class PrefsFragment extends PreferenceFragment {
 							if (me != null) {
 								me.setIcon(profilePic);
 							}
+						}
 
 						}
 					});

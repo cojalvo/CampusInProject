@@ -7,7 +7,16 @@
     android:background="#b5e5fe"
     android:orientation="vertical" >
 
-       <ImageView
+
+    
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/campus_in_ico" />
+    
+           <ImageView
         android:layout_marginTop="15dp"
         android:id="@+id/facebookLoginButton"
         android:layout_width="wrap_content"
@@ -15,13 +24,6 @@
 		android:onClick="loginButtonClick"
         android:padding="0dp"
         android:src="@drawable/facebook_login_button_big" />
-    
-    <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:src="@drawable/ic_launcher" />
 
     <TextView
         android:id="@+id/textView1"
