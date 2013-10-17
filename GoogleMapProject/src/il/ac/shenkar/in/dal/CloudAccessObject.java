@@ -17,7 +17,6 @@ import java.util.List;
 
 import android.animation.ArgbEvaluator;
 import android.graphics.drawable.Drawable;
-import android.text.format.DateFormat;
 import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 import android.widget.Toast;
@@ -43,8 +42,10 @@ public class CloudAccessObject implements IDataAccesObject {
 	private Date messagesLastUpdate;
 	private ParseObject parseCurrentCampusInUser = null;
 	private Drawable profilePic = null;
+	private Date allUsersLastUpdate;
 	private Date usersLastUpdate;
 	private Date usersLocationLastUpdate;
+	private List<CampusInUser> allUsersList;
 
 	private CloudAccessObject() {
 
@@ -135,7 +136,7 @@ public class CloudAccessObject implements IDataAccesObject {
 		if (parseObj != null) {
 			event = new CampusInEvent();
 			event.setLocation(new CampusInLocation());
-			//event.setDate(parseObj.getDate("date"));
+			// event.setDate(parseObj.getDate("date"));
 			event.setHeadLine(parseObj.getString("title"));
 			event.setDescription(parseObj.getString("description"));
 			event.getLocation().setMapLocation(
@@ -427,14 +428,14 @@ public class CloudAccessObject implements IDataAccesObject {
 		}
 		ParseQuery<ParseObject> localParseQuery = ParseQuery
 				.getQuery("CampusInUser");
-		localParseQuery.whereEqualTo("parseUserId",
-				ParseUser.getCurrentUser().getObjectId());
+		localParseQuery.whereEqualTo("parseUserId", ParseUser.getCurrentUser()
+				.getObjectId());
 		localParseQuery.findInBackground(new FindCallback<ParseObject>() {
 
 			@Override
 			public void done(List<ParseObject> retList, ParseException e) {
-				if ( e == null&&retList!=null && retList.size() == 1) {
-					CloudAccessObject.this.parseCurrentCampusInUser =  retList
+				if (e == null && retList != null && retList.size() == 1) {
+					CloudAccessObject.this.parseCurrentCampusInUser = retList
 							.get(0);
 					if (callBack != null)
 						callBack.done(parseCurrentCampusInUser, e);
@@ -450,6 +451,13 @@ public class CloudAccessObject implements IDataAccesObject {
 
 	}
 
+	/*
+	 * add cumpus in user to the friend list of the current user(non-Javadoc)
+	 * 
+	 * @see
+	 * il.ac.shenkar.in.dal.IDataAccesObject#addFriendToFriendList(il.ac.shenkar
+	 * .common.CampusInUser, il.ac.shenkar.in.dal.DataAccesObjectCallBack)
+	 */
 	public void addFriendToFriendList(CampusInUser userToAdd,
 			final DataAccesObjectCallBack<Integer> callBack) {
 		if (userToAdd == null) {
@@ -471,15 +479,14 @@ public class CloudAccessObject implements IDataAccesObject {
 				ParseObject localParseObject = (ParseObject) retList.get(0);
 				ParseUser.getCurrentUser().getRelation("friends")
 						.add(localParseObject);
-				ParseUser.getCurrentUser()
-						.saveInBackground(new SaveCallback() {
-							public void done(
-									ParseException paramAnonymous2ParseException) {
-								if (callBack != null)
-									callBack.done(Integer.valueOf(0),
-											paramAnonymous2ParseException);
-							}
-						});
+				ParseUser.getCurrentUser().saveInBackground(new SaveCallback() {
+					public void done(
+							ParseException paramAnonymous2ParseException) {
+						if (callBack != null)
+							callBack.done(Integer.valueOf(0),
+									paramAnonymous2ParseException);
+					}
+				});
 			}
 		});
 		{
@@ -611,27 +618,60 @@ public class CloudAccessObject implements IDataAccesObject {
 
 			@Override
 			public void done(CampusInUser retObject, Exception e) {
-				ParseQuery< ParseObject> query= ParseQuery.getQuery("CampusInUser");
+				ParseQuery<ParseObject> query = ParseQuery
+						.getQuery("CampusInUser");
 				query.whereEqualTo("trend", curentCampusInUser.getTrend());
 				query.whereEqualTo("year", curentCampusInUser.getYear());
 				query.findInBackground(new FindCallback<ParseObject>() {
-					
+
 					@Override
 					public void done(List<ParseObject> retList, ParseException e) {
-						ArrayList<CampusInUser> friendList=new ArrayList<CampusInUser>();
-						if(e==null)
-						{
-							
+						ArrayList<CampusInUser> friendList = new ArrayList<CampusInUser>();
+						if (e == null) {
+
 							for (ParseObject parseObject : retList) {
-								friendList.add(fromParseObjToCampusInUser(parseObject));
+								friendList
+										.add(fromParseObjToCampusInUser(parseObject));
 							}
 						}
-						if(callBack!=null)
+						if (callBack != null)
 							callBack.done(friendList, e);
 					}
 				});
 			}
 		});
 
+	}
+
+	
+	@Override
+	public void getAllCumpusInUsers(
+			final DataAccesObjectCallBack<List<CampusInUser>> callBack) {
+		// first load
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
+		if (allUsersList == null) {
+			allUsersList = new ArrayList<CampusInUser>();
+		}
+		else
+		{
+			query.whereGreaterThanOrEqualTo("createdAt",allUsersLastUpdate);
+		}
+		query.findInBackground(new FindCallback<ParseObject>() {
+
+			@Override
+			public void done(List<ParseObject> retList, ParseException e) {
+				if (e == null && retList != null) {
+					allUsersLastUpdate = new Date();
+					for (ParseObject parseObject : retList) {
+						allUsersList
+								.add(fromParseObjToCampusInUser(parseObject));
+					}
+					if (callBack != null) {
+						callBack.done(allUsersList, e);
+					}
+				}
+
+			}
+		});
 	}
 }

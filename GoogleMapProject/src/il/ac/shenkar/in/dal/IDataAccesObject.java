@@ -39,5 +39,7 @@ public interface IDataAccesObject {
 	void getProfilePicture(DataAccesObjectCallBack<Drawable> callBack);
 	
 	void getCurrentUserFriendsToScool(DataAccesObjectCallBack<List<CampusInUser>> callBack);
+	
+	void getAllCumpusInUsers(DataAccesObjectCallBack<List<CampusInUser>> callBack );
 
 }
