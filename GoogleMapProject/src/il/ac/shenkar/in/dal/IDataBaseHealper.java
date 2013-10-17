@@ -12,5 +12,6 @@ public interface IDataBaseHealper
 	public boolean addNewLocation(JacocDBLocation toAdd);
 	public boolean addNewLocation(String locationName, LocationBorder realLocation, LocationBorder mapLocation, double highSpectrumRange, double lowSpectrumRange);
 	public Collection<?> getAllLocations();
+	public Collection<?> getAllLocationsForSpinner();
 	public void cleanDB();
 }

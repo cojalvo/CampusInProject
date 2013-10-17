@@ -43,7 +43,7 @@ public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations
 		{
 			// url to the file on the server 
 			//URL url = new URL("	http://globalwork.co.il/uploadFiles/example");
-			URL url = new URL("http://10.0.0.7:8080/test/example.xml");
+			URL url = new URL("http://10.0.14.228:8080/test/example.xml");
 			
 			HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 			urlConnection.setRequestMethod("GET");

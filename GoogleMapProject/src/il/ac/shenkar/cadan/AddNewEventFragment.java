@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import com.google.android.gms.internal.bu;
 import com.google.android.gms.internal.ca;
@@ -31,6 +32,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -49,6 +51,7 @@ public class AddNewEventFragment extends DialogFragment
 	@Override
 	public void onAttach(Activity activity) 
 	{
+		super.onAttach(activity);
 		try {
 			mCallBack = (onNewEventAdded) activity;
 		}catch (ClassCastException e) {
@@ -158,7 +161,9 @@ public class AddNewEventFragment extends DialogFragment
 		
 		Spinner locatinSrinner = (Spinner) view.findViewById(R.id.event_location_spinner);
 		IDataBaseHealper DBHelper = DataBaseHealper.getInstance(getActivity());
-		DBHelper.getAllLocations();
+		List<String> LocationList  = (List<String>) DBHelper.getAllLocationsForSpinner();
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, LocationList);
+		locatinSrinner.setAdapter(dataAdapter);
 
 		 // becouse it's a fragment and i want to deal with the events in here i will put listenets manualy - 
         //else it will search the method name on the Activity class

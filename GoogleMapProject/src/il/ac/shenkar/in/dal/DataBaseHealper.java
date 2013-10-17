@@ -6,6 +6,7 @@ import il.ac.shenkar.common.LocationBorder;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import il.ac.shenkar.common.LatLng;
 import com.parse.CountCallback;
@@ -27,6 +28,7 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 {
 	private static DataBaseHealper instance = null;
 	private Collection<JacocDBLocation> locationList;
+	private Collection<String> locationForSpinner;
 
 	// DataBase Members
 	private static final int DATABASE_VERSION =1;
@@ -95,13 +97,13 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 			do 
 			{
 				JacocDBLocation newLocation = new JacocDBLocation();
-				newLocation.setLocationName(cursor.getString(0));
-				newLocation.setRealLocation(new LocationBorder(new LatLng(cursor.getDouble(1), cursor.getDouble(2)),
-											new LatLng(cursor.getDouble(3), cursor.getDouble(4))));
-				newLocation.setMapLocation(new LocationBorder(new LatLng(cursor.getInt(5), cursor.getInt(6)),
-											new LatLng(cursor.getInt(7), cursor.getInt(8))));
-				newLocation.setHighSpectrumRange(cursor.getDouble(9));
-				newLocation.setLowSpectrumRange(cursor.getDouble(10));
+				newLocation.setLocationName(cursor.getString(1));
+				newLocation.setRealLocation(new LocationBorder(new LatLng(cursor.getDouble(2), cursor.getDouble(3)),
+											new LatLng(cursor.getDouble(4), cursor.getDouble(5))));
+				newLocation.setMapLocation(new LocationBorder(new LatLng(cursor.getInt(6), cursor.getInt(7)),
+											new LatLng(cursor.getInt(8), cursor.getInt(9))));
+				newLocation.setHighSpectrumRange(cursor.getDouble(10));
+				newLocation.setLowSpectrumRange(cursor.getDouble(11));
 				
 				// adding the new Location to the collection
 				locationList.add(newLocation);
@@ -192,6 +194,20 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 				LOW_SPEC + " REAL)";
 		db.execSQL(CREATE_LOCATION_TABLE);
 		
+	}
+
+	@Override
+	public Collection<?> getAllLocationsForSpinner()
+	{
+		if (locationForSpinner == null)
+		{
+			locationForSpinner = new ArrayList<String>();
+			for(JacocDBLocation currLocation: this.locationList)
+			{
+				locationForSpinner.add(currLocation.getLocationName());
+			}
+		}
+		return locationForSpinner;
 	}
 
 }

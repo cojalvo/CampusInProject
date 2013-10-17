@@ -86,7 +86,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
-		// new InitLocations().execute(this);
+		new InitLocations().execute(this);
 		super.onCreate(savedInstanceState);
 		Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE",
 				"UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
