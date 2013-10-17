@@ -1,6 +1,7 @@
 package il.ac.shenkar.common;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class CampusInEvent {
 	private String headLine;		
 	private String description;
 	private CampusInLocation location;
-	private Date date;
+	private Calendar cal;
 	private CampusInEventType eventType;
 	//the parse id 
 	private String ownerId;		
@@ -50,11 +51,11 @@ public class CampusInEvent {
 	public void setLocation(CampusInLocation location) {
 		this.location = location;
 	}
-	public Date getDate() {
-		return date;
+	public Calendar getDate() {
+		return cal;
 	}
-	public void setDate(Date date) {
-		this.date = date;
+	public void setDate(Calendar cal) {
+		this.cal = cal;
 	}
 	public String getOwnerId() {
 		return ownerId;

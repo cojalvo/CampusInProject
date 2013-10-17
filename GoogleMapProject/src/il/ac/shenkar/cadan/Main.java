@@ -4,6 +4,13 @@ import java.util.List;
 
 import il.ac.shenkar.cadan.PrefsFragment.OnPreferenceSelectedListener;
 import il.ac.shenkar.common.CampusInConstant;
+import java.util.ArrayList;
+
+import il.ac.shenkar.cadan.AddFriendsFragment.onFriendsAddedListener;
+import il.ac.shenkar.cadan.AddNewEventFragment.onNewEventAdded;
+import il.ac.shenkar.cadan.PrefsFragment.OnPreferenceSelectedListener;
+import il.ac.shenkar.common.CampusInConstant;
+import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserChecked;
 import il.ac.shenkar.in.dal.CloudAccessObject;
@@ -64,7 +71,9 @@ public class Main extends Activity
 		implements
 			OnPreferenceSelectedListener,
 			OnMapLongClickListener,
-			OnMarkerClickListener
+			OnMarkerClickListener,
+			onFriendsAddedListener,
+			onNewEventAdded
 {
 	CameraPosition lastPos = new CameraPosition(new LatLng(0, 0), 2, 2, 2);
 	GoogleMap map = null;
@@ -415,6 +424,22 @@ public class Main extends Activity
 			item.setChecked(true);
 		else
 			item.setChecked(false);*/
+	}
+	@Override
+	public void onFriendsWereAdded(ArrayList<CampusInUser> friensList,Fragment targetedFragment) 
+	{
+		if (targetedFragment != null)
+		{
+			//the calling fragment is add event 
+			AddNewEventFragment tmp = (AddNewEventFragment) targetedFragment; 
+			tmp.setAddedFriends(friensList);		
+		}
+	}
+	@Override
+	public void onEventCreated(CampusInEvent addedEvent) 
+	{
+		// event was added 
+		
 	}
 
 }

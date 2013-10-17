@@ -6,6 +6,7 @@ import il.ac.shenkar.common.CampusInEvent;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -41,7 +42,7 @@ public class JacobEventActivity extends Activity
 		for (int i=0; i<40; i++)
 		{
 			currEvent = new CampusInEvent();
-			currEvent.setDate(new Date());
+			currEvent.setDate(new GregorianCalendar());
 			currEvent.setDescription("description " + i);
 			currEvent.setHeadLine("Title "+i);
 			toReturn.add(currEvent);	

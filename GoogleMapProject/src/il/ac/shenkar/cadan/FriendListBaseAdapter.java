@@ -136,7 +136,7 @@ public class FriendListBaseAdapter extends BaseAdapter implements Filterable{
                 	//filtering the list 
                 	ArrayList<CampusInUserChecked> filteredData = new ArrayList<CampusInUserChecked>();
                 	CampusInUser user;
-                	for (CampusInUserChecked curr: filteredFriendsArrayList)
+                	for (CampusInUserChecked curr: friendsArrayList)
                 	{
                 		user = curr.getUser();
                 		if (user.getFirstName().startsWith((String) constraint) || user.getLastName().startsWith((String) constraint))

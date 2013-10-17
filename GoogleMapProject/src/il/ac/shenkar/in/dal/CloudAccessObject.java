@@ -135,7 +135,7 @@ public class CloudAccessObject implements IDataAccesObject {
 		if (parseObj != null) {
 			event = new CampusInEvent();
 			event.setLocation(new CampusInLocation());
-			event.setDate(parseObj.getDate("date"));
+			//event.setDate(parseObj.getDate("date"));
 			event.setHeadLine(parseObj.getString("title"));
 			event.setDescription(parseObj.getString("description"));
 			event.getLocation().setMapLocation(
