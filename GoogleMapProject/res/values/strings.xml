@@ -9,18 +9,18 @@
     <string name="Trend_prompt">Choose your trend</string>
     <string name="Year_prompt">Choose your year</string>
         <string-array name="Trend">
-        <item>Software engineering</item>
-        <item>Electronic engineering</item>
-        <item>Plastic engineering</item>
-        <item>Fashion design</item>
-        <item>Art</item>
-        <item>Textile design</item>
+        <item>הנדסת תוכנה</item>
+        <item>הנדסת אלקטרוניקה</item>
+        <item>הנדסת פלסטיקה</item>
+        <item>עיצוב אופנה</item>
+        <item>אמנות</item>
+        <item>עיצוב טקסטיל</item>
     </string-array>
     <string-array name="Year">
-        <item>First</item>
-        <item>Second</item>
-        <item>Third</item>
-        <item>Forth</item>
+        <item>ראשונה</item>
+        <item>שניה</item>
+        <item>שלישית</item>
+        <item>רביעית</item>
     </string-array>
         <string name="display_me">display_me</string>
         <string name="show_hidw_mee">הצג/הסתר אותי</string>

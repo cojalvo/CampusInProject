@@ -67,14 +67,9 @@ import android.widget.PopupWindow;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-public class Main extends Activity
-		implements
-			OnPreferenceSelectedListener,
-			OnMapLongClickListener,
-			OnMarkerClickListener,
-			onFriendsAddedListener,
-			onNewEventAdded
-{
+public class Main extends Activity implements OnPreferenceSelectedListener,
+		OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener,
+		onNewEventAdded {
 	CameraPosition lastPos = new CameraPosition(new LatLng(0, 0), 2, 2, 2);
 	GoogleMap map = null;
 	private DrawerLayout mDrawerLayout;
@@ -89,10 +84,9 @@ public class Main extends Activity
 	FragmentManager fm;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		
-	//	new InitLocations().execute(this);
+	protected void onCreate(Bundle savedInstanceState) {
+
+		// new InitLocations().execute(this);
 		super.onCreate(savedInstanceState);
 		Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE",
 				"UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
@@ -103,7 +97,7 @@ public class Main extends Activity
 				R.layout.main, null);
 		// set as content view
 		this.setContentView(this.mDrawerLayout);
-			
+
 		// ActionBarDrawerToggle ties together the the proper interactions
 		// between the sliding drawer and the action bar app icon
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
@@ -111,25 +105,22 @@ public class Main extends Activity
 		R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
 		R.string.drawer_open, /* "open drawer" description for accessibility */
 		R.string.drawer_close /* "close drawer" description for accessibility */
-		)
-		{
-			public void onDrawerClosed(View view)
-			{
+		) {
+			public void onDrawerClosed(View view) {
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
 			}
 
-			public void onDrawerOpened(View drawerView)
-			{
+			public void onDrawerOpened(View drawerView) {
 				invalidateOptionsMenu(); // creates call to
 											// onPrepareOptionsMenu()
 			}
 		};
-		
-		//set listener to the menu
+
+		// set listener to the menu
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		//getActionBar().setHomeButtonEnabled(true);
+		// getActionBar().setHomeButtonEnabled(true);
 		mapManager = new MapManager(((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
 
@@ -157,8 +148,7 @@ public class Main extends Activity
 		SearchView searchView = (SearchView) findViewById(R.id.searchView1);
 		SearchableInfo searchInfo = searchManager
 				.getSearchableInfo(getComponentName());
-		if (searchInfo == null)
-		{
+		if (searchInfo == null) {
 			Toast.makeText(getApplicationContext(), "Search info is null", 500)
 					.show();
 		}
@@ -170,115 +160,116 @@ public class Main extends Activity
 		// if not check if the locationServiceStart flag is true; (this might be
 		// redundant but maybe in the future we will need to use it
 		if (savedInstanceState == null
-				|| !savedInstanceState.getBoolean("locationServiceStart"))
-		{
+				|| !savedInstanceState.getBoolean("locationServiceStart")) {
 			startLocationReportServise();
 		}
 
 	}
+
 	@Override
-	protected void onSaveInstanceState(Bundle outState)
-	{
+	protected void onSaveInstanceState(Bundle outState) {
 
 		super.onSaveInstanceState(outState);
 		// update the bundle that the service is running to prevent many
 		// binding.
 		outState.putBoolean("locationServiceStart", true);
 	}
-	private void startLocationReportServise()
-	{
+
+	private void startLocationReportServise() {
 		Intent i = new Intent(this, LocationReporterServise.class);
 		// potentially add data to the intent
 		i.putExtra("KEY1", "Value to be used by the service");
 		this.startService(i);
 
 	}
+
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState)
-	{
+	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
 		// Sync the toggle state after onRestoreInstanceState has occurred.
 		mDrawerToggle.syncState();
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig)
-	{
+	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
+	public boolean onOptionsItemSelected(MenuItem item) {
 		// Pass the event to ActionBarDrawerToggle, if it returns
 		// true, then it has handled the app icon touch event
-		if (mDrawerToggle.onOptionsItemSelected(item))
-		{
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
 		}
-		
+
 		// Handle presses on the action bar items
 		Intent intent;
-	    switch (item.getItemId())
-	    {
-	        case R.id.action_add_event:
-	            android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
-	            android.app.Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-	            if (prev != null) {
-	                ft.remove(prev);
-	            }
-	            ft.addToBackStack(null);
+		switch (item.getItemId()) {
+		case R.id.action_add_event:
+			android.app.FragmentTransaction ft = getFragmentManager()
+					.beginTransaction();
+			android.app.Fragment prev = getFragmentManager().findFragmentByTag(
+					"dialog");
+			if (prev != null) {
+				ft.remove(prev);
+			}
+			ft.addToBackStack(null);
 
-	            // Create and show the dialog.
-	            AddNewEventFragment newFragment = AddNewEventFragment.newInstance(2);
-	            newFragment.show(ft, "dialog");
-	            
-	            /* startActivity(intent);
-	            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);*/
-	            return true;
-	        case R.id.action_show_all_events:
-	        	intent = new Intent(this, JacobEventActivity.class);
-	        	startActivity(intent);
-	        	overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+			// Create and show the dialog.
+			AddNewEventFragment newFragment = AddNewEventFragment
+					.newInstance(2);
+			newFragment.show(ft, "dialog");
 
-	            return true;
-	            
-	        case R.id.action_add_friends:
-	        	 android.app.FragmentTransaction ft1 = getFragmentManager().beginTransaction();
-		         android.app.Fragment prev1 = getFragmentManager().findFragmentByTag("dialog");
-	            if (prev1 != null) {
-	                ft1.remove(prev1);
-	            }
-	            ft1.addToBackStack(null);
+			/*
+			 * startActivity(intent);
+			 * overridePendingTransition(R.anim.slide_in_left,
+			 * R.anim.slide_out_left);
+			 */
+			return true;
+		case R.id.action_show_all_events:
+			intent = new Intent(this, JacobEventActivity.class);
+			startActivity(intent);
+			overridePendingTransition(R.anim.slide_in_left,
+					R.anim.slide_out_left);
 
-	            // Create and show the dialog.
-	            AddFriendsFragment newFragment1 = AddFriendsFragment.newInstance(2);
-	            newFragment1.show(ft1, "dialog");
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+			return true;
+
+		case R.id.action_add_friends:
+			android.app.FragmentTransaction ft1 = getFragmentManager()
+					.beginTransaction();
+			android.app.Fragment prev1 = getFragmentManager()
+					.findFragmentByTag("dialog");
+			if (prev1 != null) {
+				ft1.remove(prev1);
+			}
+			ft1.addToBackStack(null);
+
+			// Create and show the dialog.
+			AddFriendsFragment newFragment1 = AddFriendsFragment.newInstance(2);
+			newFragment1.show(ft1, "dialog");
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
-	public boolean onPrepareOptionsMenu(Menu menu)
-	{
+	public boolean onPrepareOptionsMenu(Menu menu) {
 		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
+	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
+
 	@Override
-	public void onPreferenceSelected(String selected)
-	{
-		if (selected.equals(CampusInConstant.SETTINGS_EVENTS))
-		{
+	public void onPreferenceSelected(String selected) {
+		if (selected.equals(CampusInConstant.SETTINGS_EVENTS)) {
 			startActivity(new Intent(this, EventsActivity.class));
 			return;
 		}
@@ -286,21 +277,17 @@ public class Main extends Activity
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event)
-	{
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		// if the user press the back button that doExit will invoke
-		if ((keyCode == KeyEvent.KEYCODE_BACK))
-		{
+		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
 			Log.d(this.getClass().getName(), "back button pressed");
 			// in case of process of long press than reset it
-			if (lastMapLongClick!=null && pwindo.isShowing()) 
-				{
-					lastMapLongClick = null;
-					pwindo.dismiss();
-				}
+			if (lastMapLongClick != null && pwindo.isShowing()) {
+				lastMapLongClick = null;
+				pwindo.dismiss();
+			}
 			// else ask if he would like to exit
-			else
-			{
+			else {
 				doExit();
 			}
 		}
@@ -310,17 +297,14 @@ public class Main extends Activity
 	//
 	// Exit the application will ask the user if he sure.
 	//
-	private void doExit()
-	{
+	private void doExit() {
 
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
-		alertDialog.setPositiveButton("כן", new OnClickListener()
-		{
+		alertDialog.setPositiveButton("כן", new OnClickListener() {
 
 			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
+			public void onClick(DialogInterface dialog, int which) {
 				Main.this.stopService(new Intent(Main.this,
 						LocationReporterServise.class));
 				finish();
@@ -334,34 +318,33 @@ public class Main extends Activity
 		alertDialog.setIcon(R.drawable.campus_in_ico);
 		alertDialog.show();
 	}
+
 	@Override
-	public void onMapLongClick(LatLng point)
-	{
+	public void onMapLongClick(LatLng point) {
 		vibrator.vibrate(50);
 		lastMapLongClick = point;
 		initiatePopupWindow();
 	}
+
 	@Override
-	public boolean onMarkerClick(Marker marker)
-	{
+	public boolean onMarkerClick(Marker marker) {
 		lastMarkerClicked = marker;
 		return true;
 
 	}
-	public void showPopup(View v)
-	{
+
+	public void showPopup(View v) {
 		PopupMenu popup = new PopupMenu(this, v);
 		MenuInflater inflater = popup.getMenuInflater();
 		inflater.inflate(R.menu.main, popup.getMenu());
 		popup.show();
 	}
+
 	/*
 	 * popup the menu in long press on the map
 	 */
-	private void initiatePopupWindow()
-	{
-		try
-		{
+	private void initiatePopupWindow() {
+		try {
 			// We need to get the instance of the LayoutInflater
 			LayoutInflater inflater = (LayoutInflater) Main.this
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -369,77 +352,79 @@ public class Main extends Activity
 			pwindo = new PopupWindow(layout, 750, 350, true);
 			pwindo.setAnimationStyle(R.style.Animation);
 			pwindo.setFocusable(true);
-			ColorDrawable bcolor=new ColorDrawable();
+			ColorDrawable bcolor = new ColorDrawable();
 			pwindo.setBackgroundDrawable(bcolor);
-			pwindo.showAtLocation(layout, Gravity.BOTTOM,0, 0);
-		}
-		catch (Exception e)
-		{
+			pwindo.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	public void addEventClicked(View v)
-	{
-		Toast.makeText(this, "add event was clicked on location: lat:" +lastMapLongClick.latitude+ " long: "+lastMapLongClick.longitude, 300).show();
+
+	public void addEventClicked(View v) {
+		Toast.makeText(
+				this,
+				"add event was clicked on location: lat:"
+						+ lastMapLongClick.latitude + " long: "
+						+ lastMapLongClick.longitude, 300).show();
 		pwindo.dismiss();
-		lastMapLongClick=null;
+		lastMapLongClick = null;
 	}
-	public void addMessageClicked(View v)
-	{
+
+	public void addMessageClicked(View v) {
 		Toast.makeText(this, "add message was clicked", 300).show();
 		pwindo.dismiss();
-		lastMapLongClick=null;
+		lastMapLongClick = null;
 	}
-	public void addTestClicked(View v)
-	{
+
+	public void addTestClicked(View v) {
 		Toast.makeText(this, "add test was clicked", 300).show();
-		CloudAccessObject.getInstance().getCurrentUserFriendsToScool(new DataAccesObjectCallBack<List<CampusInUser>>() {
-			
-			@Override
-			public void done(List<CampusInUser> retObject, Exception e) {
-			if(e==null)
-			{
-				List<CampusInUser> f=null;
-				f=retObject;
-			}
-				
-			}
-		});
+		CloudAccessObject.getInstance().getCurrentUserFriendsToScool(
+				new DataAccesObjectCallBack<List<CampusInUser>>() {
+
+					@Override
+					public void done(List<CampusInUser> retObject, Exception e) {
+						if (e == null && retObject != null) {
+							Toast.makeText(Main.this, "number of friends for school is:"+ retObject.size(), 300).show();
+						}
+
+					}
+				});
 		pwindo.dismiss();
-		lastMapLongClick=null;
+		lastMapLongClick = null;
 	}
-	private void createEventProcess()
-	{
-		
+
+	private void createEventProcess() {
+
 	}
-	
-	public void FriendChoose(View v)
-	{
-		/*CheckBox checkBox = (CheckBox) v;
-		// Fragment fragment = getFragmentManager();
-		
-		ListView friendListView = (ListView) fragment.getView().findViewById(R.id.friends_list_view);
-		CampusInUserChecked item = (CampusInUserChecked) friendListView.getAdapter().getItem((Integer) checkBox.getTag());
-		if (checkBox.isChecked())
-			item.setChecked(true);
-		else
-			item.setChecked(false);*/
+
+	public void FriendChoose(View v) {
+		/*
+		 * CheckBox checkBox = (CheckBox) v; // Fragment fragment =
+		 * getFragmentManager();
+		 * 
+		 * ListView friendListView = (ListView)
+		 * fragment.getView().findViewById(R.id.friends_list_view);
+		 * CampusInUserChecked item = (CampusInUserChecked)
+		 * friendListView.getAdapter().getItem((Integer) checkBox.getTag()); if
+		 * (checkBox.isChecked()) item.setChecked(true); else
+		 * item.setChecked(false);
+		 */
 	}
+
 	@Override
-	public void onFriendsWereAdded(ArrayList<CampusInUser> friensList,Fragment targetedFragment) 
-	{
-		if (targetedFragment != null)
-		{
-			//the calling fragment is add event 
-			AddNewEventFragment tmp = (AddNewEventFragment) targetedFragment; 
-			tmp.setAddedFriends(friensList);		
+	public void onFriendsWereAdded(ArrayList<CampusInUser> friensList,
+			Fragment targetedFragment) {
+		if (targetedFragment != null) {
+			// the calling fragment is add event
+			AddNewEventFragment tmp = (AddNewEventFragment) targetedFragment;
+			tmp.setAddedFriends(friensList);
 		}
 	}
+
 	@Override
-	public void onEventCreated(CampusInEvent addedEvent) 
-	{
-		// event was added 
-		
+	public void onEventCreated(CampusInEvent addedEvent) {
+		// event was added
+
 	}
 
 }
