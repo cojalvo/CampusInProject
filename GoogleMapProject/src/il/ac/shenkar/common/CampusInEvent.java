@@ -77,6 +77,13 @@ public class CampusInEvent {
 		if(rList!=null)
 			this.receiversId=rList;
 	}
+	public void setReciversList(ArrayList<CampusInUser> userList)
+	{
+		for (CampusInUser currUser: userList)
+		{
+			this.receiversId.add(currUser.getParseUserId());
+		}
+	}
 	public void addReciver(String receiverId) {
 		if(receiverId!=null && receiverId!="")
 			this.receiversId.add(receiverId);
@@ -87,6 +94,15 @@ public class CampusInEvent {
 	}
 	public void setEventType(CampusInEventType eventType) {
 		this.eventType = eventType;
+	}
+	public void setEventType (int position)
+	{
+		if (position == 0)
+			this.eventType = CampusInEventType.TEST;
+		else if (position == 1)
+			this.eventType = CampusInEventType.CLASS;
+		else
+			this.eventType = CampusInEventType.MEETING;
 	}
 
 	public enum CampusInEventType

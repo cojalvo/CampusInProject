@@ -20,6 +20,15 @@ public class JacocDBLocation
 	
 	
 	
+	public LatLng calcCenter()
+	{
+		int latNorth = (int) this.getMapLocation().getNorthEast().getLat();
+		int latSouth = (int) this.getMapLocation().getSouthWest().getLat();
+		int lngNorth = (int) this.getMapLocation().getNorthEast().getLng();
+		int lngSouth = (int) this.getMapLocation().getSouthWest().getLng();
+		
+		return new LatLng((latNorth-latSouth)/2, (lngNorth-lngSouth)/2);
+	}
 	public JacocDBLocation(){}
 	
 	

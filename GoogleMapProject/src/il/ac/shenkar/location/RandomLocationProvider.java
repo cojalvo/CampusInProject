@@ -17,7 +17,7 @@ public class RandomLocationProvider implements ILocationProvider
 	public CampusInLocation getLoction() {
 		CampusInLocation cl=new CampusInLocation();
 		cl.setMapLocation(new LatLng(100,105));
-		cl.setName("cadan");
+		cl.setLocationName("cadan");
 		return  cl;
 	}
 	

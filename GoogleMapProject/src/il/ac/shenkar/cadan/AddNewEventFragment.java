@@ -1,6 +1,7 @@
 package il.ac.shenkar.cadan;
 
 import il.ac.shenkar.common.CampusInEvent;
+import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
@@ -13,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.TooManyListenersException;
 
 import com.google.android.gms.internal.bu;
 import com.google.android.gms.internal.ca;
@@ -24,8 +26,10 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +40,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class AddNewEventFragment extends DialogFragment  
@@ -58,6 +64,7 @@ public class AddNewEventFragment extends DialogFragment
             throw new ClassCastException(activity.toString()
                     + " must implement onNewEventAdded");
 		}
+		
 	}
 
 
@@ -65,7 +72,7 @@ public class AddNewEventFragment extends DialogFragment
 	{
 		if (cal == null)
 			cal = new GregorianCalendar();
-		cal.set(year, month, day);
+		cal.set(year, month, day,cal.HOUR_OF_DAY,cal.MINUTE);		
 		Log.i("AddNewEventFragment", "date is set to " + cal.toString());
 	}
 	
@@ -142,10 +149,8 @@ public class AddNewEventFragment extends DialogFragment
 					@Override
 					public void onClick(DialogInterface dialog, int which) 
 					{
-						//do somthing with Positive input;
-						//validate the data insert is OK 
-						//TODO: validate the data and return new Event to the main activity 
-						
+						// do nothing in here, i overidded the listener on onStart method
+						// this could validate the data in the fields before closing the dialog
 					}
 				})
 				.setNegativeButton("בטל", new DialogInterface.OnClickListener() {
@@ -159,6 +164,7 @@ public class AddNewEventFragment extends DialogFragment
 		
 		view = getActivity().getLayoutInflater().inflate(R.layout.add_event_activity_layout, null, false);
 		
+		//dislay data to the spinner
 		Spinner locatinSrinner = (Spinner) view.findViewById(R.id.event_location_spinner);
 		IDataBaseHealper DBHelper = DataBaseHealper.getInstance(getActivity());
 		List<String> LocationList  = (List<String>) DBHelper.getAllLocationsForSpinner();
@@ -225,6 +231,31 @@ public class AddNewEventFragment extends DialogFragment
         return builder.create();
 	}
 
+	
+	// this override is preventing the Dialog from closing before the data is being validate; 
+	@Override
+	public void onStart()
+	{
+	    super.onStart();    //super.onStart() is where dialog.show() is actually called on the underlying dialog, so we have to do it after this point
+	    AlertDialog d = (AlertDialog)getDialog();
+	    if(d != null)
+	    {
+	        Button positiveButton = (Button) d.getButton(Dialog.BUTTON_POSITIVE);
+	        positiveButton.setOnClickListener(new View.OnClickListener()
+	                {
+	                    @Override
+	                    public void onClick(View v)
+	                    {
+	                    	CampusInEvent toReturn = validate();
+							if (toReturn!= null)
+							{
+								Log.i(getTag(),"new Event was created");
+								mCallBack.onEventCreated(toReturn);
+								dismiss();
+							}	                    }
+	                });
+	    }
+	}
 /*
 	@Override
 	    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
@@ -278,7 +309,7 @@ public class AddNewEventFragment extends DialogFragment
 			{
 				AddNewEventFragment targetFragment = (AddNewEventFragment) getTargetFragment();
 				Button b = (Button)targetFragment.view.findViewById(R.id.event_pick_date_button);	
-				b.setText(dayOfMonth+"/"+monthOfYear+"/"+year);
+				b.setText(dayOfMonth+"/"+(1+monthOfYear)+"/"+year);
 				targetFragment.setDate(year, monthOfYear, dayOfMonth);
 			}
 		 
@@ -319,6 +350,60 @@ public class AddNewEventFragment extends DialogFragment
     	public void onEventCreated(CampusInEvent addedEvent);
     }
 
+    
 
+    public CampusInEvent validate()
+    {
+    	CampusInEvent toReturn = new CampusInEvent();
+    	Calendar rightNow = Calendar.getInstance();
+    	EditText eventName = (EditText) view.findViewById(R.id.event_name_edit_text);
+    	EditText eventDesc = (EditText) view.findViewById(R.id.event_description_edit_text);
+    	Spinner eventTypeSpinner = (Spinner) view.findViewById(R.id.event_type_spinner);
+    	ToggleButton isGlobalButton = (ToggleButton) view.findViewById(R.id.event_is_public_toggle_button);
+    	Spinner rommSrinner = (Spinner) view.findViewById(R.id.event_location_spinner);
+    	String eventNameString = eventName.getText().toString();
+    	
+    	// cherck the time and date input 
+    	if (cal == null)
+    	{
+    		Toast.makeText(getActivity(), "no Date choosen for the event ", 3000).show();
+    		return null;
+    	}
+    	if(cal.before(rightNow))
+    	{
+    		Toast.makeText(getActivity(), "Date is not valid cannot add past envents", 3000).show();
+    		return null;
+    	}
+    	else 
+    		toReturn.setDate(cal);
+    	// check the event name input
+    	if (eventNameString == null || eventNameString.isEmpty())
+    	{
+    		Toast.makeText(getActivity(), "Please set a name to the event", 3000).show();
+    		eventName.setHintTextColor(Color.RED);
+    		return null;
+    	}
+    	else
+    		toReturn.setHeadLine(eventNameString);
+    	
+    	//check if public
+    	if (isGlobalButton.isChecked())
+    	{
+    		//the user want private event and might add friends 
+    		toReturn.setGlobal(false);
+    		toReturn.setReciversList(addedFriends);
+    	}
+    	else
+    	{
+    		toReturn.setGlobal(true);
+    	}
+    	//set the location
+    	toReturn.setLocation(new CampusInLocation(DataBaseHealper.getInstance(getActivity()).getLocationObjectFRomName(rommSrinner.getSelectedItem().toString())));
+    	toReturn.setOwnerId(this.currentUser.getParseUserId());
+    	toReturn.setDescription(eventDesc.getText().toString());
+    	toReturn.setEventType(eventTypeSpinner.getSelectedItemPosition());
+    	
+    	return toReturn;
+    }
 
 }

@@ -41,5 +41,7 @@ public interface IDataAccesObject {
 	void getCurrentUserFriendsToScool(DataAccesObjectCallBack<List<CampusInUser>> callBack);
 	
 	void getAllCumpusInUsers(DataAccesObjectCallBack<List<CampusInUser>> callBack );
+	
+	void getAllCampusInUsersStartWith(DataAccesObjectCallBack<List<CampusInUser>> callBack);
 
 }

@@ -58,9 +58,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
@@ -422,9 +425,35 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	}
 
 	@Override
-	public void onEventCreated(CampusInEvent addedEvent) {
+	public void onEventCreated(CampusInEvent addedEvent) 
+	{
 		// event was added
+		Toast.makeText(getApplicationContext(), "Event Was Added - from Acrivity", 3000).show();
 
 	}
+	// this code is for hiding The soft keyboard when a touch is done anywhere outside the EditText 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event)
+    {
+
+        View v = getCurrentFocus();
+        boolean ret = super.dispatchTouchEvent(event);
+
+        if (v instanceof EditText) {
+            View w = getCurrentFocus();
+            int scrcoords[] = new int[2];
+            w.getLocationOnScreen(scrcoords);
+            float x = event.getRawX() + w.getLeft() - scrcoords[0];
+            float y = event.getRawY() + w.getTop() - scrcoords[1];
+
+            if (event.getAction() == MotionEvent.ACTION_UP && (x < w.getLeft() || x >= w.getRight() || y < w.getTop() || y > w.getBottom()) ) { 
+
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+            }
+        }
+        return ret;
+    }
+    
 
 }

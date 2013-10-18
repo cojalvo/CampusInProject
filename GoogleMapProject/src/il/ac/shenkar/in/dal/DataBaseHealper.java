@@ -210,4 +210,15 @@ public class DataBaseHealper extends SQLiteOpenHelper implements IDataBaseHealpe
 		return locationForSpinner;
 	}
 
+	@Override
+	public JacocDBLocation getLocationObjectFRomName(String name) 
+	{
+		for (JacocDBLocation ob : this.locationList)
+		{
+			if (ob.getLocationName().equals(name))
+				return ob;
+		}
+		return null;
+	}
+
 }

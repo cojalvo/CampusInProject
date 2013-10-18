@@ -1,6 +1,8 @@
 package il.ac.shenkar.common;
 
-public class CampusInUser
+import java.io.Serializable;
+
+public class CampusInUser implements Serializable
 {
   private String faceBookUserId;
   private String firstName;

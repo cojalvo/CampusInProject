@@ -142,7 +142,7 @@ public class CloudAccessObject implements IDataAccesObject {
 			event.getLocation().setMapLocation(
 					new LatLng(parseObj.getDouble("lat"), parseObj
 							.getDouble("long")));
-			event.getLocation().setName(parseObj.getString("locationName"));
+			event.getLocation().setLocationName(parseObj.getString("locationName"));
 			event.setGlobal(parseObj.getBoolean("isPublic"));
 			event.setOwnerId(parseObj.getString("ownerParseId"));
 			event.setReciversList(new ArrayList<String>());
@@ -173,7 +173,7 @@ public class CloudAccessObject implements IDataAccesObject {
 			theEvent.put("title", event.getHeadLine());
 			theEvent.put("description", event.getDescription());
 			theEvent.put("date", event.getDate());
-			theEvent.put("locationName", event.getLocation().getName());
+			theEvent.put("locationName", event.getLocation().getLocationName());
 			theEvent.put("lat", event.getLocation().getMapLocation().latitude);
 			theEvent.put("long", event.getLocation().getMapLocation().longitude);
 			theEvent.put("isPublic", event.isGlobal());
@@ -240,7 +240,7 @@ public class CloudAccessObject implements IDataAccesObject {
 															.getMapLocation().longitude);
 									scoreList.get(0).remove("locationName");
 									scoreList.get(0).put("locationName",
-											userLoction.getName());
+											userLoction.getLocationName());
 								}
 								scoreList.get(0).saveInBackground(
 										new SaveCallback() {
@@ -284,7 +284,7 @@ public class CloudAccessObject implements IDataAccesObject {
 										po.put("lon",
 												userLoction.getMapLocation().longitude);
 										po.put("locationName",
-												userLoction.getName());
+												userLoction.getLocationName());
 										// add the parse current user to the
 										// relation 1
 										// to 1 relation
@@ -411,11 +411,10 @@ public class CloudAccessObject implements IDataAccesObject {
 					paramParseObject.getString("lastName"));
 			localCampusInUserLocation.setLocation(new CampusInLocation());
 			localCampusInUserLocation.getLocation().setMapLocation(localLatLng);
-			localCampusInUserLocation.getLocation().setName(
+			localCampusInUserLocation.getLocation().setLocationName(
 					paramParseObject.getString("locationName"));
-			localCampusInUserLocation.getLocation().setDate(
-					paramParseObject.getUpdatedAt());
-		}
+			/*localCampusInUserLocation.getLocation().setDate(
+					paramParseObject.getUpdatedAt());*/		}
 		return localCampusInUserLocation;
 	}
 
@@ -673,5 +672,12 @@ public class CloudAccessObject implements IDataAccesObject {
 
 			}
 		});
+	}
+
+	@Override
+	public void getAllCampusInUsersStartWith(
+			DataAccesObjectCallBack<List<CampusInUser>> callBack) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -7,48 +7,35 @@ import com.google.android.gms.maps.model.LatLng;
 public class CampusInLocation {
 	//the relative location on the overlay map of Shenkar
 	private LatLng mapLocation;
-	private Date date;
-	public CampusInLocation()
-	{
+	private String locationName;
+	
+	public CampusInLocation(JacocDBLocation location) {
 		super();
-		date=new Date();
+		this.locationName = location.getLocationName();
+		il.ac.shenkar.common.LatLng latlng = location.calcCenter();
+		this.mapLocation = new LatLng(latlng.getLat(),latlng.getLng());
 	}
-	public Date getDate()
-	{
-		return date;
+	public CampusInLocation() {
+		super();
 	}
-	public void setDate(Date date)
-	{
-		this.date = date;
+	public CampusInLocation(LatLng mapLocation, String locationName) {
+		super();
+		this.mapLocation = mapLocation;
+		this.locationName = locationName;
 	}
-	//the name of the location.
-	// TODO perhaps we need to use Enum or something else.
-	private String name;
 	public LatLng getMapLocation() {
 		return mapLocation;
 	}
 	public void setMapLocation(LatLng mapLocation) {
 		this.mapLocation = mapLocation;
 	}
-	public String getName() {
-		return name;
+	public String getLocationName() {
+		return locationName;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
 	}
-	//TODO This might be Unnecessary
-	@Override
-	public boolean equals(Object loc)
-	{
-		try
-		{
-			CampusInLocation cLoc=(CampusInLocation) loc;
-			return cLoc.mapLocation.equals(mapLocation) && cLoc.name.equals(name);
-		}
-		catch(Exception e)
-		{
-			return false;
-		}
-		
-	}
+	
+	
+	
 }

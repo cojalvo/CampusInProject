@@ -39,6 +39,7 @@ public class AddFriendsFragment extends DialogFragment
         Bundle args = new Bundle();
         args.putInt("num", num);
         f.setArguments(args);
+        
 
         return f;//
     }
