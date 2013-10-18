@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 
+import android.R.layout;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -100,6 +101,14 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 				R.layout.main, null);
 		// set as content view
 		this.setContentView(this.mDrawerLayout);
+		mapManager = new MapManager(((MapFragment) getFragmentManager()
+				.findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
+
+		mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(0, 0),
+				new LatLng(40, 50), (float) 0.1);
+		mapManager.moveCameraToLocation(new LatLng(20, 25), 15);
+		mapManager.setOnMapLongClickListener(this);
+		mapManager.setOnMarkerClickListener(this);
 
 		// ActionBarDrawerToggle ties together the the proper interactions
 		// between the sliding drawer and the action bar app icon
@@ -111,12 +120,11 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		) {
 			public void onDrawerClosed(View view) {
 				invalidateOptionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
 			}
 
 			public void onDrawerOpened(View drawerView) {
 				invalidateOptionsMenu(); // creates call to
-											// onPrepareOptionsMenu()
+							// onPrepareOptionsMenu()
 			}
 		};
 
@@ -124,14 +132,6 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		// getActionBar().setHomeButtonEnabled(true);
-		mapManager = new MapManager(((MapFragment) getFragmentManager()
-				.findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
-
-		mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(0, 0),
-				new LatLng(40, 50), (float) 0.1);
-		mapManager.moveCameraToLocation(new LatLng(20, 25), 15);
-		mapManager.setOnMapLongClickListener(this);
-		mapManager.setOnMarkerClickListener(this);
 		/*
 		 * // Move the camera instantly to hamburg with a zoom of 15.
 		 * map.setOnCameraChangeListener(new OnCameraChangeListener() {

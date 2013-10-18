@@ -569,26 +569,44 @@ public class CloudAccessObject implements IDataAccesObject {
 
 	@Override
 	public void putCurrentCampusInUserInbackground(
-			CampusInUser currentCampusInUser,
-			final DataAccesObjectCallBack<Integer> callBack) {
-		final ParseObject currentUserParseObject = new ParseObject(
-				"CampusInUser");
-		currentUserParseObject.put("firstName",
-				currentCampusInUser.getFirstName());
-		currentUserParseObject.put("lastName",
-				currentCampusInUser.getLastName());
-		currentUserParseObject.put("facebookId",
-				currentCampusInUser.getFaceBookUserId());
-		currentUserParseObject.put("parseUserId",
-				currentCampusInUser.getParseUserId());
-		currentUserParseObject.put("trend", currentCampusInUser.getTrend());
-		currentUserParseObject.put("year", currentCampusInUser.getYear());
-		currentUserParseObject.saveInBackground(new SaveCallback() {
-			public void done(ParseException paramAnonymousParseException) {
-				callBack.done(Integer.valueOf(0), paramAnonymousParseException);
-				CloudAccessObject.this.parseCurrentCampusInUser = currentUserParseObject;
+			final CampusInUser currentCampusInUser,
+			final DataAccesObjectCallBack<Integer> callBack) 
+	{
+		ParseQuery<ParseObject> query =ParseQuery.getQuery("CampusInUser");
+		query.whereEqualTo("parseUserId", currentCampusInUser.getParseUserId());
+		query.findInBackground(new FindCallback<ParseObject>() {
+			
+			@Override
+			public void done(List<ParseObject> retObj, ParseException e) {
+				if(e==null&& retObj!=null)
+				{
+					//cretate new one 
+					if(retObj.size()==0)
+					{
+						final ParseObject currentUserParseObject = new ParseObject(
+								"CampusInUser");
+						currentUserParseObject.put("firstName",
+								currentCampusInUser.getFirstName());
+						currentUserParseObject.put("lastName",
+								currentCampusInUser.getLastName());
+						currentUserParseObject.put("facebookId",
+								currentCampusInUser.getFaceBookUserId());
+						currentUserParseObject.put("parseUserId",
+								currentCampusInUser.getParseUserId());
+						currentUserParseObject.put("trend", currentCampusInUser.getTrend());
+						currentUserParseObject.put("year", currentCampusInUser.getYear());
+						currentUserParseObject.saveInBackground(new SaveCallback() {
+							public void done(ParseException e) {
+								CloudAccessObject.this.parseCurrentCampusInUser = currentUserParseObject;
+							}
+						});
+					}
+					callBack.done(Integer.valueOf(0), e);
+				}
+				
 			}
 		});
+	
 	}
 
 	public void getProfilePicture(
