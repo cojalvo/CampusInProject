@@ -580,7 +580,7 @@ public class CloudAccessObject implements IDataAccesObject {
 			public void done(List<ParseObject> retObj, ParseException e) {
 				if(e==null&& retObj!=null)
 				{
-					//cretate new one 
+					//create new one 
 					if(retObj.size()==0)
 					{
 						final ParseObject currentUserParseObject = new ParseObject(
@@ -692,10 +692,40 @@ public class CloudAccessObject implements IDataAccesObject {
 		});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see il.ac.shenkar.in.dal.IDataAccesObject#getAllCampusInUsersStartWith(java.lang.String, il.ac.shenkar.in.dal.DataAccesObjectCallBack)
+	 */
 	@Override
-	public void getAllCampusInUsersStartWith(
-			DataAccesObjectCallBack<List<CampusInUser>> callBack) {
-		// TODO Auto-generated method stub
+	public void getAllCampusInUsersStartWith(String startWith,
+			final DataAccesObjectCallBack<List<CampusInUser>> callBack) {
 		
+			//build the or query that will contain to queries
+			ParseQuery<ParseObject> firstNameStartWith =ParseQuery.getQuery("CampusInUser");
+			firstNameStartWith.whereStartsWith("firstName", startWith);
+			
+			ParseQuery<ParseObject> lastNameStartWith =ParseQuery.getQuery("CampusInUser");
+			lastNameStartWith.whereStartsWith("lastName", startWith);
+			
+			ArrayList<ParseQuery<ParseObject>> orList= new ArrayList<ParseQuery<ParseObject>>();
+			orList.add(lastNameStartWith);
+			orList.add(firstNameStartWith);
+			
+			//search in the cloud
+			ParseQuery<ParseObject> mainQuery=ParseQuery.or(orList);
+			mainQuery.findInBackground(new FindCallback<ParseObject>() {
+				
+				@Override
+				public void done(List<ParseObject> retList, ParseException e) {
+					List<CampusInUser> returnList=new ArrayList<CampusInUser>();
+					if(e==null && retList!=null)
+					{
+						for (ParseObject parseObject : retList) {
+							returnList.add(fromParseObjToCampusInUser(parseObject));
+						}
+					}
+					callBack.done(returnList, e);
+				}
+			});
 	}
 }

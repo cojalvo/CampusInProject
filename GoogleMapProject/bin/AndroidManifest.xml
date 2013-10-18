@@ -75,7 +75,7 @@
             
 
         <activity android:name="il.ac.shenkar.cadan.Main"
-            android:windowSoftInputMode="adjustNothing" >
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.app.default_searchable"
                 android:value=".SearchActivity" />
