@@ -6,6 +6,7 @@ import il.ac.shenkar.cadan.AddNewEventFragment.DatePickerFragment;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserChecked;
+import il.ac.shenkar.in.bl.Controller;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -151,26 +152,20 @@ public class AddFriendsFragment extends DialogFragment
 
 	private ArrayList<CampusInUserChecked> getFriends() 
 	{
-		ArrayList<CampusInUserChecked> toReturn = new ArrayList<CampusInUserChecked>(); 
-		CampusInUserChecked curr; 
-		CampusInUser user; 
-		for (int i=1; i< 40 ; i++)
-		{
-			curr = new CampusInUserChecked();
-			user = new CampusInUser();
-			user.setFirstName("first" + i);
-			user.setLastName("Last" + i);
-			
-			curr.setUser(user);
-			toReturn.add(curr);
-		}
 		
-		curr = new CampusInUserChecked();
-		user = new CampusInUser();
-		user.setFirstName("yaki");
-		user.setLastName("Amsalem");
-		curr.setUser(user);
-		toReturn.add(curr);
+		ArrayList<CampusInUser> friendList = (ArrayList<CampusInUser>) Controller.getInstance(getActivity()).getCurrentUserFriendList();
+		ArrayList<CampusInUserChecked> toReturn = new ArrayList<CampusInUserChecked>(); 
+		// add all the friend to friendList 
+		// wrap them with CheckedCampusInUSer Object 
+		
+		if(friendList == null)
+		{
+			return null;
+		}
+		for (CampusInUser friend: friendList)
+		{
+			toReturn.add(new CampusInUserChecked(friend));
+		}
 		return toReturn;
 	}
 	public interface friendChoice

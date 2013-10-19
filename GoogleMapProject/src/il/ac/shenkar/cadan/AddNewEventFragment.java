@@ -3,6 +3,7 @@ package il.ac.shenkar.cadan;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInUser;
+import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.DataBaseHealper;
@@ -127,20 +128,7 @@ public class AddNewEventFragment extends DialogFragment
 	{
 		super.onCreateDialog(savedInstanceState);
 		
-		//get the current logged in user
-		IDataAccesObject DAO = CloudAccessObject.getInstance();
-		DAO.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
-			
-			@Override
-			public void done(CampusInUser retObject, Exception e) {
-				
-				if (e == null && retObject!= null)
-				{
-					currentUser = retObject;
-				}
-				
-			}
-		});
+		currentUser = Controller.getInstance(getActivity()).getCurrentUser();
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
 				.setTitle("הוסף אירוע")
