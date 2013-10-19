@@ -42,6 +42,6 @@ public interface IDataAccesObject {
 	
 	void getAllCumpusInUsers(DataAccesObjectCallBack<List<CampusInUser>> callBack );
 	
-	void getAllCampusInUsersStartWith(DataAccesObjectCallBack<List<CampusInUser>> callBack);
+	void getAllCampusInUsersStartWith(String startWith,DataAccesObjectCallBack<List<CampusInUser>> callBack);
 
 }

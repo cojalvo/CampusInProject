@@ -569,26 +569,44 @@ public class CloudAccessObject implements IDataAccesObject {
 
 	@Override
 	public void putCurrentCampusInUserInbackground(
-			CampusInUser currentCampusInUser,
-			final DataAccesObjectCallBack<Integer> callBack) {
-		final ParseObject currentUserParseObject = new ParseObject(
-				"CampusInUser");
-		currentUserParseObject.put("firstName",
-				currentCampusInUser.getFirstName());
-		currentUserParseObject.put("lastName",
-				currentCampusInUser.getLastName());
-		currentUserParseObject.put("facebookId",
-				currentCampusInUser.getFaceBookUserId());
-		currentUserParseObject.put("parseUserId",
-				currentCampusInUser.getParseUserId());
-		currentUserParseObject.put("trend", currentCampusInUser.getTrend());
-		currentUserParseObject.put("year", currentCampusInUser.getYear());
-		currentUserParseObject.saveInBackground(new SaveCallback() {
-			public void done(ParseException paramAnonymousParseException) {
-				callBack.done(Integer.valueOf(0), paramAnonymousParseException);
-				CloudAccessObject.this.parseCurrentCampusInUser = currentUserParseObject;
+			final CampusInUser currentCampusInUser,
+			final DataAccesObjectCallBack<Integer> callBack) 
+	{
+		ParseQuery<ParseObject> query =ParseQuery.getQuery("CampusInUser");
+		query.whereEqualTo("parseUserId", currentCampusInUser.getParseUserId());
+		query.findInBackground(new FindCallback<ParseObject>() {
+			
+			@Override
+			public void done(List<ParseObject> retObj, ParseException e) {
+				if(e==null&& retObj!=null)
+				{
+					//create new one 
+					if(retObj.size()==0)
+					{
+						final ParseObject currentUserParseObject = new ParseObject(
+								"CampusInUser");
+						currentUserParseObject.put("firstName",
+								currentCampusInUser.getFirstName());
+						currentUserParseObject.put("lastName",
+								currentCampusInUser.getLastName());
+						currentUserParseObject.put("facebookId",
+								currentCampusInUser.getFaceBookUserId());
+						currentUserParseObject.put("parseUserId",
+								currentCampusInUser.getParseUserId());
+						currentUserParseObject.put("trend", currentCampusInUser.getTrend());
+						currentUserParseObject.put("year", currentCampusInUser.getYear());
+						currentUserParseObject.saveInBackground(new SaveCallback() {
+							public void done(ParseException e) {
+								CloudAccessObject.this.parseCurrentCampusInUser = currentUserParseObject;
+							}
+						});
+					}
+					callBack.done(Integer.valueOf(0), e);
+				}
+				
 			}
 		});
+	
 	}
 
 	public void getProfilePicture(
@@ -674,10 +692,40 @@ public class CloudAccessObject implements IDataAccesObject {
 		});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see il.ac.shenkar.in.dal.IDataAccesObject#getAllCampusInUsersStartWith(java.lang.String, il.ac.shenkar.in.dal.DataAccesObjectCallBack)
+	 */
 	@Override
-	public void getAllCampusInUsersStartWith(
-			DataAccesObjectCallBack<List<CampusInUser>> callBack) {
-		// TODO Auto-generated method stub
+	public void getAllCampusInUsersStartWith(String startWith,
+			final DataAccesObjectCallBack<List<CampusInUser>> callBack) {
 		
+			//build the or query that will contain to queries
+			ParseQuery<ParseObject> firstNameStartWith =ParseQuery.getQuery("CampusInUser");
+			firstNameStartWith.whereStartsWith("firstName", startWith);
+			
+			ParseQuery<ParseObject> lastNameStartWith =ParseQuery.getQuery("CampusInUser");
+			lastNameStartWith.whereStartsWith("lastName", startWith);
+			
+			ArrayList<ParseQuery<ParseObject>> orList= new ArrayList<ParseQuery<ParseObject>>();
+			orList.add(lastNameStartWith);
+			orList.add(firstNameStartWith);
+			
+			//search in the cloud
+			ParseQuery<ParseObject> mainQuery=ParseQuery.or(orList);
+			mainQuery.findInBackground(new FindCallback<ParseObject>() {
+				
+				@Override
+				public void done(List<ParseObject> retList, ParseException e) {
+					List<CampusInUser> returnList=new ArrayList<CampusInUser>();
+					if(e==null && retList!=null)
+					{
+						for (ParseObject parseObject : retList) {
+							returnList.add(fromParseObjToCampusInUser(parseObject));
+						}
+					}
+					callBack.done(returnList, e);
+				}
+			});
 	}
 }

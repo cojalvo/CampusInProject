@@ -145,15 +145,15 @@ public class Login extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (v.getId() == R.id.btnNext1) {
-					stepOneDialog.hide();
 					stepTwoDialog.show();
 				}
 				if (v.getId() == R.id.btnNext2) {
-					stepTwoDialog.hide();
 					stepThreeDialog.show();
 				}
 				if (v.getId() == R.id.btnFinish) {
 					stepThreeDialog.hide();
+					stepOneDialog.hide();
+					stepTwoDialog.hide();
 					updateCurrentUserYearTrend();
 				}
 
@@ -218,6 +218,7 @@ public class Login extends Activity {
 	}
 	 private void updateCurrentUserYearTrend()
 	  {
+		 MessageHalper.showProgressDialog("Saving...", Login.this);
 	    this.dao.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
 	    {
 	      public void done(CampusInUser currentCampusUser, Exception e)
@@ -226,11 +227,13 @@ public class Login extends Activity {
 	        {
 	          currentCampusUser.setTrend(String.valueOf(Login.this.trendSpinner.getSelectedItem()));
 	          currentCampusUser.setYear(String.valueOf(Login.this.yearSpinner.getSelectedItem()));
-	          MessageHalper.showProgressDialog("Saving...", Login.this);
 	          Login.this.dao.putCurrentCampusInUserInbackground(currentCampusUser, new DataAccesObjectCallBack<Integer>()
 	          {
 	            public void done(Integer retObj, Exception e)
 	            {
+	    			stepOneDialog.dismiss();
+	            	stepTwoDialog.dismiss();
+	            	stepThreeDialog.dismiss();
 	              MessageHalper.closeProggresDialog();
 	              if (e == null)
 	              {
@@ -249,5 +252,10 @@ public class Login extends Activity {
 	      }
 	    });
 	  }
+
+		@Override
+		protected void onPause() {
+			super.onPause();	            
+		}
 
 }
