@@ -42,6 +42,9 @@ public interface IDataAccesObject {
 	
 	void getAllCumpusInUsers(DataAccesObjectCallBack<List<CampusInUser>> callBack );
 	
+	/*
+	 * return all the CampuInUser THAT THERE first or last name start with
+	 */
 	void getAllCampusInUsersStartWith(String startWith,DataAccesObjectCallBack<List<CampusInUser>> callBack);
 
 }

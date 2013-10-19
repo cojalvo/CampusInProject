@@ -42,6 +42,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -454,6 +455,15 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
         }
         return ret;
     }
-    
-
+    BroadcastReceiver viewModelUpdatedReciever=new BroadcastReceiver() {
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getAction().equals(CampusInConstant.VIEW_MODEL_UPDATED))
+			{
+				Toast.makeText(Main.this, "view model was updated", 500);
+			}
+			
+		}
+	};
 }
