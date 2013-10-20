@@ -91,7 +91,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
-		new InitLocations().execute(this);
+		if (savedInstanceState == null
+				|| !savedInstanceState.getBoolean("initLocationDone")) {
+			new InitLocations().execute(this);
+		}
 		super.onCreate(savedInstanceState);
 		Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE",
 				"UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
@@ -125,7 +128,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 
 			public void onDrawerOpened(View drawerView) {
 				invalidateOptionsMenu(); // creates call to
-							// onPrepareOptionsMenu()
+				// onPrepareOptionsMenu()
 			}
 		};
 
@@ -177,6 +180,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		// update the bundle that the service is running to prevent many
 		// binding.
 		outState.putBoolean("locationServiceStart", true);
+		outState.putBoolean("initLocationDone", true);
 	}
 
 	private void startLocationReportServise() {
@@ -371,36 +375,93 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 						+ lastMapLongClick.latitude + " long: "
 						+ lastMapLongClick.longitude, 300).show();
 		pwindo.dismiss();
+		CloudAccessObject.getInstance().getAllCampusInUsersStartWith("R",
+				new DataAccesObjectCallBack<List<CampusInUser>>() {
+
+					@Override
+					public void done(final List<CampusInUser> retObject,
+							Exception e) {
+						if (e == null && retObject != null) {
+							if (retObject.size() > 0) {
+								CloudAccessObject
+										.getInstance()
+										.removeFriendFromFriendList(
+												retObject.get(0),
+												new DataAccesObjectCallBack<Integer>() {
+
+													@Override
+													public void done(
+															Integer intRet,
+															Exception e) {
+														if (e == null) {
+															Toast.makeText(
+																	Main.this,
+																	" friend wass removed:"
+																			+ retObject
+																					.get(0)
+																					.getFirstName(),
+																	300).show();
+														}
+
+													}
+												});
+							}
+						}
+
+					}
+				});
 		lastMapLongClick = null;
 	}
 
 	public void addMessageClicked(View v) {
 		Toast.makeText(this, "add message was clicked", 300).show();
 		pwindo.dismiss();
+		CloudAccessObject.getInstance().getCurrentCampusInUserFriends(
+				new DataAccesObjectCallBack<List<CampusInUser>>() {
+
+					@Override
+					public void done(List<CampusInUser> retObject, Exception e) {
+						Toast.makeText(Main.this,
+								"Number of friends is:" + retObject.size(), 500)
+								.show();
+
+					}
+				});
 		lastMapLongClick = null;
 	}
 
 	public void addTestClicked(View v) {
 		Toast.makeText(this, "add test was clicked", 300).show();
-		CloudAccessObject.getInstance().getAllCampusInUsersStartWith("Y",
+		CloudAccessObject.getInstance().getAllCampusInUsersStartWith("R",
 				new DataAccesObjectCallBack<List<CampusInUser>>() {
 
 					@Override
-					public void done(final List<CampusInUser> retObject, Exception e) {
+					public void done(final List<CampusInUser> retObject,
+							Exception e) {
 						if (e == null && retObject != null) {
-							if(retObject.size()>0)
-							{
-								CloudAccessObject.getInstance().addFriendToFriendList(retObject.get(0),new DataAccesObjectCallBack<Integer>() {
-									
-									@Override
-									public void done(Integer intRet, Exception e) {
-										if(e==null)
-										{
-											Toast.makeText(Main.this, "new friend wass add:"+ retObject.get(0).getFirstName(), 300).show();
-										}
-										
-									}
-								});
+							if (retObject.size() > 0) {
+								CloudAccessObject
+										.getInstance()
+										.addFriendToFriendList(
+												retObject.get(0),
+												new DataAccesObjectCallBack<Integer>() {
+
+													@Override
+													public void done(
+															Integer intRet,
+															Exception e) {
+														if (e == null) {
+															Toast.makeText(
+																	Main.this,
+																	"new friend wass add:"
+																			+ retObject
+																					.get(0)
+																					.getFirstName(),
+																	300).show();
+														}
+
+													}
+												});
 							}
 						}
 
@@ -439,44 +500,48 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	}
 
 	@Override
-	public void onEventCreated(CampusInEvent addedEvent) 
-	{
+	public void onEventCreated(CampusInEvent addedEvent) {
 		// event was added
-		Toast.makeText(getApplicationContext(), "Event Was Added - from Acrivity", 3000).show();
+		Toast.makeText(getApplicationContext(),
+				"Event Was Added - from Acrivity", 3000).show();
 
 	}
-	// this code is for hiding The soft keyboard when a touch is done anywhere outside the EditText 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event)
-    {
 
-        View v = getCurrentFocus();
-        boolean ret = super.dispatchTouchEvent(event);
+	// this code is for hiding The soft keyboard when a touch is done anywhere
+	// outside the EditText
+	@Override
+	public boolean dispatchTouchEvent(MotionEvent event) {
 
-        if (v instanceof EditText) {
-            View w = getCurrentFocus();
-            int scrcoords[] = new int[2];
-            w.getLocationOnScreen(scrcoords);
-            float x = event.getRawX() + w.getLeft() - scrcoords[0];
-            float y = event.getRawY() + w.getTop() - scrcoords[1];
+		View v = getCurrentFocus();
+		boolean ret = super.dispatchTouchEvent(event);
 
-            if (event.getAction() == MotionEvent.ACTION_UP && (x < w.getLeft() || x >= w.getRight() || y < w.getTop() || y > w.getBottom()) ) { 
+		if (v instanceof EditText) {
+			View w = getCurrentFocus();
+			int scrcoords[] = new int[2];
+			w.getLocationOnScreen(scrcoords);
+			float x = event.getRawX() + w.getLeft() - scrcoords[0];
+			float y = event.getRawY() + w.getTop() - scrcoords[1];
 
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
-            }
-        }
-        return ret;
-    }
-    BroadcastReceiver viewModelUpdatedReciever=new BroadcastReceiver() {
-		
+			if (event.getAction() == MotionEvent.ACTION_UP
+					&& (x < w.getLeft() || x >= w.getRight() || y < w.getTop() || y > w
+							.getBottom())) {
+
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(getWindow().getCurrentFocus()
+						.getWindowToken(), 0);
+			}
+		}
+		return ret;
+	}
+
+	BroadcastReceiver viewModelUpdatedReciever = new BroadcastReceiver() {
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(CampusInConstant.VIEW_MODEL_UPDATED))
-			{
+			if (intent.getAction().equals(CampusInConstant.VIEW_MODEL_UPDATED)) {
 				Toast.makeText(Main.this, "view model was updated", 500).show();
 			}
-			
+
 		}
 	};
 }

@@ -9,9 +9,11 @@ import il.ac.shenkar.common.CampusInUserLocation;
 import il.ac.shenkar.common.ParsingHelper;
 import il.ac.shenkar.common.PersonalSettings;
 
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,9 +46,12 @@ public class CloudAccessObject implements IDataAccesObject {
 	private ParseObject parseCurrentCampusInUser = null;
 	private Drawable profilePic = null;
 	private Date allUsersLastUpdate;
-	private Date usersLastUpdate;
+	private Date userCustomFriendsLastUpdate;
+	private Date userFriendsToClassLastUpdate;
 	private Date usersLocationLastUpdate;
-	private List<CampusInUser> allUsersList;
+	private HashMap<String, CampusInUser> userTotalFriendsList=new HashMap<String, CampusInUser>();
+	private HashMap<String, CampusInUserLocation> usersLocationList=new HashMap<String, CampusInUserLocation>();
+	private HashMap<String, CampusInUser> allUsersList=new HashMap<String, CampusInUser>();
 
 	private CloudAccessObject() {
 
@@ -633,8 +638,10 @@ public class CloudAccessObject implements IDataAccesObject {
 				});
 	}
 
-	@Override
-	public void getCurrentUserFriendsToScool(
+	/*
+	 * get all the friend to school of the current user
+	 */
+	private void getCurrentUserFriendsToScool(
 			final DataAccesObjectCallBack<List<CampusInUser>> callBack) {
 		loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
 
@@ -644,20 +651,29 @@ public class CloudAccessObject implements IDataAccesObject {
 						.getQuery("CampusInUser");
 				query.whereEqualTo("trend", curentCampusInUser.getTrend());
 				query.whereEqualTo("year", curentCampusInUser.getYear());
+				//not me 
+				query.whereNotEqualTo("parseUserId", curentCampusInUser.getParseUserId());
+				if(userFriendsToClassLastUpdate!=null)
+				{
+					query.whereGreaterThanOrEqualTo("createdAt", userFriendsToClassLastUpdate);
+				}
 				query.findInBackground(new FindCallback<ParseObject>() {
 
 					@Override
 					public void done(List<ParseObject> retList, ParseException e) {
-						ArrayList<CampusInUser> friendList = new ArrayList<CampusInUser>();
+						ArrayList<CampusInUser> friendsToSchholList = new ArrayList<CampusInUser>();
 						if (e == null) {
 
 							for (ParseObject parseObject : retList) {
-								friendList
+								friendsToSchholList
 										.add(fromParseObjToCampusInUser(parseObject));
 							}
 						}
 						if (callBack != null)
-							callBack.done(friendList, e);
+						{
+							userFriendsToClassLastUpdate=new Date();
+							callBack.done(friendsToSchholList, e);
+						}
 					}
 				});
 			}
@@ -672,7 +688,7 @@ public class CloudAccessObject implements IDataAccesObject {
 		// first load
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
 		if (allUsersList == null) {
-			allUsersList = new ArrayList<CampusInUser>();
+			allUsersList = new HashMap<String, CampusInUser>() ;
 		}
 		else
 		{
@@ -685,11 +701,12 @@ public class CloudAccessObject implements IDataAccesObject {
 				if (e == null && retList != null) {
 					allUsersLastUpdate = new Date();
 					for (ParseObject parseObject : retList) {
+						CampusInUser u=fromParseObjToCampusInUser(parseObject);
 						allUsersList
-								.add(fromParseObjToCampusInUser(parseObject));
+								.put(u.getParseUserId(), u);
 					}
 					if (callBack != null) {
-						callBack.done(allUsersList, e);
+						callBack.done(new ArrayList<CampusInUser>(allUsersList.values()), e);
 					}
 				}
 
@@ -734,11 +751,14 @@ public class CloudAccessObject implements IDataAccesObject {
 			});
 	}
 
+	/*
+	 *return all the friends of the current user
+	 * @see il.ac.shenkar.in.dal.IDataAccesObject#getCurrentCampusInUserFriends(il.ac.shenkar.in.dal.DataAccesObjectCallBack)
+	 */
 	@Override
 	public void getCurrentCampusInUserFriends(
-			DataAccesObjectCallBack<List<CampusInUser>> callBack) {
+			final DataAccesObjectCallBack<List<CampusInUser>> callBack) {
 		//first get all the friends that in the same class
-		final List<CampusInUser> totalRes=new ArrayList<CampusInUser>();
 		getCurrentUserFriendsToScool(new DataAccesObjectCallBack<List<CampusInUser>>() {
 			
 			@Override
@@ -747,8 +767,9 @@ public class CloudAccessObject implements IDataAccesObject {
 				
 				if(e==null && friendToClass!=null)
 				{
+					//add to the hash map the returned friend - 
 					for (CampusInUser friend : friendToClass) {
-						totalRes.add(friend);					}
+						userTotalFriendsList.put(friend.getParseUserId(), friend);					}
 				}
 				loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
 
@@ -756,12 +777,26 @@ public class CloudAccessObject implements IDataAccesObject {
 					public void done(ParseObject retObject, Exception e) {
 						if(e==null && retObject!=null)
 						{
-							retObject.getRelation("friends").getQuery().findInBackground(new FindCallback<ParseObject>() {
+							ParseQuery<ParseObject> query=retObject.getRelation("friends").getQuery();
+							//if it is not the first laod then get only new users
+							if(userCustomFriendsLastUpdate!=null)
+							{
+								query.whereGreaterThanOrEqualTo("createdAt", userCustomFriendsLastUpdate);
+							}
+							query.findInBackground(new FindCallback<ParseObject>() {
 								
 								@Override
-								public void done(List<ParseObject> arg0, ParseException arg1) {
+								public void done(List<ParseObject> friendInList, ParseException e2) {
 									
-									
+									if(e2==null && friendInList!=null)
+									{
+										for (ParseObject user : friendInList) {
+											CampusInUser u=fromParseObjToCampusInUser(user);
+											userTotalFriendsList.put(u.getParseUserId(), u);
+										}
+									}
+									if(callBack!=null)
+										callBack.done(new ArrayList<CampusInUser>(userTotalFriendsList.values()), e2);
 								}
 							});
 						}
@@ -770,10 +805,7 @@ public class CloudAccessObject implements IDataAccesObject {
 				});
 				
 			}
-		});
-		
-		
-		
+		});	
 	}
 
 	@Override
@@ -824,6 +856,59 @@ public class CloudAccessObject implements IDataAccesObject {
 			}
 
 		});
+		
+	}
+
+	@Override
+	public void removeFriendFromFriendList(final CampusInUser userToRemove,
+			final DataAccesObjectCallBack<Integer> callBack) {
+		if (userToRemove == null) {
+			callBack.done(Integer.valueOf(1), new Exception(
+					"User to add is null"));
+			return;
+		}
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
+		query.whereEqualTo("parseUserId", userToRemove.getParseUserId());
+		query.findInBackground(new FindCallback<ParseObject>() {
+
+			@Override
+			public void done(List<ParseObject> retList, ParseException arg1) {
+				if (retList.size() != 1) {
+					callBack.done(Integer.valueOf(1), new Exception(
+							"This user is not exist in CampusIN"));
+					return;
+				}
+				final ParseObject localParseObject = (ParseObject) retList.get(0);
+				loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+
+					@Override
+					public void done(ParseObject retObject, Exception e) {
+						if(e==null && retObject!=null)
+						{
+							retObject.getRelation("friends").remove(localParseObject);
+							if(userTotalFriendsList!=null)
+							{
+								//remove from the cash
+								userTotalFriendsList.remove(userToRemove.getParseUserId());
+							}
+							retObject.saveInBackground(new SaveCallback() {
+								
+								@Override
+								public void done(ParseException e3) {
+									if (callBack != null)
+										callBack.done(Integer.valueOf(0),
+												e3);
+								}
+							});
+						}
+					}
+				});
+			}
+		});
+		{
+
+		}
+
 		
 	}
 }

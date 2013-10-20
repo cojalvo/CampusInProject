@@ -25,10 +25,15 @@ public interface IDataAccesObject {
 	void getUsersLocationInBackground(
 			DataAccesObjectCallBack<List<CampusInUserLocation>> callBack);
 
-	void addFriendToFriendList(CampusInUser CampusInUser,
+	void addFriendToFriendList(CampusInUser userToAdd,
 			DataAccesObjectCallBack<Integer> callBack);
+	
+	void removeFriendFromFriendList(CampusInUser userToRemove,DataAccesObjectCallBack<Integer> callBack );
 
+	//return all the friends of the current user
+	//By default his class friend and all the rest he added manually
 	void getCurrentCampusInUserFriends(DataAccesObjectCallBack<List<CampusInUser>> callBack);
+	
 	void loadCurrentCampusInUser(DataAccesObjectCallBack<CampusInUser> callBack);
 
 	void putCurrentCampusInUserInbackground(CampusInUser currentCampusInUser,
@@ -36,7 +41,6 @@ public interface IDataAccesObject {
 
 	void getProfilePicture(DataAccesObjectCallBack<Drawable> callBack);
 	
-	void getCurrentUserFriendsToScool(DataAccesObjectCallBack<List<CampusInUser>> callBack);
 	
 	void getAllCumpusInUsers(DataAccesObjectCallBack<List<CampusInUser>> callBack );
 	
