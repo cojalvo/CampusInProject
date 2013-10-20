@@ -1,57 +1,31 @@
 package il.ac.shenkar.cadan;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import com.facebook.Request.GraphUserCallback;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.Session.NewPermissionsRequest;
-import com.facebook.android.Facebook;
-import com.facebook.model.GraphUser;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-import com.parse.auth.FacebookAuthenticationProvider;
-
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
-import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInUser;
-import il.ac.shenkar.common.PersonalSettings;
-import il.ac.shenkar.in.bl.*;
-import il.ac.shenkar.in.dal.ActionCode;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
-import il.ac.shenkar.in.dal.FacebookServices;
 import il.ac.shenkar.in.dal.IDataAccesObject;
-import il.ac.shenkar.in.services.LocationReporterServise;
-import android.app.AlertDialog;
 
 public class Login extends Activity {
 

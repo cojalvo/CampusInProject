@@ -461,7 +461,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(CampusInConstant.VIEW_MODEL_UPDATED))
 			{
-				Toast.makeText(Main.this, "view model was updated", 500);
+				Toast.makeText(Main.this, "view model was updated", 500).show();
 			}
 			
 		}
