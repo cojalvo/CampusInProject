@@ -6,7 +6,6 @@ import il.ac.shenkar.cadan.PrefsFragment;
 import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInUserLocation;
 import il.ac.shenkar.common.CampusInLocation;
-import il.ac.shenkar.in.dal.ActionCode;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.IDataAccesObject;

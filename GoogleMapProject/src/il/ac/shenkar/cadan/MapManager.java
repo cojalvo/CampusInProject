@@ -50,6 +50,7 @@ public class MapManager
 		this.map = map;
 		this.map.setMapType(mapType);
 		this.map.getUiSettings().setZoomControlsEnabled(false);
+		this.map.setMyLocationEnabled(true);
 		personMarkerdictionary = new HashMap<String, Marker>();
 		eventMarkerdictionary = new HashMap<String, Marker>();
 	}
