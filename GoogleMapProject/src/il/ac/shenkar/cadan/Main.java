@@ -382,13 +382,26 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 
 	public void addTestClicked(View v) {
 		Toast.makeText(this, "add test was clicked", 300).show();
-		CloudAccessObject.getInstance().getCurrentUserFriendsToScool(
+		CloudAccessObject.getInstance().getAllCampusInUsersStartWith("Y",
 				new DataAccesObjectCallBack<List<CampusInUser>>() {
 
 					@Override
-					public void done(List<CampusInUser> retObject, Exception e) {
+					public void done(final List<CampusInUser> retObject, Exception e) {
 						if (e == null && retObject != null) {
-							Toast.makeText(Main.this, "number of friends for school is:"+ retObject.size(), 300).show();
+							if(retObject.size()>0)
+							{
+								CloudAccessObject.getInstance().addFriendToFriendList(retObject.get(0),new DataAccesObjectCallBack<Integer>() {
+									
+									@Override
+									public void done(Integer intRet, Exception e) {
+										if(e==null)
+										{
+											Toast.makeText(Main.this, "new friend wass add:"+ retObject.get(0).getFirstName(), 300).show();
+										}
+										
+									}
+								});
+							}
 						}
 
 					}

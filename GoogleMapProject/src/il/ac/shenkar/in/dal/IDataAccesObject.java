@@ -25,12 +25,10 @@ public interface IDataAccesObject {
 	void getUsersLocationInBackground(
 			DataAccesObjectCallBack<List<CampusInUserLocation>> callBack);
 
-	void getAllUsersInBackground(
-			DataAccesObjectCallBack<List<CampusInUser>> callBack);
-
 	void addFriendToFriendList(CampusInUser CampusInUser,
 			DataAccesObjectCallBack<Integer> callBack);
 
+	void getCurrentCampusInUserFriends(DataAccesObjectCallBack<List<CampusInUser>> callBack);
 	void loadCurrentCampusInUser(DataAccesObjectCallBack<CampusInUser> callBack);
 
 	void putCurrentCampusInUserInbackground(CampusInUser currentCampusInUser,
