@@ -4,6 +4,7 @@ import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.in.bl.Controller;
+import il.ac.shenkar.in.bl.ControllerCallback;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.DataBaseHealper;
@@ -128,7 +129,14 @@ public class AddNewEventFragment extends DialogFragment
 	{
 		super.onCreateDialog(savedInstanceState);
 		
-		currentUser = Controller.getInstance(getActivity()).getCurrentUser();
+		Controller.getInstance(getActivity()).getCurrentUser(new ControllerCallback<CampusInUser>() {
+			
+			@Override
+			public void done(CampusInUser retObject, Exception e) {
+				currentUser =retObject;
+				
+			}
+		});
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
 				.setTitle("הוסף אירוע")

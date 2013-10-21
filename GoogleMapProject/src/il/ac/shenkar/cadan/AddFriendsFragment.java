@@ -8,6 +8,7 @@ import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserChecked;
 import il.ac.shenkar.in.bl.Controller;
+import il.ac.shenkar.in.bl.ControllerCallback;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.IDataAccesObject;
@@ -30,13 +31,13 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class AddFriendsFragment extends DialogFragment 
 {
 	onFriendsAddedListener mCallback;
 	private View view;
-	private ArrayList<CampusInUser> friendList;
-	private Exception exception = null;
+	private ArrayList<CampusInUser> friensList;
 	
 	static AddFriendsFragment newInstance(int num) 
 	{
@@ -54,28 +55,8 @@ public class AddFriendsFragment extends DialogFragment
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) 
 	{
-		MessageHalper.closeProggresDialog();
-		MessageHalper.showProgressDialog("Geting Friends...", getActivity());
-		IDataAccesObject cloud = CloudAccessObject.getInstance();
-		cloud.getCurrentCampusInUserFriends(new DataAccesObjectCallBack<List<CampusInUser>>() {
-			
-			@Override
-			public void done(List<CampusInUser> retObject, Exception e) {
-				if (retObject != null && e == null)
-					friendList = (ArrayList<CampusInUser>) retObject;
-				else
-				{
-					e.printStackTrace();
-					exception = e;
-				}
-				
-			}
-		});
-		while (this.friendList == null && this.exception == null)
-		{
-			// the call back didnt happand yet
-		}
-		MessageHalper.closeProggresDialog();
+		MessageHalper.showProgressDialog("Loading Friends", getActivity());
+		initFriendList();
 		super.onCreateDialog(savedInstanceState);
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
 				.setTitle("הוסף חברים")
@@ -114,8 +95,7 @@ public class AddFriendsFragment extends DialogFragment
 		
 		view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 		
-		ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-		friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends()));
+		
 		 
 	/*	CheckBox checkBox = (CheckBox) view.findViewById(R.id.friend_check_box);
 		checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -181,20 +161,34 @@ public class AddFriendsFragment extends DialogFragment
 	private ArrayList<CampusInUserChecked> getFriends() 
 	{
 		
-		//(ArrayList<CampusInUser>) Controller.getInstance(getActivity()).getCurrentUserFriendList();
 		ArrayList<CampusInUserChecked> toReturn = new ArrayList<CampusInUserChecked>(); 
 		// add all the friend to friendList 
 		// wrap them with CheckedCampusInUSer Object 
 		
-		if(this.friendList == null)
+		if(this.friensList == null)
 		{
 			return null;
 		}
-		for (CampusInUser friend: friendList)
+		for (CampusInUser friend: friensList)
 		{
 			toReturn.add(new CampusInUserChecked(friend));
 		}
 		return toReturn;
+	}
+	private void initFriendList()
+	{
+		Controller.getInstance(getActivity()).getCurrentUserFriendList(new ControllerCallback<List<CampusInUser>>() {
+			
+			@Override
+			public void done(List<CampusInUser> retObject, Exception e) {
+				if (retObject!= null)
+					friensList = (ArrayList<CampusInUser>) retObject;
+				Toast.makeText(getActivity(), "number of friends:" +retObject.size(), 3000).show();
+				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
+				friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends()));
+				MessageHalper.closeProggresDialog();
+			}
+		});
 	}
 	public interface friendChoice
 	{
