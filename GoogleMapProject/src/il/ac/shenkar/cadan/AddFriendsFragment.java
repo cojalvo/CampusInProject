@@ -1,12 +1,16 @@
 package il.ac.shenkar.cadan;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import il.ac.shenkar.cadan.AddNewEventFragment.DatePickerFragment;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserChecked;
 import il.ac.shenkar.in.bl.Controller;
+import il.ac.shenkar.in.dal.CloudAccessObject;
+import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
+import il.ac.shenkar.in.dal.IDataAccesObject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -31,6 +35,8 @@ public class AddFriendsFragment extends DialogFragment
 {
 	onFriendsAddedListener mCallback;
 	private View view;
+	private ArrayList<CampusInUser> friendList;
+	private Exception exception = null;
 	
 	static AddFriendsFragment newInstance(int num) 
 	{
@@ -48,6 +54,28 @@ public class AddFriendsFragment extends DialogFragment
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) 
 	{
+		MessageHalper.closeProggresDialog();
+		MessageHalper.showProgressDialog("Geting Friends...", getActivity());
+		IDataAccesObject cloud = CloudAccessObject.getInstance();
+		cloud.getCurrentCampusInUserFriends(new DataAccesObjectCallBack<List<CampusInUser>>() {
+			
+			@Override
+			public void done(List<CampusInUser> retObject, Exception e) {
+				if (retObject != null && e == null)
+					friendList = (ArrayList<CampusInUser>) retObject;
+				else
+				{
+					e.printStackTrace();
+					exception = e;
+				}
+				
+			}
+		});
+		while (this.friendList == null && this.exception == null)
+		{
+			// the call back didnt happand yet
+		}
+		MessageHalper.closeProggresDialog();
 		super.onCreateDialog(savedInstanceState);
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
 				.setTitle("הוסף חברים")
@@ -153,12 +181,12 @@ public class AddFriendsFragment extends DialogFragment
 	private ArrayList<CampusInUserChecked> getFriends() 
 	{
 		
-		ArrayList<CampusInUser> friendList = (ArrayList<CampusInUser>) Controller.getInstance(getActivity()).getCurrentUserFriendList();
+		//(ArrayList<CampusInUser>) Controller.getInstance(getActivity()).getCurrentUserFriendList();
 		ArrayList<CampusInUserChecked> toReturn = new ArrayList<CampusInUserChecked>(); 
 		// add all the friend to friendList 
 		// wrap them with CheckedCampusInUSer Object 
 		
-		if(friendList == null)
+		if(this.friendList == null)
 		{
 			return null;
 		}

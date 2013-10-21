@@ -70,7 +70,7 @@ public class Controller implements ICampusInController
 	public List<CampusInUser> getCurrentUserFriendList() 
 	{
 		MessageHalper.showProgressDialog("gettig "+ currentUser.getFirstName() +" friends", context);
-		cloudAccessObject.getCurrentUserFriendsToScool(new DataAccesObjectCallBack<List<CampusInUser>>() {
+		cloudAccessObject.getCurrentCampusInUserFriends(new DataAccesObjectCallBack<List<CampusInUser>>() {
 			
 			@Override
 			public void done(List<CampusInUser> retObject, Exception e) {
@@ -78,6 +78,10 @@ public class Controller implements ICampusInController
 				toReturn = retObject;		
 			}
 		});
+		while (toReturn == null)
+		{
+			// do nothing 
+		}
 		MessageHalper.closeProggresDialog();
 		return (List<CampusInUser>) toReturn;
 	}
