@@ -33,83 +33,105 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class AddFriendsFragment extends DialogFragment 
+public class ChooseFriendsFragment extends DialogFragment 
 {
 	onFriendsAddedListener mCallback;
 	private View view;
 	private ArrayList<CampusInUser> friensList;
+	private ChooseFriendAction action;
 	
-	static AddFriendsFragment newInstance(int num) 
+	static ChooseFriendsFragment newInstance(ChooseFriendAction  action) 
 	{
-		AddFriendsFragment f = new AddFriendsFragment();
+		ChooseFriendsFragment f = new ChooseFriendsFragment();
 
         // Supply num input as an argument.
         Bundle args = new Bundle();
-        args.putInt("num", num);
+        args.putSerializable("action", action);
         f.setArguments(args);
-        
-
+        f.action = action;
         return f;//
     }
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) 
 	{
+		super.onCreateDialog(savedInstanceState);
 		MessageHalper.showProgressDialog("Loading Friends", getActivity());
 		initFriendList();
-		super.onCreateDialog(savedInstanceState);
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-				.setTitle("הוסף חברים")
-				.setPositiveButton("הוסף", new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) 
-					{
-						ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-						FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		if (action == ChooseFriendAction.ADD)
+		{
+			builder.setTitle("הוסף חברים")
+					.setPositiveButton("הוסף", new DialogInterface.OnClickListener() {
 						
-						ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
-						CampusInUserChecked currUserChecked;
-						// iterate the list of friends and add the check ones to the return list
-						for (int i=0; i<adapter.getCount(); i++)
+						@Override
+						public void onClick(DialogInterface dialog, int which) 
 						{
-							currUserChecked = (CampusInUserChecked) adapter.getItem(i);
-							if (currUserChecked.isChecked())
+							ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
+							FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
+							
+							ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
+							CampusInUserChecked currUserChecked;
+							// iterate the list of friends and add the check ones to the return list
+							for (int i=0; i<adapter.getCount(); i++)
 							{
-								toReturn.add(currUserChecked.getUser());
+								currUserChecked = (CampusInUserChecked) adapter.getItem(i);
+								if (currUserChecked.isChecked())
+								{
+									toReturn.add(currUserChecked.getUser());
+								}
 							}
+							
+							mCallback.onFriendsWereChoosen(toReturn, getTargetFragment(),ChooseFriendAction.ADD);
 						}
+					})
+					.setNegativeButton("בטל", new DialogInterface.OnClickListener() {
 						
-						mCallback.onFriendsWereAdded(toReturn, getTargetFragment());
-					}
-				})
-				.setNegativeButton("בטל", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) 
+						{
+							// no button preesed - dismiss dialog 
+							dialog.dismiss();	
+						}
+					});
+		}
+		else
+		{	
+			builder.setTitle("הסר חברים")
+			.setPositiveButton("הסר", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) 
+				{
+					ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
+					FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
 					
-					@Override
-					public void onClick(DialogInterface dialog, int which) 
+					ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
+					CampusInUserChecked currUserChecked;
+					// iterate the list of friends and add the check ones to the return list
+					for (int i=0; i<adapter.getCount(); i++)
 					{
-						// no button preesed - dismiss dialog 
-						dialog.dismiss();	
+						currUserChecked = (CampusInUserChecked) adapter.getItem(i);
+						if (currUserChecked.isChecked())
+						{
+							toReturn.add(currUserChecked.getUser());
+						}
 					}
-				});
-		
+					
+					mCallback.onFriendsWereChoosen(toReturn, getTargetFragment(),ChooseFriendAction.REMOVE);
+				}
+			})
+			.setNegativeButton("בטל", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) 
+				{
+					// no button preesed - dismiss dialog 
+					dialog.dismiss();	
+				}
+			});
+		}
 		view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
-		
-		
-		 
-	/*	CheckBox checkBox = (CheckBox) view.findViewById(R.id.friend_check_box);
-		checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				
-				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-				CampusInUserChecked item = (CampusInUserChecked) friendListView.getAdapter().getItem((Integer) buttonView.getTag());
-				item.setChecked(isChecked);
-				
-			}
-		});*/
-		
 		
 		// this part is for filtering the list of friends 
 		EditText inputSearch = (EditText) view.findViewById(R.id.inputSearch);
@@ -207,8 +229,11 @@ public class AddFriendsFragment extends DialogFragment
  */
 public interface onFriendsAddedListener
 {
-	public void onFriendsWereAdded(ArrayList<CampusInUser> friensList, Fragment targetedFragment);
+	public void onFriendsWereChoosen(ArrayList<CampusInUser> friensList, Fragment targetedFragment, ChooseFriendAction action);
 }
-
+public enum ChooseFriendAction
+{
+	ADD,REMOVE
+}
 
 }

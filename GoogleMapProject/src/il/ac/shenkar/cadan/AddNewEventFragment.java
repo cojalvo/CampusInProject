@@ -1,5 +1,6 @@
 package il.ac.shenkar.cadan;
 
+import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInUser;
@@ -217,7 +218,7 @@ public class AddNewEventFragment extends DialogFragment
 			public void onClick(View v) 
 			{
 				// show add Friends fragment
-				AddFriendsFragment newFragment = new AddFriendsFragment();
+				ChooseFriendsFragment newFragment = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD);
 				newFragment.setTargetFragment(AddNewEventFragment.this, 0);
 				newFragment.show(getFragmentManager(), "addFriendsPicher");			
 			}

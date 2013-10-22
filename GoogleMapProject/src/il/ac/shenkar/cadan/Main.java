@@ -6,7 +6,8 @@ import il.ac.shenkar.cadan.PrefsFragment.OnPreferenceSelectedListener;
 import il.ac.shenkar.common.CampusInConstant;
 import java.util.ArrayList;
 
-import il.ac.shenkar.cadan.AddFriendsFragment.onFriendsAddedListener;
+import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
+import il.ac.shenkar.cadan.ChooseFriendsFragment.onFriendsAddedListener;
 import il.ac.shenkar.cadan.AddNewEventFragment.onNewEventAdded;
 import il.ac.shenkar.cadan.PrefsFragment.OnPreferenceSelectedListener;
 import il.ac.shenkar.common.CampusInConstant;
@@ -23,6 +24,7 @@ import com.facebook.Request.GraphUserCallback;
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.model.GraphUser;
+import com.google.android.gms.internal.ac;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -255,8 +257,19 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 			ft1.addToBackStack(null);
 
 			// Create and show the dialog.
-			AddFriendsFragment newFragment1 = AddFriendsFragment.newInstance(2);
+			ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD);
 			newFragment1.show(ft1, "dialog");
+		case R.id.action_remove_friends:
+			android.app.FragmentTransaction ft11 = getFragmentManager().beginTransaction();
+			android.app.Fragment prev11 = getFragmentManager().findFragmentByTag("dialog");
+			if (prev11 != null) {
+				ft11.remove(prev11);
+			}
+			ft11.addToBackStack(null);
+
+			// Create and show the dialog.
+			ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE);
+			newFragment11.show(ft11, "dialog");
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -490,13 +503,23 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	}
 
 	@Override
-	public void onFriendsWereAdded(ArrayList<CampusInUser> friensList,
-			Fragment targetedFragment) {
-		if (targetedFragment != null) {
-			// the calling fragment is add event
-			AddNewEventFragment tmp = (AddNewEventFragment) targetedFragment;
-			tmp.setAddedFriends(friensList);
+	public void onFriendsWereChoosen(ArrayList<CampusInUser> friensList,
+			Fragment targetedFragment,ChooseFriendAction action) 
+	{
+		if (action == ChooseFriendAction.ADD)
+		{
+			if (targetedFragment != null) {
+				// the calling fragment is add event
+				AddNewEventFragment tmp = (AddNewEventFragment) targetedFragment;
+				tmp.setAddedFriends(friensList);
+			}
 		}
+		else 
+		{
+			// do something with the friendList to Remove
+			Toast.makeText(getApplication(), "Removed friendList Size: "+ friensList.size(), 3000).show();
+		}
+		
 	}
 
 	@Override
@@ -544,4 +567,5 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 
 		}
 	};
+
 }
