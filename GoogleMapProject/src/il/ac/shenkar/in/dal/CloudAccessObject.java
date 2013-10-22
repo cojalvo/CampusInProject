@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.R.bool;
 import android.animation.ArgbEvaluator;
 import android.graphics.drawable.Drawable;
 import android.net.rtp.RtpStream;
@@ -48,10 +49,12 @@ public class CloudAccessObject implements IDataAccesObject {
 	private Date allUsersLastUpdate;
 	private Date userCustomFriendsLastUpdate;
 	private Date userFriendsToClassLastUpdate;
+	private Date userCustomFriendsLocationLastUpdate;
+	private Date userFriendsToClassLocationLastUpdate;
 	private Date usersLocationLastUpdate;
-	private HashMap<String, CampusInUser> userTotalFriendsList=new HashMap<String, CampusInUser>();
-	private HashMap<String, CampusInUserLocation> usersLocationList=new HashMap<String, CampusInUserLocation>();
-	private HashMap<String, CampusInUser> allUsersList=new HashMap<String, CampusInUser>();
+	private HashMap<String, CampusInUser> userTotalFriendsList = new HashMap<String, CampusInUser>();
+	private HashMap<String, CampusInUserLocation> usersLocationList = new HashMap<String, CampusInUserLocation>();
+	private HashMap<String, CampusInUser> allUsersList = new HashMap<String, CampusInUser>();
 
 	private CloudAccessObject() {
 
@@ -148,7 +151,8 @@ public class CloudAccessObject implements IDataAccesObject {
 			event.getLocation().setMapLocation(
 					new LatLng(parseObj.getDouble("lat"), parseObj
 							.getDouble("long")));
-			event.getLocation().setLocationName(parseObj.getString("locationName"));
+			event.getLocation().setLocationName(
+					parseObj.getString("locationName"));
 			event.setGlobal(parseObj.getBoolean("isPublic"));
 			event.setOwnerId(parseObj.getString("ownerParseId"));
 			event.setReciversList(new ArrayList<String>());
@@ -206,145 +210,145 @@ public class CloudAccessObject implements IDataAccesObject {
 
 	}
 
-//	@Override
-//	public void updateLocation(final CampusInLocation userLoction,
-//			final DataAccesObjectCallBack<Integer> callBack) {
-//		loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
-//
-//			@Override
-//			public void done(CampusInUser retObject, Exception e) {
-//				// try to load the location object from parse
-//				if (retObject == null) {
-//					callBack.done(1, new Exception(
-//							"Unble to load campusInUser from the cloud"));
-//					return;
-//				}
-//				ParseQuery<ParseObject> query = ParseQuery
-//						.getQuery("UserLocation");
-//				query.whereEqualTo("faceBookUserID",
-//						curentCampusInUser.getFaceBookUserId());
-//				query.findInBackground(new FindCallback<ParseObject>() {
-//					public void done(List<ParseObject> scoreList,
-//							ParseException e) {
-//						if (e == null) {
-//							// if the user exist in the cloud then the size of
-//							// the
-//							// return list will be 1
-//							if (scoreList.size() == 1) {
-//								if (userLoction != null) {
-//									scoreList.get(0).remove("lat");
-//									scoreList
-//											.get(0)
-//											.put("lat",
-//													userLoction
-//															.getMapLocation().latitude);
-//									scoreList.get(0).remove("lon");
-//									scoreList
-//											.get(0)
-//											.put("lon",
-//													userLoction
-//															.getMapLocation().longitude);
-//									scoreList.get(0).remove("locationName");
-//									scoreList.get(0).put("locationName",
-//											userLoction.getLocationName());
-//								}
-//								scoreList.get(0).saveInBackground(
-//										new SaveCallback() {
-//											@Override
-//											public void done(ParseException e) {
-//												if (e != null) {
-//													Log.e("cadan",
-//															"Upadet location was failed");
-//												}
-//												callBack.done(0, e);
-//												return;
-//											}
-//										});
-//							}
-//							// if the user location info doesn't exist in the
-//							// cloud than
-//							// report it.
-//							else {
-//								loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
-//
-//									@Override
-//									public void done(ParseObject retObject,
-//											Exception e) {
-//										if (retObject == null) {
-//											callBack.done(
-//													1,
-//													new Exception(
-//															"Unable to load parseCuttentUser"));
-//											return;
-//										}
-//										final ParseObject po = new ParseObject(
-//												"UserLocation");
-//										po.put("parseUserID",
-//												curentCampusInUser
-//														.getParseUserId());
-//										po.put("faceBookUserID",
-//												curentCampusInUser
-//														.getFaceBookUserId());
-//										po.put("lat",
-//												userLoction.getMapLocation().latitude);
-//										po.put("lon",
-//												userLoction.getMapLocation().longitude);
-//										po.put("locationName",
-//												userLoction.getLocationName());
-//										// add the parse current user to the
-//										// relation 1
-//										// to 1 relation
-//										po.saveInBackground(new SaveCallback() {
-//											@Override
-//											public void done(ParseException e2) {
-//												if (e2 != null) {
-//													Log.e("cadan",
-//															"Upadet location was failed");
-//													callBack.done(1, e2);
-//													return;
-//													// add the location object
-//													// to the
-//													// relation of
-//													// current campus in user of
-//													// pars
-//												}
-////												po.getRelation(
-////														"userlocationRelation")
-////														.add(parseCurrentCampusInUser);
-//												po.add("user", value)
-//												po.saveInBackground(new SaveCallback() {
-//
-//													@Override
-//													public void done(
-//															ParseException e3) {
-//														// TODO Auto-generated
-//														// methode3 stub
-//														if (e3 == null)
-//															callBack.done(0, e3);
-//														else
-//															callBack.done(1, e3);
-//
-//													}
-//												});
-//
-//											}
-//										});
-//
-//									}
-//								});
-//							}
-//
-//						} else {
-//							// the query was failed, update the observers.
-//							// updateObserves(ActionCode.UserLocation, false);
-//						}
-//					}
-//				});
-//
-//			}
-//		});
-//
-//	}
+	// @Override
+	// public void updateLocation(final CampusInLocation userLoction,
+	// final DataAccesObjectCallBack<Integer> callBack) {
+	// loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
+	//
+	// @Override
+	// public void done(CampusInUser retObject, Exception e) {
+	// // try to load the location object from parse
+	// if (retObject == null) {
+	// callBack.done(1, new Exception(
+	// "Unble to load campusInUser from the cloud"));
+	// return;
+	// }
+	// ParseQuery<ParseObject> query = ParseQuery
+	// .getQuery("UserLocation");
+	// query.whereEqualTo("faceBookUserID",
+	// curentCampusInUser.getFaceBookUserId());
+	// query.findInBackground(new FindCallback<ParseObject>() {
+	// public void done(List<ParseObject> scoreList,
+	// ParseException e) {
+	// if (e == null) {
+	// // if the user exist in the cloud then the size of
+	// // the
+	// // return list will be 1
+	// if (scoreList.size() == 1) {
+	// if (userLoction != null) {
+	// scoreList.get(0).remove("lat");
+	// scoreList
+	// .get(0)
+	// .put("lat",
+	// userLoction
+	// .getMapLocation().latitude);
+	// scoreList.get(0).remove("lon");
+	// scoreList
+	// .get(0)
+	// .put("lon",
+	// userLoction
+	// .getMapLocation().longitude);
+	// scoreList.get(0).remove("locationName");
+	// scoreList.get(0).put("locationName",
+	// userLoction.getLocationName());
+	// }
+	// scoreList.get(0).saveInBackground(
+	// new SaveCallback() {
+	// @Override
+	// public void done(ParseException e) {
+	// if (e != null) {
+	// Log.e("cadan",
+	// "Upadet location was failed");
+	// }
+	// callBack.done(0, e);
+	// return;
+	// }
+	// });
+	// }
+	// // if the user location info doesn't exist in the
+	// // cloud than
+	// // report it.
+	// else {
+	// loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+	//
+	// @Override
+	// public void done(ParseObject retObject,
+	// Exception e) {
+	// if (retObject == null) {
+	// callBack.done(
+	// 1,
+	// new Exception(
+	// "Unable to load parseCuttentUser"));
+	// return;
+	// }
+	// final ParseObject po = new ParseObject(
+	// "UserLocation");
+	// po.put("parseUserID",
+	// curentCampusInUser
+	// .getParseUserId());
+	// po.put("faceBookUserID",
+	// curentCampusInUser
+	// .getFaceBookUserId());
+	// po.put("lat",
+	// userLoction.getMapLocation().latitude);
+	// po.put("lon",
+	// userLoction.getMapLocation().longitude);
+	// po.put("locationName",
+	// userLoction.getLocationName());
+	// // add the parse current user to the
+	// // relation 1
+	// // to 1 relation
+	// po.saveInBackground(new SaveCallback() {
+	// @Override
+	// public void done(ParseException e2) {
+	// if (e2 != null) {
+	// Log.e("cadan",
+	// "Upadet location was failed");
+	// callBack.done(1, e2);
+	// return;
+	// // add the location object
+	// // to the
+	// // relation of
+	// // current campus in user of
+	// // pars
+	// }
+	// // po.getRelation(
+	// // "userlocationRelation")
+	// // .add(parseCurrentCampusInUser);
+	// po.add("user", value)
+	// po.saveInBackground(new SaveCallback() {
+	//
+	// @Override
+	// public void done(
+	// ParseException e3) {
+	// // TODO Auto-generated
+	// // methode3 stub
+	// if (e3 == null)
+	// callBack.done(0, e3);
+	// else
+	// callBack.done(1, e3);
+	//
+	// }
+	// });
+	//
+	// }
+	// });
+	//
+	// }
+	// });
+	// }
+	//
+	// } else {
+	// // the query was failed, update the observers.
+	// // updateObserves(ActionCode.UserLocation, false);
+	// }
+	// }
+	// });
+	//
+	// }
+	// });
+	//
+	// }
 
 	/*
 	 * get all users location from the cloud
@@ -356,38 +360,6 @@ public class CloudAccessObject implements IDataAccesObject {
 	@Override
 	public void getUsersLocationInBackground(
 			final DataAccesObjectCallBack<List<CampusInUserLocation>> callBack) {
-
-		// load current campus in user in case it wasnt loaded yet
-		loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
-
-			@Override
-			public void done(CampusInUser retObject, Exception e) {
-				if (e == null)
-
-				{
-					ParseQuery<ParseObject> query = ParseQuery
-							.getQuery("CampusInUser");
-					query.whereEqualTo("parseUserId",
-							curentCampusInUser.getFaceBookUserId());
-					query.include("CampusInUser");
-					query.include("UserLocation");
-					query.findInBackground(new FindCallback<ParseObject>() {
-
-						@Override
-						public void done(List<ParseObject> userList,
-								ParseException e) {
-							List<CampusInUserLocation> result = new ArrayList<CampusInUserLocation>();
-							for (ParseObject parseObject : userList) {
-								result.add(getCampusInUserLocationFromParseObject(parseObject));
-							}
-							callBack.done(result, e);
-						}
-					});
-				}
-
-			}
-		});
-
 	}
 
 	/*
@@ -413,8 +385,10 @@ public class CloudAccessObject implements IDataAccesObject {
 			localCampusInUserLocation.getLocation().setMapLocation(localLatLng);
 			localCampusInUserLocation.getLocation().setLocationName(
 					paramParseObject.getString("locationName"));
-			/*localCampusInUserLocation.getLocation().setDate(
-					paramParseObject.getUpdatedAt());*/		}
+			/*
+			 * localCampusInUserLocation.getLocation().setDate(
+			 * paramParseObject.getUpdatedAt());
+			 */}
 		return localCampusInUserLocation;
 	}
 
@@ -458,49 +432,70 @@ public class CloudAccessObject implements IDataAccesObject {
 	 * il.ac.shenkar.in.dal.IDataAccesObject#addFriendToFriendList(il.ac.shenkar
 	 * .common.CampusInUser, il.ac.shenkar.in.dal.DataAccesObjectCallBack)
 	 */
-	public void addFriendToFriendList(CampusInUser userToAdd,
+	public void addFriendToFriendList(final CampusInUser userToAdd,
 			final DataAccesObjectCallBack<Integer> callBack) {
 		if (userToAdd == null) {
 			callBack.done(Integer.valueOf(1), new Exception(
 					"User to add is null"));
 			return;
 		}
-		ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
-		query.whereEqualTo("parseUserId", userToAdd.getParseUserId());
-		query.findInBackground(new FindCallback<ParseObject>() {
+		loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
 
 			@Override
-			public void done(List<ParseObject> retList, ParseException arg1) {
-				if (retList.size() != 1) {
-					callBack.done(Integer.valueOf(1), new Exception(
-							"This user is not exist in CampusIN"));
-					return;
+			public void done(CampusInUser retObject, Exception e) {
+
+				if (e == null && retObject != null) {
+					// user in the same trend and year are friends by default
+					if (retObject.getTrend().equals(userToAdd.getTrend())
+							&& retObject.getYear().equals(userToAdd.getYear())) {
+						callBack.done(0, e);
+						return;
+					}
 				}
-				final ParseObject localParseObject = (ParseObject) retList.get(0);
-				loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+				ParseQuery<ParseObject> query = ParseQuery
+						.getQuery("CampusInUser");
+				query.whereEqualTo("parseUserId", userToAdd.getParseUserId());
+				query.findInBackground(new FindCallback<ParseObject>() {
 
 					@Override
-					public void done(ParseObject retObject, Exception e) {
-						if(e==null && retObject!=null)
-						{
-							retObject.getRelation("friends").add(localParseObject);
-							retObject.saveInBackground(new SaveCallback() {
-								
-								@Override
-								public void done(ParseException e3) {
-									if (callBack != null)
-										callBack.done(Integer.valueOf(0),
-												e3);
-								}
-							});
+					public void done(List<ParseObject> retList,
+							ParseException arg1) {
+						if (retList.size() != 1) {
+							callBack.done(Integer.valueOf(1), new Exception(
+									"This user is not exist in CampusIN"));
+							return;
 						}
+						final ParseObject localParseObject = (ParseObject) retList
+								.get(0);
+						loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+
+							@Override
+							public void done(ParseObject retObject, Exception e) {
+								if (e == null && retObject != null) {
+									retObject.getRelation("friends").add(
+											localParseObject);
+									retObject
+											.saveInBackground(new SaveCallback() {
+
+												@Override
+												public void done(
+														ParseException e3) {
+													if (callBack != null)
+														callBack.done(Integer
+																.valueOf(0), e3);
+												}
+											});
+								}
+							}
+						});
 					}
 				});
+				{
+
+				}
+
 			}
 		});
-		{
-
-		}
 
 	}
 
@@ -580,19 +575,16 @@ public class CloudAccessObject implements IDataAccesObject {
 	@Override
 	public void putCurrentCampusInUserInbackground(
 			final CampusInUser currentCampusInUser,
-			final DataAccesObjectCallBack<Integer> callBack) 
-	{
-		ParseQuery<ParseObject> query =ParseQuery.getQuery("CampusInUser");
+			final DataAccesObjectCallBack<Integer> callBack) {
+		ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
 		query.whereEqualTo("parseUserId", currentCampusInUser.getParseUserId());
 		query.findInBackground(new FindCallback<ParseObject>() {
-			
+
 			@Override
 			public void done(List<ParseObject> retObj, ParseException e) {
-				if(e==null&& retObj!=null)
-				{
-					//create new one 
-					if(retObj.size()==0)
-					{
+				if (e == null && retObj != null) {
+					// create new one
+					if (retObj.size() == 0) {
 						final ParseObject currentUserParseObject = new ParseObject(
 								"CampusInUser");
 						currentUserParseObject.put("firstName",
@@ -603,20 +595,23 @@ public class CloudAccessObject implements IDataAccesObject {
 								currentCampusInUser.getFaceBookUserId());
 						currentUserParseObject.put("parseUserId",
 								currentCampusInUser.getParseUserId());
-						currentUserParseObject.put("trend", currentCampusInUser.getTrend());
-						currentUserParseObject.put("year", currentCampusInUser.getYear());
-						currentUserParseObject.saveInBackground(new SaveCallback() {
-							public void done(ParseException e) {
+						currentUserParseObject.put("trend",
+								currentCampusInUser.getTrend());
+						currentUserParseObject.put("year",
+								currentCampusInUser.getYear());
+						currentUserParseObject
+								.saveInBackground(new SaveCallback() {
+									public void done(ParseException e) {
 
-							}
-						});
+									}
+								});
 					}
 					callBack.done(Integer.valueOf(0), e);
 				}
-				
+
 			}
 		});
-	
+
 	}
 
 	public void getProfilePicture(
@@ -641,8 +636,8 @@ public class CloudAccessObject implements IDataAccesObject {
 	/*
 	 * get all the friend to school of the current user
 	 */
-	private void getCurrentUserFriendsToScool(
-			final DataAccesObjectCallBack<List<CampusInUser>> callBack) {
+	private void getCurrentUserFriendsToScool(final Boolean location,
+			final DataAccesObjectCallBack<List<ParseObject>> callBack) {
 		loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
 
 			@Override
@@ -651,28 +646,32 @@ public class CloudAccessObject implements IDataAccesObject {
 						.getQuery("CampusInUser");
 				query.whereEqualTo("trend", curentCampusInUser.getTrend());
 				query.whereEqualTo("year", curentCampusInUser.getYear());
-				//not me 
-				query.whereNotEqualTo("parseUserId", curentCampusInUser.getParseUserId());
-				if(userFriendsToClassLastUpdate!=null)
-				{
-					query.whereGreaterThanOrEqualTo("createdAt", userFriendsToClassLastUpdate);
+				// not me
+				query.whereNotEqualTo("parseUserId",
+						curentCampusInUser.getParseUserId());
+				if (userFriendsToClassLastUpdate != null && !location) {
+					query.whereGreaterThanOrEqualTo("createdAt",
+							userFriendsToClassLastUpdate);
+				} else if (userFriendsToClassLocationLastUpdate != null
+						&& location) {
+					query.whereGreaterThanOrEqualTo("updatedAt",
+							userFriendsToClassLocationLastUpdate);
+
 				}
+				if (location)
+					query.include("location");
 				query.findInBackground(new FindCallback<ParseObject>() {
 
 					@Override
 					public void done(List<ParseObject> retList, ParseException e) {
-						ArrayList<CampusInUser> friendsToSchholList = new ArrayList<CampusInUser>();
 						if (e == null) {
-
-							for (ParseObject parseObject : retList) {
-								friendsToSchholList
-										.add(fromParseObjToCampusInUser(parseObject));
+							if (callBack != null) {
+								if (!location)
+									userFriendsToClassLastUpdate = new Date();
+								else
+									userFriendsToClassLocationLastUpdate = new Date();
+								callBack.done(retList, e);
 							}
-						}
-						if (callBack != null)
-						{
-							userFriendsToClassLastUpdate=new Date();
-							callBack.done(friendsToSchholList, e);
 						}
 					}
 				});
@@ -681,18 +680,15 @@ public class CloudAccessObject implements IDataAccesObject {
 
 	}
 
-	
 	@Override
 	public void getAllCumpusInUsers(
 			final DataAccesObjectCallBack<List<CampusInUser>> callBack) {
 		// first load
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
 		if (allUsersList == null) {
-			allUsersList = new HashMap<String, CampusInUser>() ;
-		}
-		else
-		{
-			query.whereGreaterThanOrEqualTo("createdAt",allUsersLastUpdate);
+			allUsersList = new HashMap<String, CampusInUser>();
+		} else {
+			query.whereGreaterThanOrEqualTo("createdAt", allUsersLastUpdate);
 		}
 		query.findInBackground(new FindCallback<ParseObject>() {
 
@@ -701,12 +697,13 @@ public class CloudAccessObject implements IDataAccesObject {
 				if (e == null && retList != null) {
 					allUsersLastUpdate = new Date();
 					for (ParseObject parseObject : retList) {
-						CampusInUser u=fromParseObjToCampusInUser(parseObject);
-						allUsersList
-								.put(u.getParseUserId(), u);
+						CampusInUser u = fromParseObjToCampusInUser(parseObject);
+						allUsersList.put(u.getParseUserId(), u);
 					}
 					if (callBack != null) {
-						callBack.done(new ArrayList<CampusInUser>(allUsersList.values()), e);
+						callBack.done(
+								new ArrayList<CampusInUser>(allUsersList
+										.values()), e);
 					}
 				}
 
@@ -716,96 +713,136 @@ public class CloudAccessObject implements IDataAccesObject {
 
 	/*
 	 * (non-Javadoc)
-	 * @see il.ac.shenkar.in.dal.IDataAccesObject#getAllCampusInUsersStartWith(java.lang.String, il.ac.shenkar.in.dal.DataAccesObjectCallBack)
+	 * 
+	 * @see
+	 * il.ac.shenkar.in.dal.IDataAccesObject#getAllCampusInUsersStartWith(java
+	 * .lang.String, il.ac.shenkar.in.dal.DataAccesObjectCallBack)
 	 */
 	@Override
 	public void getAllCampusInUsersStartWith(String startWith,
 			final DataAccesObjectCallBack<List<CampusInUser>> callBack) {
-		
-			//build the or query that will contain to queries
-			ParseQuery<ParseObject> firstNameStartWith =ParseQuery.getQuery("CampusInUser");
-			firstNameStartWith.whereStartsWith("firstName", startWith);
-			
-			ParseQuery<ParseObject> lastNameStartWith =ParseQuery.getQuery("CampusInUser");
-			lastNameStartWith.whereStartsWith("lastName", startWith);
-			
-			ArrayList<ParseQuery<ParseObject>> orList= new ArrayList<ParseQuery<ParseObject>>();
-			orList.add(lastNameStartWith);
-			orList.add(firstNameStartWith);
-			
-			//search in the cloud
-			ParseQuery<ParseObject> mainQuery=ParseQuery.or(orList);
-			mainQuery.findInBackground(new FindCallback<ParseObject>() {
-				
-				@Override
-				public void done(List<ParseObject> retList, ParseException e) {
-					List<CampusInUser> returnList=new ArrayList<CampusInUser>();
-					if(e==null && retList!=null)
-					{
-						for (ParseObject parseObject : retList) {
-							returnList.add(fromParseObjToCampusInUser(parseObject));
-						}
+
+		// build the or query that will contain to queries
+		ParseQuery<ParseObject> firstNameStartWith = ParseQuery
+				.getQuery("CampusInUser");
+		firstNameStartWith.whereStartsWith("firstName", startWith);
+
+		ParseQuery<ParseObject> lastNameStartWith = ParseQuery
+				.getQuery("CampusInUser");
+		lastNameStartWith.whereStartsWith("lastName", startWith);
+
+		ArrayList<ParseQuery<ParseObject>> orList = new ArrayList<ParseQuery<ParseObject>>();
+		orList.add(lastNameStartWith);
+		orList.add(firstNameStartWith);
+
+		// search in the cloud
+		ParseQuery<ParseObject> mainQuery = ParseQuery.or(orList);
+		mainQuery.findInBackground(new FindCallback<ParseObject>() {
+
+			@Override
+			public void done(List<ParseObject> retList, ParseException e) {
+				List<CampusInUser> returnList = new ArrayList<CampusInUser>();
+				if (e == null && retList != null) {
+					for (ParseObject parseObject : retList) {
+						returnList.add(fromParseObjToCampusInUser(parseObject));
 					}
-					callBack.done(returnList, e);
 				}
-			});
+				callBack.done(returnList, e);
+			}
+		});
 	}
 
 	/*
-	 *return all the friends of the current user
-	 * @see il.ac.shenkar.in.dal.IDataAccesObject#getCurrentCampusInUserFriends(il.ac.shenkar.in.dal.DataAccesObjectCallBack)
+	 * return all the friends of the current user
+	 * 
+	 * @see
+	 * il.ac.shenkar.in.dal.IDataAccesObject#getCurrentCampusInUserFriends(il
+	 * .ac.shenkar.in.dal.DataAccesObjectCallBack)
 	 */
 	@Override
 	public void getCurrentCampusInUserFriends(
 			final DataAccesObjectCallBack<List<CampusInUser>> callBack) {
-		//first get all the friends that in the same class
-		getCurrentUserFriendsToScool(new DataAccesObjectCallBack<List<CampusInUser>>() {
-			
-			@Override
-			public void done(List<CampusInUser> friendToClass, Exception e) {
-				//add the result to the return list
-				
-				if(e==null && friendToClass!=null)
-				{
-					//add to the hash map the returned friend - 
-					for (CampusInUser friend : friendToClass) {
-						userTotalFriendsList.put(friend.getParseUserId(), friend);					}
-				}
-				loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+		// first get all the friends that in the same class
+		getCurrentUserFriendsToScool(false,
+				new DataAccesObjectCallBack<List<ParseObject>>() {
 
 					@Override
-					public void done(ParseObject retObject, Exception e) {
-						if(e==null && retObject!=null)
-						{
-							ParseQuery<ParseObject> query=retObject.getRelation("friends").getQuery();
-							//if it is not the first laod then get only new users
-							if(userCustomFriendsLastUpdate!=null)
-							{
-								query.whereGreaterThanOrEqualTo("createdAt", userCustomFriendsLastUpdate);
+					public void done(List<ParseObject> friendToClass,
+							Exception e) {
+						// add the result to the return list
+
+						if (e == null && friendToClass != null) {
+							// add to the hash map the returned friend -
+							for (ParseObject friend : friendToClass) {
+								CampusInUser u = fromParseObjToCampusInUser(friend);
+								userTotalFriendsList.put(u.getParseUserId(), u);
 							}
-							query.findInBackground(new FindCallback<ParseObject>() {
-								
-								@Override
-								public void done(List<ParseObject> friendInList, ParseException e2) {
-									
-									if(e2==null && friendInList!=null)
-									{
-										for (ParseObject user : friendInList) {
-											CampusInUser u=fromParseObjToCampusInUser(user);
-											userTotalFriendsList.put(u.getParseUserId(), u);
+							getCustomFriendsListAndLocation(
+									false,
+									new DataAccesObjectCallBack<List<ParseObject>>() {
+
+										@Override
+										public void done(
+												List<ParseObject> retObject,
+												Exception e2) {
+											if (e2 == null && retObject != null) {
+												for (ParseObject user : retObject) {
+													CampusInUser u = fromParseObjToCampusInUser(user);
+													userTotalFriendsList.put(
+															u.getParseUserId(),
+															u);
+												}
+											}
+											if (callBack != null)
+												callBack.done(
+														new ArrayList<CampusInUser>(
+																userTotalFriendsList
+																		.values()),
+														e2);
 										}
-									}
-									if(callBack!=null)
-										callBack.done(new ArrayList<CampusInUser>(userTotalFriendsList.values()), e2);
-								}
-							});
+									});
+
 						}
-						
+
 					}
 				});
-				
+	}
+
+	/*
+	 * if location is true than we want the updatedAt- since the location change
+	 * the updatedAt every location report
+	 */
+	private void getCustomFriendsListAndLocation(final Boolean location,
+			final DataAccesObjectCallBack<List<ParseObject>> callBack) {
+		loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+
+			@Override
+			public void done(ParseObject retObject, Exception e) {
+				if (e == null && retObject != null) {
+					// the query in custom friend can't
+					// be done by date because we don't know the date which the
+					// user was added to the relation
+					ParseQuery<ParseObject> query = retObject.getRelation(
+							"friends").getQuery();
+					if (location)
+						query.include("location");
+					query.findInBackground(new FindCallback<ParseObject>() {
+
+						@Override
+						public void done(List<ParseObject> friendInList,
+								ParseException e2) {
+
+							if (e2 == null && friendInList != null) {
+								if (callBack != null)
+									callBack.done(friendInList, e2);
+
+							}
+						}
+					});
+				}
+
 			}
-		});	
+		});
 	}
 
 	@Override
@@ -817,46 +854,43 @@ public class CloudAccessObject implements IDataAccesObject {
 				.getObjectId());
 		localParseQuery.include("location");
 		localParseQuery.findInBackground(new FindCallback<ParseObject>() {
-			
+
 			@Override
 			public void done(List<ParseObject> retObjectList, ParseException e) {
-				if(e==null && retObjectList!=null && retObjectList.size()==1)
-				{
-					ParseObject retObject =retObjectList.get(0);
-					ParseObject loc=retObject.getParseObject("location");
-					//location is not exist- need to create it
-					if(loc==null)
-					{
-						loc=new ParseObject("location");
+				if (e == null && retObjectList != null
+						&& retObjectList.size() == 1) {
+					ParseObject retObject = retObjectList.get(0);
+					ParseObject loc = retObject.getParseObject("location");
+					// location is not exist- need to create it
+					if (loc == null) {
+						loc = new ParseObject("location");
 						loc.add("name", location.getLocationName());
-						loc.add("lat",location.getMapLocation().latitude);
-						loc.add("long",location.getMapLocation().longitude);
+						loc.add("lat", location.getMapLocation().latitude);
+						loc.add("long", location.getMapLocation().longitude);
 						retObject.put("location", loc);
-					}
-					else
-					{
+					} else {
 						loc.remove("name");
 						loc.remove("lat");
 						loc.remove("long");
 						loc.add("name", location.getLocationName());
-						loc.add("lat",location.getMapLocation().latitude);
-						loc.add("long",location.getMapLocation().longitude);
+						loc.add("lat", location.getMapLocation().latitude);
+						loc.add("long", location.getMapLocation().longitude);
 					}
 					retObject.saveInBackground(new SaveCallback() {
-						
+
 						@Override
 						public void done(ParseException e2) {
-							if(callBack!=null)
+							if (callBack != null)
 								callBack.done(0, e2);
-							
+
 						}
 					});
 				}
-				
+
 			}
 
 		});
-		
+
 	}
 
 	@Override
@@ -867,48 +901,68 @@ public class CloudAccessObject implements IDataAccesObject {
 					"User to add is null"));
 			return;
 		}
-		ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
-		query.whereEqualTo("parseUserId", userToRemove.getParseUserId());
-		query.findInBackground(new FindCallback<ParseObject>() {
+		loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
 
 			@Override
-			public void done(List<ParseObject> retList, ParseException arg1) {
-				if (retList.size() != 1) {
-					callBack.done(Integer.valueOf(1), new Exception(
-							"This user is not exist in CampusIN"));
-					return;
+			public void done(CampusInUser retObject, Exception e) {
+				if(e==null && retObject!=null)
+				{
+					// user in the same trend and year are friends by default
+					if (retObject.getTrend().equals(userToRemove.getTrend())
+							&& retObject.getYear().equals(userToRemove.getYear())) {
+						callBack.done(1,new Exception("User from the same class can't be removed"));
+						return;
+					}
 				}
-				final ParseObject localParseObject = (ParseObject) retList.get(0);
-				loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+
+				ParseQuery<ParseObject> query = ParseQuery
+						.getQuery("CampusInUser");
+				query.whereEqualTo("parseUserId", userToRemove.getParseUserId());
+				query.findInBackground(new FindCallback<ParseObject>() {
 
 					@Override
-					public void done(ParseObject retObject, Exception e) {
-						if(e==null && retObject!=null)
-						{
-							retObject.getRelation("friends").remove(localParseObject);
-							if(userTotalFriendsList!=null)
-							{
-								//remove from the cash
-								userTotalFriendsList.remove(userToRemove.getParseUserId());
-							}
-							retObject.saveInBackground(new SaveCallback() {
-								
-								@Override
-								public void done(ParseException e3) {
-									if (callBack != null)
-										callBack.done(Integer.valueOf(0),
-												e3);
-								}
-							});
+					public void done(List<ParseObject> retList,
+							ParseException arg1) {
+						if (retList.size() != 1) {
+							callBack.done(Integer.valueOf(1), new Exception(
+									"This user is not exist in CampusIN"));
+							return;
 						}
+						final ParseObject localParseObject = (ParseObject) retList
+								.get(0);
+						loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+
+							@Override
+							public void done(ParseObject retObject, Exception e) {
+								if (e == null && retObject != null) {
+									retObject.getRelation("friends").remove(
+											localParseObject);
+									if (userTotalFriendsList != null) {
+										// remove from the cash
+										userTotalFriendsList
+												.remove(userToRemove
+														.getParseUserId());
+									}
+									retObject
+											.saveInBackground(new SaveCallback() {
+
+												@Override
+												public void done(
+														ParseException e3) {
+													if (callBack != null)
+														callBack.done(Integer
+																.valueOf(0), e3);
+												}
+											});
+								}
+							}
+						});
 					}
 				});
+				{
+
+				}
 			}
 		});
-		{
-
-		}
-
-		
 	}
 }
