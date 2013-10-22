@@ -9,7 +9,7 @@
     <EditText android:id="@+id/inputSearch"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="הוסף חברים"
+        android:hint="חפש חברים"
         android:inputType="textVisiblePassword"/>
   
     <!-- List View -->

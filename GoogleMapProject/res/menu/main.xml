@@ -7,7 +7,10 @@
           android:title="הצג את כל האירועים"/>
     <item android:id="@+id/action_add_friends"
           android:icon="@drawable/calendar_icon"
-          android:title="בחר חברים"/>
+          android:title="הוסף חברים"/>
+    <item android:id="@+id/action_remove_friends"
+          android:icon="@drawable/calendar_icon"
+          android:title="הסר חברים"/>
     
     <!-- menu group -->
     <group android:id="@+id/group_delete">

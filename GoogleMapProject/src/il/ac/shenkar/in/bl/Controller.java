@@ -66,8 +66,10 @@ public class Controller implements ICampusInController
 		return false;
 	}
 
+
+
 	@Override
-	public List<CampusInUser> getCurrentUserFriendList() 
+	public void getCurrentUserFriendList(final ControllerCallback<List<CampusInUser>> callBack) 
 	{
 		MessageHalper.showProgressDialog("gettig "+ currentUser.getFirstName() +" friends", context);
 		cloudAccessObject.getCurrentCampusInUserFriends(new DataAccesObjectCallBack<List<CampusInUser>>() {
@@ -75,15 +77,41 @@ public class Controller implements ICampusInController
 			@Override
 			public void done(List<CampusInUser> retObject, Exception e) {
 				if(retObject!= null && e == null)
-				toReturn = retObject;		
+					callBack.done(retObject, null);
+				else 
+					callBack.done(retObject, e);
+				
 			}
 		});
-		MessageHalper.closeProggresDialog();
-		return (List<CampusInUser>) toReturn;
+		
 	}
 
 	@Override
-	public CampusInUser getCurrentUser() {return this.currentUser;}
+	public void getCurrentUser(final ControllerCallback<CampusInUser> callBack) 
+	{
+		if (currentUser != null)
+			callBack.done(currentUser, null);
+		else 
+		{
+			cloudAccessObject.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
+				
+				@Override
+				public void done(CampusInUser retObject, Exception e) {
+					if (retObject != null && e == null)
+					{
+						//load is a success -> return the recived Object 
+						callBack.done(retObject, null);
+					}
+					else 
+					{
+						// en error occered -> retutn the Exeptiom
+						callBack.done(null, e);
+					}
+					
+				}
+			});
+		}
+	}
 
 	
 	
