@@ -88,8 +88,6 @@ public class FriendListBaseAdapter extends BaseAdapter implements Filterable{
 		if (filteredFriendsArrayList.get(position).isChecked())
 		{
 			//currCheckBox = (CheckBox) convertView.findViewById(R.id.friend_check_box);
-			if(filteredFriendsArrayList.get(position).getUser().getTrend().equals(currentUser.getTrend()) && filteredFriendsArrayList.get(position).getUser().getYear().equals(currentUser.getYear()))
-				currCheckBox.setClickable(false);
 			currCheckBox.setChecked(true);
 		}
 		else

@@ -11,6 +11,7 @@ import il.ac.shenkar.cadan.ChooseFriendsFragment.onFriendsAddedListener;
 import il.ac.shenkar.cadan.AddNewEventFragment.onNewEventAdded;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInUser;
+import il.ac.shenkar.common.CampusInUserLocation;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.services.InitLocations;
@@ -418,11 +419,11 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	public void addMessageClicked(View v) {
 		Toast.makeText(this, "add message was clicked", 300).show();
 		pwindo.dismiss();
-		CloudAccessObject.getInstance().getCurrentCampusInUserFriends(
-				new DataAccesObjectCallBack<List<CampusInUser>>() {
+		CloudAccessObject.getInstance().getUsersLocationInBackground(
+				new DataAccesObjectCallBack<List<CampusInUserLocation>>() {
 
 					@Override
-					public void done(List<CampusInUser> retObject, Exception e) {
+					public void done(List<CampusInUserLocation> retObject, Exception e) {
 						Toast.makeText(Main.this,
 								"Number of friends is:" + retObject.size(), 500)
 								.show();
