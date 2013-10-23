@@ -1,5 +1,7 @@
 package il.ac.shenkar.in.bl;
 
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import android.content.Context;
@@ -111,6 +113,29 @@ public class Controller implements ICampusInController
 				}
 			});
 		}
+	}
+
+	@Override
+	public void getCurrentUserAllEvents(
+			ControllerCallback<List<CampusInEvent>> callBack) {
+		
+		//in the mean tiime just a dummy implementation to display some data in the list 
+		//TODO: yaki - later on to bring the real list of events from the relevant object 
+		ArrayList<CampusInEvent> toReturn = new ArrayList<CampusInEvent>();
+		CampusInEvent currEvent;
+		
+				
+		for (int i=0; i<40; i++)
+		{
+			currEvent = new CampusInEvent();
+			currEvent.setDate(new GregorianCalendar());
+			currEvent.setDescription("description " + i);
+			currEvent.setHeadLine("Title "+i);
+			toReturn.add(currEvent);	
+		}
+		
+		callBack.done(toReturn, null);
+		
 	}
 
 	

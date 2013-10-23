@@ -9,6 +9,8 @@ import il.ac.shenkar.common.CampusInUser;
 public interface ICampusInController
 {
 	public boolean addEvent(CampusInEvent toAdd);
-	void  getCurrentUserFriendList(ControllerCallback<List<CampusInUser>> callBack);
+	void getCurrentUserAllEvents(ControllerCallback<List<CampusInEvent>> callBack);
+	void getCurrentUserFriendList(ControllerCallback<List<CampusInUser>> callBack);
 	void getCurrentUser(ControllerCallback<CampusInUser> callBack);
+	
 }

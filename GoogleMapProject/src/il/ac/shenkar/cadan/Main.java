@@ -228,11 +228,22 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 			 */
 			return true;
 		case R.id.action_show_all_events:
-			intent = new Intent(this, JacobEventActivity.class);
+			/*intent = new Intent(this, JacobEventActivity.class);
 			startActivity(intent);
 			overridePendingTransition(R.anim.slide_in_left,
-					R.anim.slide_out_left);
-
+					R.anim.slide_out_left);*/
+			
+			
+			// try to move it to Fragment 
+			android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+			Fragment fragment = getFragmentManager().findFragmentByTag("dialog");
+			if (fragment != null)
+			{
+				transaction.remove(fragment);
+			}
+			transaction.addToBackStack(null);
+			DiaplayEventListFragment newDiaplayEventListFragment = new DiaplayEventListFragment();
+			newDiaplayEventListFragment.show(transaction, "dialog");
 			return true;
 
 		case R.id.action_add_friends:

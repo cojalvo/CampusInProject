@@ -25,13 +25,12 @@
 	
 	<Button
 	    android:id="@+id/eventButton"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
 	    android:layout_alignParentRight="true"
 	    android:layout_alignParentTop="true"
 	    android:text="@string/do_somthing"
-	    android:layout_marginTop="12sp"
-	    android:onClick="eventButtonClick">
+	    android:layout_marginTop="12dp"
+	    android:background="@drawable/blue_button"
+	    style="@style/ButtonText">
 	</Button>
 
 	

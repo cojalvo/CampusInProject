@@ -5,34 +5,40 @@ import il.ac.shenkar.common.CampusInEvent;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
-
-public class EventListBaseAdapter extends BaseAdapter
+import android.widget.Toast;
+public class EventListBaseAdapter extends BaseAdapter implements Filterable
 {
 	private static ArrayList<CampusInEvent> eventArrayList;
+	private static ArrayList<CampusInEvent> filteredEventArrayList;
 	private LayoutInflater l_Inflater;
 	
 	
 	public EventListBaseAdapter(Context context,ArrayList<CampusInEvent> arrayList)
 	{
 		this.eventArrayList = arrayList;
+		this.filteredEventArrayList = arrayList;
 		this.l_Inflater = LayoutInflater.from(context);
 	}
 	@Override
 	public int getCount()
 	{
-		return  eventArrayList.size();
+		return  filteredEventArrayList.size();
 	}
 
 	@Override
 	public Object getItem(int position)
 	{
-		return eventArrayList.get(position);
+		return filteredEventArrayList.get(position);
 	}
 
 	@Override
@@ -64,8 +70,17 @@ public class EventListBaseAdapter extends BaseAdapter
 		 * Here I get id for the button of this specific view and give him "tag" so i could delete it later on
 		 * */
 		currButton = (Button) convertView.findViewById(R.id.eventButton);
-		holder.txt_itemDescription.setText(eventArrayList.get(position).getDescription());
-		holder.txt_itemTitle.setText(eventArrayList.get(position).getHeadLine());
+		currButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				int position = (Integer) v.getTag();
+				Log.i(this.getClass().getSimpleName(),filteredEventArrayList.get(position).getDescription());
+				
+			}
+		});
+		holder.txt_itemDescription.setText(filteredEventArrayList.get(position).getDescription());
+		holder.txt_itemTitle.setText(filteredEventArrayList.get(position).getHeadLine());
 		currButton.setTag(position);
 		return convertView;
 	}
@@ -82,5 +97,64 @@ public class EventListBaseAdapter extends BaseAdapter
 	{
 		TextView txt_itemDescription;
 		TextView txt_itemTitle;
+	}
+
+	@Override
+	public Filter getFilter() {
+		return new Filter() {
+			
+			@Override
+			protected void publishResults(CharSequence constraint, FilterResults results) {
+				
+				filteredEventArrayList = (ArrayList<CampusInEvent>) results.values;
+				notifyDataSetChanged();
+			}
+			
+			@Override
+			protected FilterResults performFiltering(CharSequence constraint) 
+			{	
+				FilterResults results = new FilterResults(); 
+				//If there's nothing to filter on, return the original data for your list
+                if(constraint == null || constraint.length() == 0)
+                {
+                    results.values = eventArrayList;
+                    results.count = eventArrayList.size();
+                }
+                else
+                {
+                	/*filtering the list*/
+                	ArrayList<CampusInEvent> filteredData = new ArrayList<CampusInEvent>();
+                	String[] titleWords;
+                	String[] descWords;
+                	for (CampusInEvent curr: eventArrayList)
+                	{
+                		// compare the Char Sequence i received to the event title
+                		titleWords = curr.getHeadLine().split(" ");
+                		for (int i=0; i < titleWords.length; i++)
+                		{
+                			if (titleWords[i].startsWith((String) constraint))
+                			{
+                				filteredData.add(curr);
+                			}
+                		}
+                		if (!filteredData.contains(curr))
+                		{
+	                		// compare the description words
+	                		descWords = curr.getDescription().split(" ");
+	                		for (int i=0; i < descWords.length; i++)
+	                		{
+	                			if (descWords[i].startsWith((String) constraint))
+	                			{
+	                				filteredData.add(curr);
+	                			}
+	                		}
+                		}
+                	}
+                	results.values = filteredData;
+                	results.count = filteredData.size();
+                }
+				return results;
+			}
+		};
 	}
 }
