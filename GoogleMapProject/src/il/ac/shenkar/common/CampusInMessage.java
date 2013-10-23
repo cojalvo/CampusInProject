@@ -2,6 +2,13 @@ package il.ac.shenkar.common;
 
 public class CampusInMessage 
 {
+	private String parseId;
+	public String getParseId() {
+		return parseId;
+	}
+	public void setParseId(String parseId) {
+		this.parseId = parseId;
+	}
 	private String headLine;		
 	private String content;
 	//the location that the owner put the message

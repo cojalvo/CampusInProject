@@ -9,6 +9,7 @@ import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserChecked;
 import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.in.bl.ControllerCallback;
+import il.ac.shenkar.in.bl.ICampusInController;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.IDataAccesObject;
@@ -33,207 +34,231 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class ChooseFriendsFragment extends DialogFragment 
-{
+public class ChooseFriendsFragment extends DialogFragment {
 	onFriendsAddedListener mCallback;
 	private View view;
 	private ArrayList<CampusInUser> friensList;
 	private ChooseFriendAction action;
-	
-	static ChooseFriendsFragment newInstance(ChooseFriendAction  action) 
-	{
+	private ICampusInController controller = null;
+
+	static ChooseFriendsFragment newInstance(ChooseFriendAction action) {
 		ChooseFriendsFragment f = new ChooseFriendsFragment();
 
-        // Supply num input as an argument.
-        Bundle args = new Bundle();
-        args.putSerializable("action", action);
-        f.setArguments(args);
-        f.action = action;
-        return f;//
-    }
-	
+		// Supply num input as an argument.
+		Bundle args = new Bundle();
+		args.putSerializable("action", action);
+		f.setArguments(args);
+		f.action = action;
+		return f;//
+	}
+
 	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) 
-	{
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		super.onCreateDialog(savedInstanceState);
+		controller = Controller.getInstance(getActivity());
 		MessageHalper.showProgressDialog("Loading Friends", getActivity());
 		initFriendList();
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		if (action == ChooseFriendAction.ADD)
-		{
-			builder.setTitle("äåñó çáøéí")
-					.setPositiveButton("äåñó", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) 
-						{
-							ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-							FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
-							
-							ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
-							CampusInUserChecked currUserChecked;
-							// iterate the list of friends and add the check ones to the return list
-							for (int i=0; i<adapter.getCount(); i++)
-							{
-								currUserChecked = (CampusInUserChecked) adapter.getItem(i);
-								if (currUserChecked.isChecked())
-								{
-									toReturn.add(currUserChecked.getUser());
+		if (action == ChooseFriendAction.ADD) {
+			builder.setTitle("×‘×—×¨ ×—×‘×¨×™×")
+					.setPositiveButton("××™×©×•×¨",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									ListView friendListView = (ListView) view
+											.findViewById(R.id.friends_list_view);
+									FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView
+											.getAdapter();
+
+									ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
+									CampusInUserChecked currUserChecked;
+									// iterate the list of friends and add the
+									// check ones to the return list
+									for (int i = 0; i < adapter.getCount(); i++) {
+										currUserChecked = (CampusInUserChecked) adapter
+												.getItem(i);
+										if (currUserChecked.isChecked()) {
+											toReturn.add(currUserChecked
+													.getUser());
+										}
+									}
+
+									mCallback.onFriendsWereChoosen(toReturn,
+											getTargetFragment(),
+											ChooseFriendAction.ADD);
 								}
-							}
-							
-							mCallback.onFriendsWereChoosen(toReturn, getTargetFragment(),ChooseFriendAction.ADD);
-						}
-					})
-					.setNegativeButton("áèì", new DialogInterface.OnClickListener() {
-						
-						@Override
-						public void onClick(DialogInterface dialog, int which) 
-						{
-							// no button preesed - dismiss dialog 
-							dialog.dismiss();	
-						}
-					});
+							})
+					.setNegativeButton("×‘×™×˜×•×œ",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// no button preesed - dismiss dialog
+									dialog.dismiss();
+								}
+							});
+		} else {
+			builder.setTitle("×¨×©×™×ž×ª ×—×‘×¨×™×")
+					.setPositiveButton("××™×©×•×¨",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									ListView friendListView = (ListView) view
+											.findViewById(R.id.friends_list_view);
+									FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView
+											.getAdapter();
+
+									ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
+									CampusInUserChecked currUserChecked;
+									// iterate the list of friends and add the
+									// check ones to the return list
+									for (int i = 0; i < adapter.getCount(); i++) {
+										currUserChecked = (CampusInUserChecked) adapter
+												.getItem(i);
+										if (currUserChecked.isChecked()) {
+											toReturn.add(currUserChecked
+													.getUser());
+										}
+									}
+
+									mCallback.onFriendsWereChoosen(toReturn,
+											getTargetFragment(),
+											ChooseFriendAction.REMOVE);
+								}
+							})
+					.setNegativeButton("×‘×™×˜×•×œ",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									// no button preesed - dismiss dialog
+									dialog.dismiss();
+								}
+							});
 		}
-		else
-		{	
-			builder.setTitle("äñø çáøéí")
-			.setPositiveButton("äñø", new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) 
-				{
-					ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-					FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
-					
-					ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
-					CampusInUserChecked currUserChecked;
-					// iterate the list of friends and add the check ones to the return list
-					for (int i=0; i<adapter.getCount(); i++)
-					{
-						currUserChecked = (CampusInUserChecked) adapter.getItem(i);
-						if (currUserChecked.isChecked())
-						{
-							toReturn.add(currUserChecked.getUser());
-						}
-					}
-					
-					mCallback.onFriendsWereChoosen(toReturn, getTargetFragment(),ChooseFriendAction.REMOVE);
-				}
-			})
-			.setNegativeButton("áèì", new DialogInterface.OnClickListener() {
-				
-				@Override
-				public void onClick(DialogInterface dialog, int which) 
-				{
-					// no button preesed - dismiss dialog 
-					dialog.dismiss();	
-				}
-			});
-		}
-		view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
-		
-		// this part is for filtering the list of friends 
+		view = getActivity().getLayoutInflater().inflate(
+				R.layout.add_friends_fragment_layout, null, false);
+
+		// this part is for filtering the list of friends
 		EditText inputSearch = (EditText) view.findViewById(R.id.inputSearch);
 		inputSearch.addTextChangedListener(new TextWatcher() {
-            
-            @Override
-            public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-                // When user changed the Text
-            	ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-            	FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();     
-            	adapter.getFilter().filter(cs); 
-            }
-             
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-                    int arg3) {
-                // TODO Auto-generated method stub
-                 
-            }
+
+			@Override
+			public void onTextChanged(CharSequence cs, int arg1, int arg2,
+					int arg3) {
+				// When user changed the Text
+				ListView friendListView = (ListView) view
+						.findViewById(R.id.friends_list_view);
+				FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView
+						.getAdapter();
+				adapter.getFilter().filter(cs);
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1,
+					int arg2, int arg3) {
+				// TODO Auto-generated method stub
+
+			}
 
 			@Override
 			public void afterTextChanged(Editable arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-             
-        });
-		
-		 
-        builder.setView(view);
-        return builder.create();
+
+		});
+
+		builder.setView(view);
+		return builder.create();
 	}
 
-	
 	@Override
-	public void onAttach(Activity activity) 
-	{
+	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		 // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception
-        try {
-            mCallback = (onFriendsAddedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement IonFriendsAddedListener");
-        }
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+		try {
+			mCallback = (onFriendsAddedListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement IonFriendsAddedListener");
+		}
 	}
 
-	private ArrayList<CampusInUserChecked> getFriends() 
-	{
-		
-		ArrayList<CampusInUserChecked> toReturn = new ArrayList<CampusInUserChecked>(); 
-		// add all the friend to friendList 
-		// wrap them with CheckedCampusInUSer Object 
-		
-		if(this.friensList == null)
-		{
+	private ArrayList<CampusInUserChecked> getFriends() {
+
+		ArrayList<CampusInUserChecked> toReturn = new ArrayList<CampusInUserChecked>();
+		// add all the friend to friendList
+		// wrap them with CheckedCampusInUSer Object
+
+		if (this.friensList == null) {
 			return null;
 		}
-		for (CampusInUser friend: friensList)
-		{
-			toReturn.add(new CampusInUserChecked(friend));
+		for (CampusInUser friend : friensList) {
+			CampusInUserChecked u=new CampusInUserChecked(friend);
+			u.setChecked(true);
+			toReturn.add(u);
 		}
 		return toReturn;
 	}
+
 	private void initFriendList()
-	{
-		Controller.getInstance(getActivity()).getCurrentUserFriendList(new ControllerCallback<List<CampusInUser>>() {
+	{	
+		controller.getCurrentUser(new ControllerCallback<CampusInUser>() {
 			
 			@Override
-			public void done(List<CampusInUser> retObject, Exception e) {
-				if (retObject!= null)
-					friensList = (ArrayList<CampusInUser>) retObject;
-				Toast.makeText(getActivity(), "number of friends:" +retObject.size(), 3000).show();
-				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-				friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends()));
-				MessageHalper.closeProggresDialog();
+			public void done(final CampusInUser curretntUser, Exception e) {
+				if(e==null && curretntUser!=null)
+				{
+				controller.getCurrentUserFriendList(new ControllerCallback<List<CampusInUser>>() {
+					
+					@Override
+					public void done(List<CampusInUser> retObject, Exception e) {
+						if (retObject!= null)
+							friensList = (ArrayList<CampusInUser>) retObject;
+						Toast.makeText(getActivity(), "number of friends:" +retObject.size(), 3000).show();
+						ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
+						friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(),curretntUser));
+						MessageHalper.closeProggresDialog();
+					
+					}
+				});
+				}
 			}
 		});
 	}
-	public interface friendChoice
-	{
+
+	public interface friendChoice {
 		public void onFriendChosed(ArrayList<CampusInUser> friendChosedList);
 	}
 
+	/**
+	 * this interface should be implemented by any Activity or Fragment which
+	 * want to add friend list for example: invite some friends to some event or
+	 * decide which friends will see me
+	 * 
+	 * once the Friend Picker fragment is finished, the fragment will call
+	 * OnFriendsWereAdded() the method return a list of the added friends and
+	 * reference to targeted fragment if the activity want to access the
+	 * fragment which called the add friends picker
+	 * 
+	 * @author Jacob
+	 * 
+	 */
+	public interface onFriendsAddedListener {
+		public void onFriendsWereChoosen(ArrayList<CampusInUser> friensList,
+				Fragment targetedFragment, ChooseFriendAction action);
+	}
 
-/**
- * this interface should be implemented by any Activity or Fragment which want to add friend list
- * for example: invite some friends to some event or decide which friends will see me 
- * 
- * once the Friend Picker fragment is finished, the fragment will call OnFriendsWereAdded()
- * the method return a list of the added friends and reference to targeted fragment if the activity want to access the fragment which called the add friends picker
- * @author Jacob
- *
- */
-public interface onFriendsAddedListener
-{
-	public void onFriendsWereChoosen(ArrayList<CampusInUser> friensList, Fragment targetedFragment, ChooseFriendAction action);
-}
-public enum ChooseFriendAction
-{
-	ADD,REMOVE
-}
+	public enum ChooseFriendAction {
+		ADD, REMOVE
+	}
 
 }
