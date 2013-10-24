@@ -47,9 +47,7 @@ public class CloudAccessObject implements IDataAccesObject {
 	private ParseObject parseCurrentCampusInUser = null;
 	private Drawable profilePic = null;
 	private Date allUsersLastUpdate;
-	private Date userCustomFriendsLastUpdate;
 	private Date userFriendsToClassLastUpdate;
-	private Date userCustomFriendsLocationLastUpdate;
 	private Date userFriendsToClassLocationLastUpdate;
 	private Date usersLocationLastUpdate;
 	private HashMap<String, CampusInUser> userTotalFriendsList = new HashMap<String, CampusInUser>();
@@ -360,31 +358,75 @@ public class CloudAccessObject implements IDataAccesObject {
 	@Override
 	public void getUsersLocationInBackground(
 			final DataAccesObjectCallBack<List<CampusInUserLocation>> callBack) {
+		getCurrentUserFriendsToScool(true,
+				new DataAccesObjectCallBack<List<ParseObject>>() {
+
+					@Override
+					public void done(List<ParseObject> retObject, Exception e) {
+						if (e == null && retObject != null) {
+							for (ParseObject parseObject : retObject) {
+
+								CampusInUserLocation u = getCampusInUserLocationFromParseObject(parseObject);
+								usersLocationList.put(u.getUser()
+										.getParseUserId(), u);
+							}
+						}
+						getCustomFriendsListAndLocation(
+								true,
+								new DataAccesObjectCallBack<List<ParseObject>>() {
+
+									@Override
+									public void done(
+											List<ParseObject> retObject,
+											Exception e2) {
+										if (e2 == null && retObject != null) {
+											for (ParseObject parseObject : retObject) {
+												CampusInUserLocation u = getCampusInUserLocationFromParseObject(parseObject);
+												usersLocationList.put(u
+														.getUser()
+														.getParseUserId(), u);
+											}
+										}
+										if(callBack!=null)
+										{
+											callBack.done(new ArrayList<CampusInUserLocation>(usersLocationList.values()), e2);
+										}
+									}
+								});
+					}
+				});
 	}
 
 	/*
 	 * Get Parse obj and return CampusInObj
 	 */
 	private CampusInUserLocation getCampusInUserLocationFromParseObject(
-			ParseObject paramParseObject) {
+			ParseObject parseObject) {
 		CampusInUserLocation localCampusInUserLocation = null;
-		if (paramParseObject != null) {
-			LatLng localLatLng = new LatLng(paramParseObject.getDouble("lat"),
-					paramParseObject.getDouble("lon"));
+		if (parseObject != null) {
+			ParseObject location = parseObject.getParseObject("location");
 			localCampusInUserLocation = new CampusInUserLocation();
 			localCampusInUserLocation.setUser(new CampusInUser());
 			localCampusInUserLocation.getUser().setParseUserId(
-					paramParseObject.getString("parseUserId"));
+					parseObject.getString("parseUserId"));
 			localCampusInUserLocation.getUser().setFaceBookUserId(
-					paramParseObject.getString("facebookId"));
+					parseObject.getString("facebookId"));
 			localCampusInUserLocation.getUser().setFirstName(
-					paramParseObject.getString("firstName"));
+					parseObject.getString("firstName"));
 			localCampusInUserLocation.getUser().setLastName(
-					paramParseObject.getString("lastName"));
-			localCampusInUserLocation.setLocation(new CampusInLocation());
-			localCampusInUserLocation.getLocation().setMapLocation(localLatLng);
-			localCampusInUserLocation.getLocation().setLocationName(
-					paramParseObject.getString("locationName"));
+					parseObject.getString("lastName"));
+			localCampusInUserLocation.getUser().setTrend(parseObject.getString("trend"));
+			localCampusInUserLocation.getUser().setYear(parseObject.getString("year"));
+			if (location != null) {
+				LatLng localLatLng = new LatLng(location.getDouble("lat"),
+						location.getDouble("long"));
+				localCampusInUserLocation.setLocation(new CampusInLocation());
+				localCampusInUserLocation.getLocation().setMapLocation(
+						localLatLng);
+				localCampusInUserLocation.getLocation().setLocationName(
+						location.getString("name"));
+			}
+
 			/*
 			 * localCampusInUserLocation.getLocation().setDate(
 			 * paramParseObject.getUpdatedAt());
@@ -808,10 +850,6 @@ public class CloudAccessObject implements IDataAccesObject {
 				});
 	}
 
-	/*
-	 * if location is true than we want the updatedAt- since the location change
-	 * the updatedAt every location report
-	 */
 	private void getCustomFriendsListAndLocation(final Boolean location,
 			final DataAccesObjectCallBack<List<ParseObject>> callBack) {
 		loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
@@ -864,17 +902,17 @@ public class CloudAccessObject implements IDataAccesObject {
 					// location is not exist- need to create it
 					if (loc == null) {
 						loc = new ParseObject("location");
-						loc.add("name", location.getLocationName());
-						loc.add("lat", location.getMapLocation().latitude);
-						loc.add("long", location.getMapLocation().longitude);
+						loc.put("name", location.getLocationName());
+						loc.put("lat", location.getMapLocation().latitude);
+						loc.put("long", location.getMapLocation().longitude);
 						retObject.put("location", loc);
 					} else {
 						loc.remove("name");
 						loc.remove("lat");
 						loc.remove("long");
-						loc.add("name", location.getLocationName());
-						loc.add("lat", location.getMapLocation().latitude);
-						loc.add("long", location.getMapLocation().longitude);
+						loc.put("name", location.getLocationName());
+						loc.put("lat", location.getMapLocation().latitude);
+						loc.put("long", location.getMapLocation().longitude);
 					}
 					retObject.saveInBackground(new SaveCallback() {
 
@@ -905,12 +943,13 @@ public class CloudAccessObject implements IDataAccesObject {
 
 			@Override
 			public void done(CampusInUser retObject, Exception e) {
-				if(e==null && retObject!=null)
-				{
+				if (e == null && retObject != null) {
 					// user in the same trend and year are friends by default
 					if (retObject.getTrend().equals(userToRemove.getTrend())
-							&& retObject.getYear().equals(userToRemove.getYear())) {
-						callBack.done(1,new Exception("User from the same class can't be removed"));
+							&& retObject.getYear().equals(
+									userToRemove.getYear())) {
+						callBack.done(1, new Exception(
+								"User from the same class can't be removed"));
 						return;
 					}
 				}
@@ -942,6 +981,7 @@ public class CloudAccessObject implements IDataAccesObject {
 										userTotalFriendsList
 												.remove(userToRemove
 														.getParseUserId());
+										usersLocationList.remove(userToRemove.getParseUserId());
 									}
 									retObject
 											.saveInBackground(new SaveCallback() {

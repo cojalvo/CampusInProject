@@ -6,6 +6,7 @@ import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserChecked;
 
 import java.util.ArrayList;
+import java.util.Currency;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -27,11 +28,13 @@ public class FriendListBaseAdapter extends BaseAdapter implements Filterable{
 	private static ArrayList<CampusInUserChecked> friendsArrayList;
 	private static ArrayList<CampusInUserChecked> filteredFriendsArrayList;
 	private LayoutInflater l_Inflater;
+	private CampusInUser currentUser;
 	
-	public FriendListBaseAdapter(Context contect, ArrayList<CampusInUserChecked> list)
+	public FriendListBaseAdapter(Context contect, ArrayList<CampusInUserChecked> list,CampusInUser currentUser)
 	{
 		this.friendsArrayList =list;
 		this.filteredFriendsArrayList = list;
+		this.currentUser=currentUser;
 		this.l_Inflater = LayoutInflater.from(contect);
 	}
 	@Override

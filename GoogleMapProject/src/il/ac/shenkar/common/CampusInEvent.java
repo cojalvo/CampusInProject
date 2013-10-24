@@ -19,6 +19,17 @@ public class CampusInEvent {
 		// TODO Auto-generated constructor stub
 	}
 
+	private String parseId;
+	public String getParseId() {
+		return parseId;
+	}
+	public void setParseId(String parseId) {
+		this.parseId = parseId;
+	}
+	public void setReceiversId(List<String> receiversId) {
+		this.receiversId = receiversId;
+	}
+
 	private String headLine;		
 	private String description;
 	private CampusInLocation location;
@@ -109,4 +120,5 @@ public class CampusInEvent {
 	{
 		TEST,MEETING,CLASS
 	}
+
 }
