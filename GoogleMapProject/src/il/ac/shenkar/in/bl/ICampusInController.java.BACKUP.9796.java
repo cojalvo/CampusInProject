@@ -11,8 +11,8 @@ import il.ac.shenkar.common.CampusInUser;
 
 public interface ICampusInController
 {
+	void  addEvent(CampusInEvent toAdd,ControllerCallback<Integer> callBack);
 	void getCurrentUserAllEvents(ControllerCallback<List<CampusInEvent>> callBack);
-	void addEvent(CampusInEvent toAdd,ControllerCallback<Integer> callBack);
 	void getCurrentUserFriendList(ControllerCallback<List<CampusInUser>> callBack);
 	void sendMessage(CampusInMessage message,ControllerCallback<Integer> callBack);
 	void getCurrentUser(ControllerCallback<CampusInUser> callBack);
