@@ -17,7 +17,9 @@ public interface IDataAccesObject {
 
 	void sendMessage(CampusInMessage message,DataAccesObjectCallBack<Integer> callback);
 
-	void sendEvent(CampusInEvent event,DataAccesObjectCallBack<Integer> callback);
+	//Return the Parse Id if the Object we just saved
+	//use it in order to enter the id to the Hash Maps in the View Model object 
+	void sendEvent(CampusInEvent event,DataAccesObjectCallBack<String> callback);			
 
 	void updateLocation(CampusInLocation location,
 			DataAccesObjectCallBack<Integer> callBack);

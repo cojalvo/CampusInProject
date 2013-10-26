@@ -51,22 +51,9 @@ public class ViewModel {
 						meeting = new HashMap<String, CampusInEvent>();
 						tests = new HashMap<String, CampusInEvent>();
 						lesons = new HashMap<String, CampusInEvent>();
-					for (CampusInEvent campusInEvent : retObject) {
-						switch (campusInEvent.getEventType()) {
-						case CLASS:
-							lesons.put(campusInEvent.getParseId(),
-									campusInEvent);
-							break;
-						case TEST:
-							tests.put(campusInEvent.getParseId(), campusInEvent);
-							break;
-						case MEETING:
-							meeting.put(campusInEvent.getParseId(),
-									campusInEvent);
-							break;
-						default:
-							break;
-						}
+					for (CampusInEvent campusInEvent : retObject) 
+					{
+						addEvent(campusInEvent);
 					}
 				}
 
@@ -124,9 +111,10 @@ public class ViewModel {
 	// this method will cerate a new thread in order to update the view mpdel in
 	// case a thread is allready doing it the current thread will
 	// sleep since
-	public void updateViewModelInBackground(
-			final DataAccesObjectCallBack<Integer> callBack) {
-		new AsyncTask<integer, Integer, Integer>() {
+	public void updateViewModelInBackground(final DataAccesObjectCallBack<Integer> callBack) {
+		
+		new UpdateViewModelInBackground().execute(callBack);
+		/*new AsyncTask<integer, Integer, Integer>() {
 
 			@Override
 			protected Integer doInBackground(integer... params) {
@@ -141,7 +129,7 @@ public class ViewModel {
 				callBack.done(0, null);
 			}
 		};
-
+*/
 	}
 
 	private void loadCurrentUser() {
@@ -188,4 +176,54 @@ public class ViewModel {
 		}
 		return new LinkedList<CampusInUser>();
 	}
+	
+	/**
+	 * add the event to the correct Hash Map
+	 * @param toAdd
+	 */
+	public void addEvent (CampusInEvent toAdd)
+	{
+		if (toAdd != null)
+		{
+			switch (toAdd.getEventType()) {
+			case CLASS:
+				lesons.put(toAdd.getParseId(),
+						toAdd);
+				break;
+			case TEST:
+				tests.put(toAdd.getParseId(), toAdd);
+				break;
+			case MEETING:
+				meeting.put(toAdd.getParseId(),
+						toAdd);
+				break;
+			default:
+				break;
+			}
+		}
+		
+	}
+	
+	public class UpdateViewModelInBackground extends AsyncTask<DataAccesObjectCallBack<Integer> ,Integer, Integer>
+	{
+		DataAccesObjectCallBack<Integer> callBack;
+		@Override
+		protected Integer doInBackground(DataAccesObjectCallBack<Integer>... params) 
+		{
+			callBack = params[0];
+			updateViewModel();
+			return 0;
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) 
+		{
+			callBack.done(0, null);
+		}
+
+		
+
+		
+	}
+	
 }

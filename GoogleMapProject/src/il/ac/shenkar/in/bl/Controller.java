@@ -145,11 +145,7 @@ public class Controller implements ICampusInController
 		
 	}
 
-	@Override
-	public void updateViewModel() {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	@Override
 	public void saveEvent(CampusInEvent toAdd, final ControllerCallback<Integer> callBack) 
@@ -161,15 +157,16 @@ public class Controller implements ICampusInController
 			saveToCLoudEventQue.add(toAdd);
 			for (final CampusInEvent event: saveToCLoudEventQue)
 			{
-				cloudAccessObject.sendEvent(event, new DataAccesObjectCallBack<Integer>() {
+				cloudAccessObject.sendEvent(event, new DataAccesObjectCallBack<String>() {
 					
 					@Override
-					public void done(Integer retObject, Exception e) 
+					public void done(String retObject, Exception e) 
 					{
-						if (retObject == 0)
+						if (retObject != null)
 						{
 							saveToCLoudEventQue.remove(event);
-							callBack.done(retObject, null);
+							//viewModel
+							callBack.done(0, null);
 						}
 						else
 							callBack.done(null, e);
@@ -181,6 +178,20 @@ public class Controller implements ICampusInController
 		{
 			callBack.done(0, new NullPointerException("the Event you tried to save is null"));
 		}
+	}
+
+	@Override
+	public void updateViewModel(final ControllerCallback<Integer> callBack) 
+	{
+		viewModel.updateViewModelInBackground(new DataAccesObjectCallBack<Integer>() {
+			
+			@Override
+			public void done(Integer retObject, Exception e) 
+			{
+				callBack.done(retObject, e);				
+			}
+		});
+		
 	}
 
 	

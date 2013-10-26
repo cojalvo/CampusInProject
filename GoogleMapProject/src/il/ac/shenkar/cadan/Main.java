@@ -99,6 +99,14 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 				R.layout.main, null);
 		// set as content view
 		this.setContentView(this.mDrawerLayout);
+		Controller.getInstance(this).updateViewModel(new ControllerCallback<Integer>() {
+			
+			@Override
+			public void done(Integer retObject, Exception e) 
+			{
+				Controller.getInstance(null);
+			}
+		});
 		mapManager = new MapManager(((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
 

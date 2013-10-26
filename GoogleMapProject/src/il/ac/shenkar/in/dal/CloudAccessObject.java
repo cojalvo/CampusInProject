@@ -2,6 +2,7 @@ package il.ac.shenkar.in.dal;
 
 import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInEvent;
+import il.ac.shenkar.common.CampusInEvent.CampusInEventType;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
@@ -11,8 +12,10 @@ import il.ac.shenkar.common.PersonalSettings;
 
 import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -127,21 +130,11 @@ public class CloudAccessObject implements IDataAccesObject {
 	}
 
 	private CampusInEvent createCampusInEventFromParseObj(ParseObject parseObj) {
-		// ParseObject theEvent=new ParseObject("Event");
-		// theEvent.add("title", event.getHeadLine());
-		// theEvent.add("description", event.getDescription());
-		// theEvent.add("date", event.getDate());
-		// theEvent.add("locationName",event.getLocation().getName());
-		// theEvent.add("lat", event.getLocation().getMapLocation().latitude);
-		// theEvent.add("long", event.getLocation().getMapLocation().longitude);
-		// theEvent.add("isPublic",event.isGlobal());
-		// theEvent.add("ownerParseId", event.getOwnerId());
-		// theEvent.add("type", event.getEventType());
-		// for (String reciverId : event.getReceiversId()){
-		// theEvent.add("recivers", reciverId);
 		CampusInEvent event = null;
 		if (parseObj != null) {
 			event = new CampusInEvent();
+			event.setParseId(parseObj.getObjectId());
+			event.setEventType(parseObj.getString("type"));
 			event.setLocation(new CampusInLocation());
 			// event.setDate(parseObj.getDate("date"));
 			event.setHeadLine(parseObj.getString("title"));
@@ -153,10 +146,29 @@ public class CloudAccessObject implements IDataAccesObject {
 					parseObj.getString("locationName"));
 			event.setGlobal(parseObj.getBoolean("isPublic"));
 			event.setOwnerId(parseObj.getString("ownerParseId"));
-			event.setReciversList(new ArrayList<String>());
-			for (Object reciverId : parseObj.getList("recivers")) {
-				event.getReceiversId().add(reciverId.toString());
+			
+			ArrayList<Object> reciverId = (ArrayList<Object>) parseObj.getList("recivers");
+			if (reciverId!= null)
+			{
+				event.setReciversList(new ArrayList<String>());
+				for (Object reciver : parseObj.getList("recivers")) 
+				{
+					event.getReceiversId().add(reciver.toString());
+				}
 			}
+			else
+			{
+				event.setReciversList((ArrayList<String>)null);
+			}
+			
+			//set the date
+			Date date = parseObj.getDate("date");
+			Calendar cal = new GregorianCalendar();
+			cal.setTime(date);
+			event.setDate(cal);
+			
+			
+			
 		}
 		return event;
 	}
@@ -175,9 +187,9 @@ public class CloudAccessObject implements IDataAccesObject {
 
 	@Override
 	public void sendEvent(CampusInEvent event,
-			final DataAccesObjectCallBack<Integer> callback) {
+			final DataAccesObjectCallBack<String> callback) {
 		if (event != null) {
-			ParseObject theEvent = new ParseObject("Event");
+			final ParseObject theEvent = new ParseObject("Event");
 			theEvent.put("title", event.getHeadLine());
 			theEvent.put("description", event.getDescription());
 			theEvent.put("date", event.getDate());
@@ -203,9 +215,12 @@ public class CloudAccessObject implements IDataAccesObject {
 				public void done(ParseException e) {
 					if (callback != null) {
 						if (e == null)
-							callback.done(0, e);
+						{
+							Log.i("fmefvce", "the Event ParseId is: " + theEvent.getObjectId());
+							callback.done(theEvent.getObjectId(), e);
+						}
 						else
-							callback.done(1, e);
+							callback.done(null, e);
 					}
 
 				}

@@ -106,6 +106,18 @@ public class CampusInEvent {
 	public void setEventType(CampusInEventType eventType) {
 		this.eventType = eventType;
 	}
+	public void setEventType(String stringEventType)
+	{
+		if (stringEventType!= null)
+		{
+			if (stringEventType.equals(CampusInEventType.CLASS.toString()))
+				this.eventType = CampusInEventType.CLASS;
+			else if (stringEventType.equals(CampusInEventType.MEETING.toString()))
+				this.eventType = CampusInEventType.MEETING;
+			else 
+				this.eventType = CampusInEventType.TEST;
+		}
+	}
 	public void setEventType (int position)
 	{
 		if (position == 0)

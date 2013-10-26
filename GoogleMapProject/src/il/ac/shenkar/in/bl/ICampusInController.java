@@ -16,6 +16,6 @@ public interface ICampusInController
 	void getCurrentUserFriendList(ControllerCallback<List<CampusInUser>> callBack);
 	void sendMessage(CampusInMessage message,ControllerCallback<Integer> callBack);
 	void getCurrentUser(ControllerCallback<CampusInUser> callBack);
-	void updateViewModel();
+	void updateViewModel(ControllerCallback<Integer> callBack);
 	
 }
