@@ -5,6 +5,7 @@ import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
+import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.in.dal.*;
 
 import java.util.Collection;
@@ -37,6 +38,7 @@ public class ViewModel {
 	private HashMap<String, CampusInEvent> lesons = new HashMap<String, CampusInEvent>();
 	private HashMap<String, CampusInUserLocation> friendsLocation = new HashMap<String, CampusInUserLocation>();
 	private HashMap<String, CampusInUser> friendsHash = new HashMap<String, CampusInUser>();
+	private HashMap<String, CampusInEvent> allEvents = new HashMap<String, CampusInEvent>();
 
 	/*
 	 * this method update the view model, this method is synchronized in order to prevent data integrity.
@@ -55,6 +57,7 @@ public class ViewModel {
 					{
 						addEvent(campusInEvent);
 					}
+					Controller.getInstance(context).drawAllEvents(null);
 				}
 
 			}
@@ -149,10 +152,7 @@ public class ViewModel {
 	 */
 	// TODO-I think the best location will be in the controller.
 	public Collection<CampusInEvent> getAllEvents() {
-		if (meeting != null)
-			return meeting.values();
-		return new LinkedList<CampusInEvent>();
-
+		return allEvents.values();
 	}
 	
 	public Collection<CampusInMessage> getAllMessages() {
@@ -183,6 +183,7 @@ public class ViewModel {
 	 */
 	public void addEvent (CampusInEvent toAdd)
 	{
+		allEvents.put(toAdd.getParseId(), toAdd);
 		if (toAdd != null)
 		{
 			switch (toAdd.getEventType()) {

@@ -1,11 +1,15 @@
 package il.ac.shenkar.in.bl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
 import android.content.Context;
+import il.ac.shenkar.cadan.MapManager;
 import il.ac.shenkar.cadan.MessageHalper;
 import il.ac.shenkar.cadan.ViewModel;
 import il.ac.shenkar.common.CampusInEvent;
@@ -30,7 +34,7 @@ public class Controller implements ICampusInController
 	private IDataAccesObject cloudAccessObject;
 	private ViewModel viewModel;
 	private CampusInUser currentUser;
-	
+	private MapManager mapManager;
 	/**
 	 * this List will hold all of the Events we want to save to the cloud
 	 * only if the save is successful the event object will be thrown from the list 
@@ -193,6 +197,23 @@ public class Controller implements ICampusInController
 		});
 		
 	}
+
+	@Override
+	public void drawAllEvents(MapManager manager) 
+	{
+		Collection<CampusInEvent> events = viewModel.getAllEvents();
+		for (CampusInEvent toDraw: events)
+		{
+			mapManager.addOrUpdateEventMarker(toDraw);
+		}
+	}
+	
+	public void setMapManager(MapManager mapManager)
+	{
+		this.mapManager= mapManager;
+	}
+	
+	
 
 	
 	

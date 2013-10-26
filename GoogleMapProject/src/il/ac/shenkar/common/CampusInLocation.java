@@ -12,7 +12,7 @@ public class CampusInLocation {
 	public CampusInLocation(JacocDBLocation location) {
 		super();
 		this.locationName = location.getLocationName();
-		il.ac.shenkar.common.LatLng latlng = location.calcCenter();
+	il.ac.shenkar.common.LatLng latlng = location.calcCenter();
 		this.mapLocation = new LatLng(latlng.getLat(),latlng.getLng());
 	}
 	public CampusInLocation() {

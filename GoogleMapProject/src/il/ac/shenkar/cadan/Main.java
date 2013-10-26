@@ -104,7 +104,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 			@Override
 			public void done(Integer retObject, Exception e) 
 			{
-				Controller.getInstance(null);
+				//Controller.getInstance(null).drawAllEvents(mapManager);
+				
 			}
 		});
 		mapManager = new MapManager(((MapFragment) getFragmentManager()
@@ -116,6 +117,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		mapManager.setOnMapLongClickListener(this);
 		mapManager.setOnMarkerClickListener(this);
 
+		Controller.getInstance(null).setMapManager(mapManager);
 		// ActionBarDrawerToggle ties together the the proper interactions
 		// between the sliding drawer and the action bar app icon
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
@@ -359,7 +361,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	}
 
 	@Override
-	public boolean onMarkerClick(Marker marker) {
+	public boolean onMarkerClick(Marker marker) 
+	{
+		marker.showInfoWindow();
 		lastMarkerClicked = marker;
 		return true;
 

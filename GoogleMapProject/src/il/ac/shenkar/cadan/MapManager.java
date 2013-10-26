@@ -7,6 +7,8 @@ import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUserLocation;
 
+import android.provider.ContactsContract.CommonDataKinds.Event;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -94,6 +96,15 @@ public class MapManager
 	}
 	public void addOrUpdateEventMarker(CampusInEvent event)
 	{
+		// create and config the marker Option
+		MarkerOptions markerOptions = new MarkerOptions();
+		markerOptions.position(event.getLocation().getMapLocation());
+		markerOptions.title(event.getHeadLine());
+		markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.calendar_icon));
+		markerOptions.snippet(event.getDescription());
+		
+		Marker eventMarker = map.addMarker(markerOptions);
+		eventMarkerdictionary.put(event.getParseId(), eventMarker);
 
 	}
 	public void addOrUpdateMessageMarker(CampusInMessage event)
