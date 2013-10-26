@@ -12,6 +12,8 @@ import il.ac.shenkar.cadan.AddNewEventFragment.onNewEventAdded;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
+import il.ac.shenkar.in.bl.Controller;
+import il.ac.shenkar.in.bl.ControllerCallback;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.services.InitLocations;
@@ -524,11 +526,24 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	}
 
 	@Override
-	public void onEventCreated(CampusInEvent addedEvent) {
-		// event was added
-		Toast.makeText(getApplicationContext(),
-				"Event Was Added - from Acrivity", 3000).show();
-
+	public void onEventCreated(CampusInEvent addedEvent) 
+	{
+		Controller.getInstance(this).saveEvent(addedEvent, new ControllerCallback<Integer>() {
+			
+			@Override
+			public void done(Integer retObject, Exception e) 
+			{
+				if (retObject == 0)
+				{
+					// event was added
+					Toast.makeText(getApplicationContext(),"Event Was Added - from Acrivity", 3000).show();
+				}
+				else
+				{
+					Log.i(ALARM_SERVICE, "Error in saving Event: " +e.getMessage());
+				}
+			}
+		});
 	}
 
 	// this code is for hiding The soft keyboard when a touch is done anywhere

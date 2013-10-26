@@ -186,10 +186,17 @@ public class CloudAccessObject implements IDataAccesObject {
 			theEvent.put("long", event.getLocation().getMapLocation().longitude);
 			theEvent.put("isPublic", event.isGlobal());
 			theEvent.put("ownerParseId", event.getOwnerId());
-			theEvent.put("type", event.getEventType());
-			for (String reciverId : event.getReceiversId()) {
-				theEvent.add("recivers", reciverId);
+			theEvent.put("type", event.getEventType().toString());			//yaki -toString is called only for debugging 
+			//if the event is global the Receiver List will be empty;
+			if (event.getReceiversId() != null)
+			{
+				for (String reciverId : event.getReceiversId()) 
+				{
+					theEvent.add("recivers", reciverId);
+				}
 			}
+			else
+				theEvent.add("recivers", null);
 			theEvent.saveInBackground(new SaveCallback() {
 
 				@Override

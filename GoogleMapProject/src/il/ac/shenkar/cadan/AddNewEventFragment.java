@@ -253,35 +253,6 @@ public class AddNewEventFragment extends DialogFragment
 	                });
 	    }
 	}
-/*
-	@Override
-	    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) 
-	 {
-			view = inflater.inflate(R.layout.add_event_activity_layout, container, false);
-			
-			// set the title
-			 getDialog().setTitle("ג€°ֳ‚ֳ’ֳ› ג€¡ֳˆֲ¯ֳ‚ֳ� ֳ�ג€�ֻ˜");
-			
-	        
-	        // becouse it's a fragment and i want to deal with the events in here i will put listenets manualy - 
-	        //else it will search the method name on the Activity class
-	        Button dateButton = (Button) view.findViewById(R.id.event_pick_date_button);
-	        dateButton.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) 
-				{
-					// show the Date Picker
-					DialogFragment newFragment = new DatePickerFragment();
-					newFragment.setTargetFragment(AddNewEventFragment.this, 0);
-					newFragment.show(getFragmentManager(), "datePicker");
-				}
-			});
-	        return view;
-	 }
-	*/
-	
-	
 	
 	//*********************************************************************************************
     //									DATE PICKER

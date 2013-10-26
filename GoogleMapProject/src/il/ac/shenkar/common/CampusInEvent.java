@@ -62,8 +62,8 @@ public class CampusInEvent {
 	public void setLocation(CampusInLocation location) {
 		this.location = location;
 	}
-	public Calendar getDate() {
-		return cal;
+	public Date getDate() {
+		return cal.getTime();
 	}
 	public void setDate(Calendar cal) {
 		this.cal = cal;

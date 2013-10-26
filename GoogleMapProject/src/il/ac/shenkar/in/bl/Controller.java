@@ -31,7 +31,11 @@ public class Controller implements ICampusInController
 	private ViewModel viewModel;
 	private CampusInUser currentUser;
 	
-	private Object toReturn;
+	/**
+	 * this List will hold all of the Events we want to save to the cloud
+	 * only if the save is successful the event object will be thrown from the list 
+	 */
+	private List<CampusInEvent> saveToCLoudEventQue;
 	
 	private Controller (Context context)
 	{
@@ -39,6 +43,7 @@ public class Controller implements ICampusInController
 		this.context = context;
 		cloudAccessObject = CloudAccessObject.getInstance();
 		viewModel = new ViewModel(context);
+		saveToCLoudEventQue = new ArrayList<CampusInEvent>();
 		//get the current logged in user
 		
 	
@@ -134,13 +139,6 @@ public class Controller implements ICampusInController
 	}
 
 	@Override
-	public void addEvent(CampusInEvent toAdd,
-			ControllerCallback<Integer> callBack) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void sendMessage(CampusInMessage message,
 			ControllerCallback<Integer> callBack) {
 		// TODO Auto-generated method stub
@@ -151,6 +149,38 @@ public class Controller implements ICampusInController
 	public void updateViewModel() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void saveEvent(CampusInEvent toAdd, final ControllerCallback<Integer> callBack) 
+	{
+		//TODO: to draw the event to the user interface before saving it to the cloud
+		if (toAdd!= null)
+		{
+			// add the toAdd Object to the EventQue;
+			saveToCLoudEventQue.add(toAdd);
+			for (final CampusInEvent event: saveToCLoudEventQue)
+			{
+				cloudAccessObject.sendEvent(event, new DataAccesObjectCallBack<Integer>() {
+					
+					@Override
+					public void done(Integer retObject, Exception e) 
+					{
+						if (retObject == 0)
+						{
+							saveToCLoudEventQue.remove(event);
+							callBack.done(retObject, null);
+						}
+						else
+							callBack.done(null, e);
+					}
+				});
+			}
+		}
+		else 
+		{
+			callBack.done(0, new NullPointerException("the Event you tried to save is null"));
+		}
 	}
 
 	
