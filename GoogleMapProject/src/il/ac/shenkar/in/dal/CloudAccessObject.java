@@ -53,6 +53,7 @@ public class CloudAccessObject implements IDataAccesObject {
 	private Date userFriendsToClassLastUpdate;
 	private Date userFriendsToClassLocationLastUpdate;
 	private Date usersLocationLastUpdate;
+	private Boolean isLoading=false;
 	private HashMap<String, CampusInUser> userTotalFriendsList = new HashMap<String, CampusInUser>();
 	private HashMap<String, CampusInUserLocation> usersLocationList = new HashMap<String, CampusInUserLocation>();
 	private HashMap<String, CampusInUser> allUsersList = new HashMap<String, CampusInUser>();
@@ -568,54 +569,69 @@ public class CloudAccessObject implements IDataAccesObject {
 			final DataAccesObjectCallBack<CampusInUser> callBack) {
 		if (this.curentCampusInUser == null) {
 			// load the parse object that contain the campus in user
-			loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
-
-				@Override
-				public void done(ParseObject retObj, Exception e) {
-					// if the obj was found then it is not the first time
-					if (e == null && retObj != null) {
-						// fetch rhe data from the parse obj
-						curentCampusInUser = fromParseObjToCampusInUser(retObj);
-						// return the callback
-						if (callBack != null)
-							callBack.done(curentCampusInUser, e);
-						return;
-					}
-					// if nothing was found or an error accured than craete the
-					// cumpusInUser with minimum data
-					// later when the user will login the data should be insert
-					else {
-
-						curentCampusInUser = new CampusInUser();
-						FacebookServices.makeMeRequest(
-								ParseFacebookUtils.getSession(),
-								new Request.GraphUserCallback() {
-									public void onCompleted(
-											GraphUser paramAnonymousGraphUser,
-											Response paramAnonymousResponse) {
-										CloudAccessObject.this.curentCampusInUser
-												.setFaceBookUserId(paramAnonymousGraphUser
-														.getId());
-										CloudAccessObject.this.curentCampusInUser
-												.setFirstName(paramAnonymousGraphUser
-														.getFirstName());
-										CloudAccessObject.this.curentCampusInUser
-												.setLastName(paramAnonymousGraphUser
-														.getLastName());
-										CloudAccessObject.this.curentCampusInUser
-												.setParseUserId(ParseUser
-														.getCurrentUser()
-														.getObjectId());
-										if (callBack != null)
-											callBack.done(
-													CloudAccessObject.this.curentCampusInUser,
-													null);
-									}
-								});
-					}
+			//this is a bad solusion but since the thread is managed by parse synchronized block will not work here.
+			//The idle loop will heaped only once so it is not so bad.
+			while (isLoading){}
+				isLoading=true;
+				//the tread that was sleep should check again if the currentuser wass loaded.
+				if(this.curentCampusInUser!=null)
+				{
+					callBack.done(curentCampusInUser, null);
+					return;
 				}
+				loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
 
-			});
+					@Override
+					public void done(ParseObject retObj, Exception e) {
+						// if the obj was found then it is not the first time
+						if (e == null && retObj != null) {
+							// fetch rhe data from the parse obj
+							curentCampusInUser = fromParseObjToCampusInUser(retObj);
+							isLoading=false;
+							// return the callback
+							if (callBack != null)
+								callBack.done(curentCampusInUser, e);
+							return;
+						}
+						// if nothing was found or an error accured than craete the
+						// cumpusInUser with minimum data
+						// later when the user will login the data should be insert
+						else {
+
+							curentCampusInUser = new CampusInUser();
+							FacebookServices.makeMeRequest(
+									ParseFacebookUtils.getSession(),
+									new Request.GraphUserCallback() {
+										public void onCompleted(
+												GraphUser paramAnonymousGraphUser,
+												Response paramAnonymousResponse) {
+											CloudAccessObject.this.curentCampusInUser
+													.setFaceBookUserId(paramAnonymousGraphUser
+															.getId());
+											CloudAccessObject.this.curentCampusInUser
+													.setFirstName(paramAnonymousGraphUser
+															.getFirstName());
+											CloudAccessObject.this.curentCampusInUser
+													.setLastName(paramAnonymousGraphUser
+															.getLastName());
+											CloudAccessObject.this.curentCampusInUser
+													.setParseUserId(ParseUser
+															.getCurrentUser()
+															.getObjectId());
+											isLoading=false;
+											if (callBack != null)
+												callBack.done(
+														CloudAccessObject.this.curentCampusInUser,
+														null);
+										}
+									});
+						}
+					}
+
+				});
+				
+			
+			
 		} else {
 			callBack.done(curentCampusInUser, null);
 		}
