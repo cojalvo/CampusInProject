@@ -469,15 +469,18 @@ public class CloudAccessObject implements IDataAccesObject {
 		localParseQuery.whereEqualTo("parseUserId", ParseUser.getCurrentUser()
 				.getObjectId());
 		localParseQuery.include("location");
-		localParseQuery.findInBackground(new FindCallback<ParseObject>() {
-
-			@Override
-			public void done(List<ParseObject> retList, ParseException e) {
-				if (e == null && retList != null && retList.size() == 1) {
+		List<ParseObject> retList = null;
+		try {
+			retList = localParseQuery.find();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				if (retList != null && retList.size() == 1) {
 					CloudAccessObject.this.parseCurrentCampusInUser = retList
 							.get(0);
 					if (callBack != null)
-						callBack.done(parseCurrentCampusInUser, e);
+						callBack.done(parseCurrentCampusInUser, null);
 				} else {
 					if (callBack != null)
 						callBack.done(
@@ -486,9 +489,6 @@ public class CloudAccessObject implements IDataAccesObject {
 										"Current campus in user is not yet in the cloude"));
 				}
 			}
-		});
-
-	}
 
 	/*
 	 * add cumpus in user to the friend list of the current user(non-Javadoc)
@@ -576,6 +576,7 @@ public class CloudAccessObject implements IDataAccesObject {
 				//the tread that was sleep should check again if the currentuser wass loaded.
 				if(this.curentCampusInUser!=null)
 				{
+					isLoading=false;
 					callBack.done(curentCampusInUser, null);
 					return;
 				}
@@ -605,6 +606,10 @@ public class CloudAccessObject implements IDataAccesObject {
 										public void onCompleted(
 												GraphUser paramAnonymousGraphUser,
 												Response paramAnonymousResponse) {
+											if(paramAnonymousGraphUser==null)
+											{
+												callBack.done(null, new Exception("Could not load data from the cloud"));
+											}
 											CloudAccessObject.this.curentCampusInUser
 													.setFaceBookUserId(paramAnonymousGraphUser
 															.getId());
@@ -633,6 +638,7 @@ public class CloudAccessObject implements IDataAccesObject {
 			
 			
 		} else {
+			isLoading=false;
 			callBack.done(curentCampusInUser, null);
 		}
 	}

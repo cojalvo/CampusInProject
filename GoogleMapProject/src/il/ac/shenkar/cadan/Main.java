@@ -14,6 +14,7 @@ import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
 import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.in.bl.ControllerCallback;
+import il.ac.shenkar.in.bl.ICampusInController;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.services.InitLocations;
@@ -40,6 +41,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.*;
@@ -73,6 +75,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	static final LatLng HAMBURG = new LatLng(20, 25);
 	static final LatLng KIEL = new LatLng(15, 10);
 	private PopupWindow pwindo;
+	private ICampusInController controller;
 	private MapManager mapManager = null;
 	private Vibrator vibrator = null;
 	FragmentManager fm;
@@ -94,7 +97,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 				R.layout.main, null);
 		// set as content view
 		this.setContentView(this.mDrawerLayout);
-		Controller.getInstance(this).updateViewModel(new ControllerCallback<Integer>() {
+		controller=Controller.getInstance(this);
+		controller.updateViewModel(new ControllerCallback<Integer>() {
 			
 			@Override
 			public void done(Integer retObject, Exception e) 
@@ -106,13 +110,13 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		mapManager = new MapManager(((MapFragment) getFragmentManager()
 				.findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
 
-		mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(0, 0),
-				new LatLng(40, 50), (float) 0.1);
-		mapManager.moveCameraToLocation(new LatLng(20, 25), 15);
+		mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089568, 34.802128),
+				new LatLng(32.090501, 34.803617), (float) 0.1);
+		mapManager.moveCameraToLocation(new LatLng(32.089028, 34.80304), 18);
 		mapManager.setOnMapLongClickListener(this);
 		mapManager.setOnMarkerClickListener(this);
 
-		Controller.getInstance(null).setMapManager(mapManager);
+		//controller.setMapManager(mapManager);
 		// ActionBarDrawerToggle ties together the the proper interactions
 		// between the sliding drawer and the action bar app icon
 		mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
@@ -169,6 +173,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 				|| !savedInstanceState.getBoolean("locationServiceStart")) {
 			startLocationReportServise();
 		}
+		IntentFilter filterSend = new IntentFilter();
+		filterSend.addAction(CampusInConstant.VIEW_MODEL_UPDATED);
+		registerReceiver(viewModelUpdatedReciever,filterSend);
 
 	}
 
@@ -535,7 +542,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	@Override
 	public void onEventCreated(CampusInEvent addedEvent) 
 	{
-		Controller.getInstance(this).saveEvent(addedEvent, new ControllerCallback<Integer>() {
+		controller.saveEvent(addedEvent, new ControllerCallback<Integer>() {
 			
 			@Override
 			public void done(Integer retObject, Exception e) 
@@ -544,6 +551,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 				{
 					// event was added
 					Toast.makeText(getApplicationContext(),"Event Was Added - from Acrivity", 3000).show();
+					controller.updateViewModel(null);
 				}
 				else
 				{
@@ -586,9 +594,16 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals(CampusInConstant.VIEW_MODEL_UPDATED)) {
 				Toast.makeText(Main.this, "view model was updated", 500).show();
+				updateView();
 			}
 
 		}
 	};
+	
+	
+	private void updateView()
+	{
+		
+	}
 
 }

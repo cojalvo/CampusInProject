@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Stack;
 
 import android.content.Context;
+import android.content.Intent;
 import il.ac.shenkar.cadan.MapManager;
 import il.ac.shenkar.cadan.MessageHalper;
 import il.ac.shenkar.cadan.ViewModel;
+import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
@@ -192,10 +194,19 @@ public class Controller implements ICampusInController
 			@Override
 			public void done(Integer retObject, Exception e) 
 			{
-				callBack.done(retObject, e);				
+				if(callBack!=null)
+					callBack.done(retObject, e);	
+				invokeViewModelUpdated();
 			}
 		});
 		
+	}
+	
+	private void invokeViewModelUpdated()
+	{
+		Intent inti = new Intent();
+		inti.setAction(CampusInConstant.VIEW_MODEL_UPDATED);
+		context.sendBroadcast(inti);
 	}
 
 	@Override
