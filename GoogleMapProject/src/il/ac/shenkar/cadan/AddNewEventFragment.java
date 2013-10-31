@@ -1,6 +1,7 @@
 package il.ac.shenkar.cadan;
 
 import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
+import il.ac.shenkar.cadan.R.id;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInUser;
@@ -102,13 +103,13 @@ public class AddNewEventFragment extends DialogFragment
 
 
 
-	static AddNewEventFragment newInstance(int num) 
+	static AddNewEventFragment newInstance(Bundle  args) 
 	{
 		AddNewEventFragment f = new AddNewEventFragment();
 
-        // Supply num input as an argument.
-        Bundle args = new Bundle();
-        args.putInt("num", num);
+//        // Supply num input as an argument.
+//        Bundle args = new Bundle();
+//        args.putInt("num", num);
         f.setArguments(args);
 
         return f;
@@ -138,7 +139,12 @@ public class AddNewEventFragment extends DialogFragment
 				
 			}
 		});
-		
+		Boolean showLocationsSpinner=true;
+		Bundle args=this.getArguments();
+		if(args!=null)
+		{
+			showLocationsSpinner=args.getBoolean("showLocationSpinner");
+		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
 				.setTitle("הוסף אירוע")
 				.setPositiveButton("הוסף", new DialogInterface.OnClickListener() {
@@ -162,11 +168,19 @@ public class AddNewEventFragment extends DialogFragment
 		view = getActivity().getLayoutInflater().inflate(R.layout.add_event_activity_layout, null, false);
 		
 		//dislay data to the spinner
+	
 		Spinner locatinSrinner = (Spinner) view.findViewById(R.id.event_location_spinner);
+		View locationLabel=view.findViewById(R.id.event_Location_text_view);
 		IDataBaseHealper DBHelper = DataBaseHealper.getInstance(getActivity());
 		List<String> LocationList  = (List<String>) DBHelper.getAllLocationsForSpinner();
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, LocationList);
 		locatinSrinner.setAdapter(dataAdapter);
+		if(!showLocationsSpinner)
+		{
+			locatinSrinner.setVisibility(View.INVISIBLE);
+			if(locationLabel!=null)
+				locationLabel.setVisibility(View.INVISIBLE);
+		}
 
 		 // becouse it's a fragment and i want to deal with the events in here i will put listenets manualy - 
         //else it will search the method name on the Activity class
@@ -263,6 +277,7 @@ public class AddNewEventFragment extends DialogFragment
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState)
 		{
+	
 			// Use the current date as the default date in the picker
 			final Calendar c = Calendar.getInstance();
 			int year = c.get(Calendar.YEAR);

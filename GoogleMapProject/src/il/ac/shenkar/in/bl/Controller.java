@@ -129,18 +129,19 @@ public class Controller implements ICampusInController
 		//TODO: yaki - later on to bring the real list of events from the relevant object 
 		ArrayList<CampusInEvent> toReturn = new ArrayList<CampusInEvent>();
 		CampusInEvent currEvent;
-		
+		if(callBack!=null)
+			callBack.done(new ArrayList<CampusInEvent>(viewModel.getAllEvents()),null);
 				
-		for (int i=0; i<40; i++)
-		{
-			currEvent = new CampusInEvent();
-			currEvent.setDate(new GregorianCalendar());
-			currEvent.setDescription("description " + i);
-			currEvent.setHeadLine("Title "+i);
-			toReturn.add(currEvent);	
-		}
-		
-		callBack.done(toReturn, null);
+//		for (int i=0; i<40; i++)
+//		{
+//			currEvent = new CampusInEvent();
+//			currEvent.setDate(new GregorianCalendar());
+//			currEvent.setDescription("description " + i);
+//			currEvent.setHeadLine("Title "+i);
+//			toReturn.add(currEvent);	
+//		}
+//		
+//		callBack.done(toReturn, null);
 		
 	}
 

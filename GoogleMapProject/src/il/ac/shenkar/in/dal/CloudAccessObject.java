@@ -209,7 +209,7 @@ public class CloudAccessObject implements IDataAccesObject {
 				}
 			}
 			else
-				theEvent.add("recivers", null);
+				theEvent.add("recivers", event.getOwnerId());
 			theEvent.saveInBackground(new SaveCallback() {
 
 				@Override

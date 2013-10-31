@@ -1,6 +1,7 @@
 package il.ac.shenkar.cadan;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import il.ac.shenkar.cadan.R;
 import il.ac.shenkar.common.CampusInEvent;
@@ -71,8 +72,14 @@ public class MapManager {
 	}
 
 	// clear the map
-	private void clearMap() {
-		map.clear();
+	public void clearMap() {
+		for (Marker toRemove : eventMarkerdictionary.values()) {
+			toRemove.remove();
+		}
+		for (Marker toRemove : personMarkerdictionary.values()) {
+			toRemove.remove();
+			
+		}
 		personMarkerdictionary.clear();
 		eventMarkerdictionary.clear();
 	}
@@ -122,16 +129,15 @@ public class MapManager {
 					marker);
 		}
 	}
-
+	
 	public void addOrUpdateEventMarker(CampusInEvent event) {
 		// create and config the marker Option
 		MarkerOptions markerOptions = new MarkerOptions();
 		markerOptions.position(event.getLocation().getMapLocation());
 		markerOptions.title(event.getHeadLine());
-		markerOptions.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.calendar_icon));
+//		markerOptions.icon(BitmapDescriptorFactory
+//				.fromResource(R.drawable.calendar_icon));
 		markerOptions.snippet(event.getDescription());
-
 		Marker eventMarker = map.addMarker(markerOptions);
 		eventMarkerdictionary.put(event.getParseId(), eventMarker);
 

@@ -90,6 +90,7 @@ public class CampusInEvent {
 	}
 	public void setReciversList(ArrayList<CampusInUser> userList)
 	{
+		if(userList==null) return;
 		for (CampusInUser currUser: userList)
 		{
 			this.receiversId.add(currUser.getParseUserId());

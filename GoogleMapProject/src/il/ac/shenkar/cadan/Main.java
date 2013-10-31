@@ -10,6 +10,7 @@ import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
 import il.ac.shenkar.cadan.ChooseFriendsFragment.onFriendsAddedListener;
 import il.ac.shenkar.cadan.AddNewEventFragment.onNewEventAdded;
 import il.ac.shenkar.common.CampusInEvent;
+import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
 import il.ac.shenkar.in.bl.Controller;
@@ -222,20 +223,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		Intent intent;
 		switch (item.getItemId()) {
 		case R.id.action_add_event:
-			android.app.FragmentTransaction ft = getFragmentManager()
-					.beginTransaction();
-			android.app.Fragment prev = getFragmentManager().findFragmentByTag(
-					"dialog");
-			if (prev != null) {
-				ft.remove(prev);
-			}
-			ft.addToBackStack(null);
-
-			// Create and show the dialog.
-			AddNewEventFragment newFragment = AddNewEventFragment
-					.newInstance(2);
-			newFragment.show(ft, "dialog");
-
+				createEventProcess();
 			/*
 			 * startActivity(intent);
 			 * overridePendingTransition(R.anim.slide_in_left,
@@ -405,42 +393,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 						+ lastMapLongClick.latitude + " long: "
 						+ lastMapLongClick.longitude, 300).show();
 		pwindo.dismiss();
-		CloudAccessObject.getInstance().getAllCampusInUsersStartWith("R",
-				new DataAccesObjectCallBack<List<CampusInUser>>() {
-
-					@Override
-					public void done(final List<CampusInUser> retObject,
-							Exception e) {
-						if (e == null && retObject != null) {
-							if (retObject.size() > 0) {
-								CloudAccessObject
-										.getInstance()
-										.removeFriendFromFriendList(
-												retObject.get(0),
-												new DataAccesObjectCallBack<Integer>() {
-
-													@Override
-													public void done(
-															Integer intRet,
-															Exception e) {
-														if (e == null) {
-															Toast.makeText(
-																	Main.this,
-																	" friend wass removed:"
-																			+ retObject
-																					.get(0)
-																					.getFirstName(),
-																	300).show();
-														}
-
-													}
-												});
-							}
-						}
-
-					}
-				});
-		lastMapLongClick = null;
+		createEventProcess();
 	}
 
 	public void addMessageClicked(View v) {
@@ -501,7 +454,23 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		lastMapLongClick = null;
 	}
 
-	private void createEventProcess() {
+	private void createEventProcess()
+	{
+		android.app.FragmentTransaction ft = getFragmentManager()
+				.beginTransaction();
+		android.app.Fragment prev = getFragmentManager().findFragmentByTag(
+				"dialog");
+		if (prev != null) {
+			ft.remove(prev);
+		}
+		ft.addToBackStack(null);
+
+		// Create and show the dialog.
+		Bundle args=new Bundle();
+		args.putBoolean("showLocationSpinner", false);
+		AddNewEventFragment newFragment = AddNewEventFragment
+				.newInstance(args);
+		newFragment.show(ft, "dialog");
 
 	}
 
@@ -542,6 +511,11 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	@Override
 	public void onEventCreated(CampusInEvent addedEvent) 
 	{
+		addedEvent.setLocation(new CampusInLocation());
+		addedEvent.getLocation().setMapLocation(lastMapLongClick);
+		//TODO just for testing hard coded name
+		addedEvent.getLocation().setLocationName("Shenkar");
+		MessageHalper.showProgressDialog("Saving...", this);
 		controller.saveEvent(addedEvent, new ControllerCallback<Integer>() {
 			
 			@Override
@@ -551,6 +525,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 				{
 					// event was added
 					Toast.makeText(getApplicationContext(),"Event Was Added - from Acrivity", 3000).show();
+					MessageHalper.closeProggresDialog();
 					controller.updateViewModel(null);
 				}
 				else
@@ -603,7 +578,17 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	
 	private void updateView()
 	{
-		
+		controller.getCurrentUserAllEvents(new ControllerCallback<List<CampusInEvent>>() {
+			
+			@Override
+			public void done(List<CampusInEvent> retObject, Exception e) {
+				mapManager.clearMap();
+				for (CampusInEvent campusInEvent : retObject) {
+					mapManager.addOrUpdateEventMarker(campusInEvent);
+				}
+				
+			}
+		});
 	}
 
 }
