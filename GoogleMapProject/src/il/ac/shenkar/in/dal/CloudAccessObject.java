@@ -771,9 +771,7 @@ public class CloudAccessObject implements IDataAccesObject {
 			final DataAccesObjectCallBack<List<CampusInUser>> callBack) {
 		// first load
 		ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
-		if (allUsersList == null) {
-			allUsersList = new HashMap<String, CampusInUser>();
-		} else {
+		if (allUsersLastUpdate != null) {
 			query.whereGreaterThanOrEqualTo("createdAt", allUsersLastUpdate);
 		}
 		query.findInBackground(new FindCallback<ParseObject>() {

@@ -17,6 +17,7 @@ import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
+import il.ac.shenkar.common.CampusInUserLocation;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.IDataAccesObject;
@@ -80,18 +81,8 @@ public class Controller implements ICampusInController
 	public void getCurrentUserFriendList(final ControllerCallback<List<CampusInUser>> callBack) 
 	{
 		MessageHalper.showProgressDialog("gettig "+ currentUser.getFirstName() +" friends", context);
-		cloudAccessObject.getCurrentCampusInUserFriends(new DataAccesObjectCallBack<List<CampusInUser>>() {
-			
-			@Override
-			public void done(List<CampusInUser> retObject, Exception e) {
-				if(retObject!= null && e == null)
-					callBack.done(retObject, null);
-				else 
-					callBack.done(retObject, e);
-				
-			}
-		});
-		
+		if(callBack!=null)
+			callBack.done(new ArrayList<CampusInUser>(viewModel.getAllFriends()),null);
 	}
 
 	@Override
@@ -223,6 +214,13 @@ public class Controller implements ICampusInController
 	public void setMapManager(MapManager mapManager)
 	{
 		this.mapManager= mapManager;
+	}
+
+	@Override
+	public void getCurrentUserFriendsLocationList(
+			ControllerCallback<List<CampusInUserLocation>> callBack) {
+		if(callBack!=null)
+			callBack.done(new ArrayList<CampusInUserLocation>(viewModel.getAllFriendsLocation()),null);
 	}
 	
 	

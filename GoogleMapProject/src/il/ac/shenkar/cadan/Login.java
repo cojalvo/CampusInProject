@@ -58,7 +58,7 @@ public class Login extends Activity {
 		// if the user is already log in than go the main activity
 		final ParseUser currentUser = ParseUser.getCurrentUser();
 		if (currentUser != null) {
-			startActivity(new Intent(Login.this, Main.class));
+			startActivity(new Intent(Login.this, LoadingActivity.class));
 			finish();
 		}
 

@@ -68,6 +68,7 @@ public class LocationReporterServise extends Service {
 		{
 			// TODO Auto-generated method stub
 			super.onDestroy();
+			unregisterReceiver(changeReceiver);
 			locationReporter.stop();
 			
 		}

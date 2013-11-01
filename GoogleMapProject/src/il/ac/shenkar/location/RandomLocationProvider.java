@@ -2,6 +2,7 @@ package il.ac.shenkar.location;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import il.ac.shenkar.cadan.MapManager;
 import il.ac.shenkar.common.CampusInLocation;
 
 /**
@@ -16,9 +17,23 @@ public class RandomLocationProvider implements ILocationProvider
 	@Override
 	public CampusInLocation getLoction() {
 		CampusInLocation cl=new CampusInLocation();
-		cl.setMapLocation(new LatLng(100,105));
+		LatLng loc=null;
+		loc=soundLocation();
+		if(loc==null)
+			loc=gpsLocation();
+		if(loc==null)
+			return null;
+		cl.setMapLocation(loc);
 		cl.setLocationName("cadan");
 		return  cl;
+	}
+	private LatLng gpsLocation()
+	{
+		return MapManager.getmyLocation();
+	}
+	private LatLng soundLocation()
+	{
+		return null;
 	}
 	
 

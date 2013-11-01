@@ -78,6 +78,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	private PopupWindow pwindo;
 	private ICampusInController controller;
 	private MapManager mapManager = null;
+	private BroadcastReceiver viewModelUpdatedReciever;
 	private Vibrator vibrator = null;
 	FragmentManager fm;
 
@@ -99,24 +100,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		// set as content view
 		this.setContentView(this.mDrawerLayout);
 		controller=Controller.getInstance(this);
-		controller.updateViewModel(new ControllerCallback<Integer>() {
-			
-			@Override
-			public void done(Integer retObject, Exception e) 
-			{
-				//Controller.getInstance(null).drawAllEvents(mapManager);
-				
-			}
-		});
-		mapManager = new MapManager(((MapFragment) getFragmentManager()
-				.findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
-
-		mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089568, 34.802128),
-				new LatLng(32.090501, 34.803617), (float) 0.1);
-		mapManager.moveCameraToLocation(new LatLng(32.089028, 34.80304), 18);
-		mapManager.setOnMapLongClickListener(this);
-		mapManager.setOnMarkerClickListener(this);
-
+		initMapManager();
 		//controller.setMapManager(mapManager);
 		// ActionBarDrawerToggle ties together the the proper interactions
 		// between the sliding drawer and the action bar app icon
@@ -174,10 +158,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 				|| !savedInstanceState.getBoolean("locationServiceStart")) {
 			startLocationReportServise();
 		}
-		IntentFilter filterSend = new IntentFilter();
-		filterSend.addAction(CampusInConstant.VIEW_MODEL_UPDATED);
-		registerReceiver(viewModelUpdatedReciever,filterSend);
-
+		updateView();
+		registerViewModelReciever();
 	}
 
 	@Override
@@ -196,6 +178,18 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		i.putExtra("KEY1", "Value to be used by the service");
 		this.startService(i);
 
+	}
+	
+	private void initMapManager()
+	{
+		mapManager =  MapManager.getInstance(((MapFragment) getFragmentManager()
+				.findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
+
+		mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089568, 34.802128),
+				new LatLng(32.090501, 34.803617), (float) 0.1);
+		mapManager.moveCameraToLocation(new LatLng(32.089028, 34.80304), 18);
+		mapManager.setOnMapLongClickListener(this);
+		mapManager.setOnMarkerClickListener(this);
 	}
 
 	@Override
@@ -563,32 +557,64 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		return ret;
 	}
 
-	BroadcastReceiver viewModelUpdatedReciever = new BroadcastReceiver() {
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			if (intent.getAction().equals(CampusInConstant.VIEW_MODEL_UPDATED)) {
-				Toast.makeText(Main.this, "view model was updated", 500).show();
-				updateView();
-			}
-
-		}
-	};
 	
+	private void registerViewModelReciever()
+	{
+		IntentFilter filterSend = new IntentFilter();
+		filterSend.addAction(CampusInConstant.VIEW_MODEL_UPDATED);
+		 viewModelUpdatedReciever = new BroadcastReceiver() {
+
+				@Override
+				public void onReceive(Context context, Intent intent) {
+					if (intent.getAction().equals(CampusInConstant.VIEW_MODEL_UPDATED)) {
+						Toast.makeText(Main.this, "view model was updated", 500).show();
+						updateView();
+					}
+
+				}
+			};
+			registerReceiver(viewModelUpdatedReciever, filterSend);
+	}
+	private void unRegisterViewModelReciever()
+	{
+		if(viewModelUpdatedReciever!=null)
+		{
+			unregisterReceiver(viewModelUpdatedReciever);
+		}
+	}
 	
 	private void updateView()
 	{
+		mapManager.clearMap();
 		controller.getCurrentUserAllEvents(new ControllerCallback<List<CampusInEvent>>() {
-			
 			@Override
 			public void done(List<CampusInEvent> retObject, Exception e) {
-				mapManager.clearMap();
 				for (CampusInEvent campusInEvent : retObject) {
 					mapManager.addOrUpdateEventMarker(campusInEvent);
 				}
 				
 			}
 		});
+		controller.getCurrentUserFriendsLocationList(new ControllerCallback<List<CampusInUserLocation>>() {
+			
+			@Override
+			public void done(List<CampusInUserLocation> retObject, Exception e) {
+				for (CampusInUserLocation campusInUserLocation : retObject) {
+					mapManager.addOrUpdatePersonMarker(campusInUserLocation);
+				}
+				
+			}
+		});
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		//stop the report location service
+		Main.this.stopService(new Intent(Main.this,
+				LocationReporterServise.class));
+		unRegisterViewModelReciever();
 	}
 
 }

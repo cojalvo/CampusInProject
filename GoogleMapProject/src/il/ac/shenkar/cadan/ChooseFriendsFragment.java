@@ -10,9 +10,6 @@ import il.ac.shenkar.common.CampusInUserChecked;
 import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.in.bl.ControllerCallback;
 import il.ac.shenkar.in.bl.ICampusInController;
-import il.ac.shenkar.in.dal.CloudAccessObject;
-import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
-import il.ac.shenkar.in.dal.IDataAccesObject;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,7 +34,7 @@ import android.widget.Toast;
 public class ChooseFriendsFragment extends DialogFragment {
 	onFriendsAddedListener mCallback;
 	private View view;
-	private ArrayList<CampusInUser> friensList;
+	private List<CampusInUser> friensList;
 	private ChooseFriendAction action;
 	private ICampusInController controller = null;
 
@@ -56,7 +53,9 @@ public class ChooseFriendsFragment extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		super.onCreateDialog(savedInstanceState);
 		controller = Controller.getInstance(getActivity());
-		MessageHalper.showProgressDialog("Loading Friends", getActivity());
+		MessageHalper.showProgressDialog("Loading Friends",getActivity());
+		view = getActivity().getLayoutInflater().inflate(
+				R.layout.add_friends_fragment_layout, null, false);
 		initFriendList();
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		if (action == ChooseFriendAction.ADD) {
@@ -142,8 +141,7 @@ public class ChooseFriendsFragment extends DialogFragment {
 								}
 							});
 		}
-		view = getActivity().getLayoutInflater().inflate(
-				R.layout.add_friends_fragment_layout, null, false);
+
 
 		// this part is for filtering the list of friends
 		EditText inputSearch = (EditText) view.findViewById(R.id.inputSearch);
@@ -222,7 +220,7 @@ public class ChooseFriendsFragment extends DialogFragment {
 					@Override
 					public void done(List<CampusInUser> retObject, Exception e) {
 						if (retObject!= null)
-							friensList = (ArrayList<CampusInUser>) retObject;
+							friensList = retObject;
 						Toast.makeText(getActivity(), "number of friends:" +retObject.size(), 3000).show();
 						ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
 						friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(),curretntUser));

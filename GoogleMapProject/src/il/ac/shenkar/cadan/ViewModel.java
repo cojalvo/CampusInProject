@@ -69,7 +69,7 @@ public class ViewModel {
 
 		// the location and the campus in user are connected this is the reason
 		// it is not safe to it asynchronous
-		dao.getAllCumpusInUsers(new DataAccesObjectCallBack<List<CampusInUser>>() {
+		dao.getCurrentCampusInUserFriends(new DataAccesObjectCallBack<List<CampusInUser>>() {
 
 			@Override
 			public void done(List<CampusInUser> retObject, Exception e) {

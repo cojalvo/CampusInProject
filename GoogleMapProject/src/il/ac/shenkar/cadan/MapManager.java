@@ -8,6 +8,7 @@ import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUserLocation;
 
+import android.location.Location;
 import android.provider.ContactsContract.CommonDataKinds.Event;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,11 +25,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapManager {
+	private static MapManager instance = null;
 	private GoogleMap map = null;
 	private HashMap<String, Marker> personMarkerdictionary;
 	private HashMap<String, Marker> eventMarkerdictionary;
 	private HashMap<String, Marker> messageMarkerdictionary;
-	//the key is the lat+long -as string
+	// the key is the lat+long -as string
 	private HashMap<String, HashMap<String, Marker>> positionMarkerDic;
 	private LatLng lastlongClicked = null;
 
@@ -50,7 +52,7 @@ public class MapManager {
 		return lastlongClicked;
 	}
 
-	public MapManager(GoogleMap map, int mapType) {
+	private MapManager(GoogleMap map, int mapType) {
 		this.map = map;
 		this.map.setMapType(mapType);
 		this.map.getUiSettings().setZoomControlsEnabled(false);
@@ -58,6 +60,12 @@ public class MapManager {
 		personMarkerdictionary = new HashMap<String, Marker>();
 		eventMarkerdictionary = new HashMap<String, Marker>();
 		positionMarkerDic = new HashMap<String, HashMap<String, Marker>>();
+	}
+
+	static MapManager getInstance(GoogleMap map, int mapType) {
+		if (instance == null)
+			instance = new MapManager(map, mapType);
+		return instance;
 	}
 
 	public void addGroundOverlay(int imageResource, LatLng southWest,
@@ -78,7 +86,7 @@ public class MapManager {
 		}
 		for (Marker toRemove : personMarkerdictionary.values()) {
 			toRemove.remove();
-			
+
 		}
 		personMarkerdictionary.clear();
 		eventMarkerdictionary.clear();
@@ -112,31 +120,46 @@ public class MapManager {
 
 	public void addOrUpdatePersonMarker(CampusInUserLocation user) {
 		Marker marker;
-		if (personMarkerdictionary.containsKey(user.getUser().getParseUserId()))
-		{
+		if (personMarkerdictionary.containsKey(user.getUser().getParseUserId())) {
 			marker = personMarkerdictionary
 					.get(user.getUser().getParseUserId());
-			marker.setTitle(user.getUser().getFirstName()+ " "+ user.getUser().getLastName());
+			//we lost the location of the user than we remove him
+			if(user.getUser()==null || user.getLocation()==null)
+			{
+				marker.remove();
+				personMarkerdictionary.remove(user.getUser().getParseUserId());
+				return;
+			}
+				
+			marker.setTitle(user.getUser().getFirstName() + " "
+					+ user.getUser().getLastName());
 			marker.setPosition(user.getLocation().getMapLocation());
 		}
-		
+
 		else {
-			marker = map.addMarker(new MarkerOptions().position(
-					user.getLocation().getMapLocation()).title(
-					user.getUser().getFirstName() + " "
-							+ user.getUser().getLastName()));
+			//if we dont know the location it will ne null than don't show his marker
+			if(user==null|| user.getLocation()==null)
+			{
+				return;
+			}
+			marker = map.addMarker(new MarkerOptions()
+					.position(user.getLocation().getMapLocation())
+					.title(user.getUser().getFirstName() + " "
+							+ user.getUser().getLastName())
+					.icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.student_marker)));
 			this.personMarkerdictionary.put(user.getUser().getParseUserId(),
 					marker);
 		}
 	}
-	
+
 	public void addOrUpdateEventMarker(CampusInEvent event) {
 		// create and config the marker Option
 		MarkerOptions markerOptions = new MarkerOptions();
 		markerOptions.position(event.getLocation().getMapLocation());
 		markerOptions.title(event.getHeadLine());
-//		markerOptions.icon(BitmapDescriptorFactory
-//				.fromResource(R.drawable.calendar_icon));
+		markerOptions.icon(BitmapDescriptorFactory
+				.fromResource(R.drawable.event_marker));
 		markerOptions.snippet(event.getDescription());
 		Marker eventMarker = map.addMarker(markerOptions);
 		eventMarkerdictionary.put(event.getParseId(), eventMarker);
@@ -157,5 +180,15 @@ public class MapManager {
 
 	public void removeMessageMarker(String id) {
 
+	}
+
+	public static LatLng getmyLocation() {
+		if (instance != null) {
+			Location loc = instance.map.getMyLocation();
+			if (loc == null)
+				return null;
+			return new LatLng(loc.getLatitude(), loc.getLongitude());
+		}
+		return null;
 	}
 }

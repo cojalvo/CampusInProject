@@ -45,18 +45,7 @@ public class LocationoReporter implements ILocationReporter
 		filterSend.addAction(CampusInConstant.CLOUD_ACTION_LOCATION_UPDATE);
 		//register a receiver
 		this.context=context;
-		if (context!=null) context.registerReceiver(receiver, filterSend);
 	}
-	
-	//the broadcast receiver receive callback from the dao object when the updating has finished
-	private BroadcastReceiver receiver=new BroadcastReceiver()
-	{
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
-			lastUpdateFinish=true;
-		}
-	};
 	//this runnable is running every interval time.
 	private final Runnable autoRefresh = new Runnable()
 	{
@@ -81,8 +70,14 @@ public class LocationoReporter implements ILocationReporter
 	{
 		CampusInLocation currerntLoaction = locationProvider.getLoction();
 		// if the location hasn't changed than return;
+		if(currerntLoaction==null)
+		{
+			Toast.makeText(context, "Couldnt find the location", 15).show();
+			lastUpdateFinish=true;
+			return;
+		}
 		if (currerntLoaction.equals(lastLocation)) return;
-	String userId = ParseUser.getCurrentUser().getObjectId();
+		String userId = ParseUser.getCurrentUser().getObjectId();
 			dao.updateLocation(currerntLoaction, new DataAccesObjectCallBack<Integer>() {
 				
 				@Override
