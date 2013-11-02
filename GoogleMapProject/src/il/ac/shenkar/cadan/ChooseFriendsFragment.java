@@ -15,6 +15,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -43,6 +44,7 @@ public class ChooseFriendsFragment extends DialogFragment
     private List<CampusInUser> friensList;
     private ChooseFriendAction action;
     private ICampusInController controller = null;
+    ProgressDialog progressDialog;
 
     static ChooseFriendsFragment newInstance(ChooseFriendAction action)
     {
@@ -61,7 +63,6 @@ public class ChooseFriendsFragment extends DialogFragment
     {
 	super.onCreateDialog(savedInstanceState);
 	controller = Controller.getInstance(getActivity());
-	MessageHalper.showProgressDialog("Loading Friends", getActivity());
 	view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 	initFriendList();
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -204,7 +205,7 @@ public class ChooseFriendsFragment extends DialogFragment
 	for (CampusInUser friend : friensList)
 	{
 	    CampusInUserChecked u = new CampusInUserChecked(friend);
-	    u.setChecked(true);
+	    u.setChecked(false);
 	    toReturn.add(u);
 	}
 	return toReturn;
@@ -231,8 +232,7 @@ public class ChooseFriendsFragment extends DialogFragment
 			    Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 			    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
 			    friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
-			    MessageHalper.closeProggresDialog();
-
+			   // progressDialog.dismiss();
 			}
 		    });
 		}
@@ -267,5 +267,15 @@ public class ChooseFriendsFragment extends DialogFragment
     {
 	ADD, REMOVE
     }
+    
+    @Override
+    public void onStart()
+    {
+	super.onStart();
+	this.getDialog().setCanceledOnTouchOutside(false);
+	/*if (action == ChooseFriendAction.ADD)
+	    progressDialog = ProgressDialog.show(getActivity(), "Loading Friends", "Loading FRiends from cloud");*/
+    }
+
 
 }

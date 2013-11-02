@@ -98,7 +98,7 @@ public class AddNewEventFragment extends DialogFragment
 		this.addedFriends = addedFriends;
 		// after the friend list was added i will change the text on the button
 		Button b = (Button) view.findViewById(R.id.event_add_friends_button);
-		b.setText("חברים התווספו בהצלחה");
+		b.setText("׳—׳‘׳¨׳™׳� ׳”׳×׳•׳•׳¡׳₪׳• ׳‘׳”׳¦׳�׳—׳”");
 	}
 
 
@@ -146,8 +146,8 @@ public class AddNewEventFragment extends DialogFragment
 			showLocationsSpinner=args.getBoolean("showLocationSpinner");
 		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-				.setTitle("הוסף אירוע")
-				.setPositiveButton("הוסף", new DialogInterface.OnClickListener() {
+				.setTitle("׳”׳•׳¡׳£ ׳�׳™׳¨׳•׳¢")
+				.setPositiveButton("׳”׳•׳¡׳£", new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) 
@@ -156,7 +156,7 @@ public class AddNewEventFragment extends DialogFragment
 						// this could validate the data in the fields before closing the dialog
 					}
 				})
-				.setNegativeButton("בטל", new DialogInterface.OnClickListener() {
+				.setNegativeButton("׳‘׳˜׳�", new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) 
@@ -249,6 +249,7 @@ public class AddNewEventFragment extends DialogFragment
 	{
 	    super.onStart();    //super.onStart() is where dialog.show() is actually called on the underlying dialog, so we have to do it after this point
 	    AlertDialog d = (AlertDialog)getDialog();
+	    this.getDialog().setCanceledOnTouchOutside(false);
 	    if(d != null)
 	    {
 	        Button positiveButton = (Button) d.getButton(Dialog.BUTTON_POSITIVE);
@@ -389,4 +390,5 @@ public class AddNewEventFragment extends DialogFragment
     	return toReturn;
     }
 
+    
 }

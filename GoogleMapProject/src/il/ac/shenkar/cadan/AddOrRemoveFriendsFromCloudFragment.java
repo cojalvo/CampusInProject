@@ -255,6 +255,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
     public void onStart()
     {
 	super.onStart();
+	this.getDialog().setCanceledOnTouchOutside(false);
 	if (action == ChooseFriendAction.ADD)
 	    progressDialog = ProgressDialog.show(getActivity(), "Loading Friends", "Loading FRiends from cloud");
     }
