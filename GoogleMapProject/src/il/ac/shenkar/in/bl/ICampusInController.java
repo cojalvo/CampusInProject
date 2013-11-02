@@ -14,7 +14,7 @@ import il.ac.shenkar.common.CampusInUserLocation;
 public interface ICampusInController
 {
 	void getCurrentUserAllEvents(ControllerCallback<List<CampusInEvent>> callBack);
-	void saveEvent(CampusInEvent toAdd,ControllerCallback<Integer> callBack);
+	void saveEvent(CampusInEvent toAdd,ControllerCallback<String> callBack);
 	void getCurrentUserFriendList(ControllerCallback<List<CampusInUser>> callBack);
 	void getCurrentUserFriendsLocationList(ControllerCallback<List<CampusInUserLocation>> callBack);
 	void sendMessage(CampusInMessage message,ControllerCallback<Integer> callBack);
@@ -22,5 +22,5 @@ public interface ICampusInController
 	void updateViewModel(ControllerCallback<Integer> callBack);
 	
 	void drawAllEvents(MapManager manager);
-	
+	CampusInEvent getEvent(String eventId);
 }

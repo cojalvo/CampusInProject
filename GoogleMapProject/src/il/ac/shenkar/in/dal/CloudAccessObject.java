@@ -9,6 +9,7 @@ import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
 import il.ac.shenkar.common.ParsingHelper;
 import il.ac.shenkar.common.PersonalSettings;
+import il.ac.shenkar.in.bl.Controller;
 
 import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
@@ -187,7 +188,7 @@ public class CloudAccessObject implements IDataAccesObject {
 	}
 
 	@Override
-	public void sendEvent(CampusInEvent event,
+	public void sendEvent(final CampusInEvent event,
 			final DataAccesObjectCallBack<String> callback) {
 		if (event != null) {
 			final ParseObject theEvent = new ParseObject("Event");
@@ -200,7 +201,7 @@ public class CloudAccessObject implements IDataAccesObject {
 			theEvent.put("isPublic", event.isGlobal());
 			theEvent.put("ownerParseId", event.getOwnerId());
 			theEvent.put("type", event.getEventType().toString());			//yaki -toString is called only for debugging 
-			//if the event is global the Receiver List will be empty;
+			//if the event is global the Receiver List will be empty
 			if (event.getReceiversId() != null)
 			{
 				for (String reciverId : event.getReceiversId()) 
@@ -217,8 +218,10 @@ public class CloudAccessObject implements IDataAccesObject {
 					if (callback != null) {
 						if (e == null)
 						{
-							Log.i("fmefvce", "the Event ParseId is: " + theEvent.getObjectId());
-							callback.done(theEvent.getObjectId(), e);
+						    Log.i("fmefvce", "the Event ParseId is: " + theEvent.getObjectId());
+						    event.setParseId(theEvent.getObjectId());
+						    Controller.getInstance(null).addEventToLocalMap(event);
+						    callback.done(theEvent.getObjectId(), e);	
 						}
 						else
 							callback.done(null, e);
