@@ -32,6 +32,7 @@ import com.parse.ParseFacebookUtils;
 
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -45,6 +46,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.*;
@@ -578,24 +580,21 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		if (retObject != null)
 		{
 		    // event was added
-		    Toast.makeText(getApplicationContext(),
-			    "Event Was Added - from Acrivity", 3000).show();
+		    Toast.makeText(getApplicationContext(), "Event Was Added - from Acrivity", 3000).show();
 		    // add the event to the Alarm manager
-		    // TODO: replace the "true" in the condition to compare it
-		    // to the setting
-		    if (true)
+		    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		    String reminderTime = sharedPrefs.getString("event_reminder","300000"); /* default reminder is 5 minutes before*/
+		    long reminderTimeInMiliseconds = Long.parseLong(reminderTime);
+		    /* value '0' mean no reminder is needed */
+		    if (reminderTimeInMiliseconds > 0)
 		    {
-			CampusInEvent event = Controller.getInstance(
-				getApplicationContext()).getEvent(retObject);
+			CampusInEvent event = Controller.getInstance(getApplicationContext()).getEvent(retObject);
 			Context context = getApplicationContext();
-			Intent activityIntent = new Intent(
-				"il.ac.asenkar.brodcast_receiver");
+			Intent activityIntent = new Intent("il.ac.asenkar.brodcast_receiver");
 			activityIntent.putExtra("event_id", (String) retObject);
-			PendingIntent pendingInent = PendingIntent
-				.getBroadcast(context, 0, activityIntent, 0);
+			PendingIntent pendingInent = PendingIntent.getBroadcast(context, 0, activityIntent, 0);
 			AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-			alarmManager.set(AlarmManager.RTC_WAKEUP, event
-				.getDate().getTime(), pendingInent);
+			alarmManager.set(AlarmManager.RTC_WAKEUP, event.getDate().getTime() - reminderTimeInMiliseconds, pendingInent);
 		    }
 		    MessageHalper.closeProggresDialog();
 		    controller.updateViewModel(null);

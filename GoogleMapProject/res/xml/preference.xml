@@ -15,7 +15,7 @@
             android:icon="@drawable/calendar_icon"
             android:key="my_calendar"
             android:summary="ערוך את מערכת השעות"
-            android:title="מערכת השעות שלי" />
+            android:title="מערכת + שלי" />
 
         <Preference
             android:icon="@drawable/test_icon"
@@ -23,5 +23,17 @@
             android:summary="ערוך את לוח המבחנים שלי"
             android:title="לוח המבחנים שלי" />
         
+    </PreferenceCategory>
+    <PreferenceCategory 
+        android:key="my_area"
+       	android:title="אירועים בקמפוס">
+        <ListPreference 
+            android:key="event_reminder"
+            android:entries="@array/event_reminder"
+            android:entryValues="@array/event_reminder_values"
+            android:title="תזכורות לאירועים"
+            android:defaultValue="300000"
+            android:summary="קבל תזכורות לאירועים"/>
+       		
     </PreferenceCategory>
 </PreferenceScreen>
