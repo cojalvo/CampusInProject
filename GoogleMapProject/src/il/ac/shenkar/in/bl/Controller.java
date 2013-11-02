@@ -274,5 +274,17 @@ public class Controller implements ICampusInController
 	}
     }
 
+    @Override
+    public void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove)
+    {
+	if (friendsToRemove != null)
+	{
+	    for (CampusInUser user: friendsToRemove)
+	    {
+		cloudAccessObject.removeFriendFromFriendList(user, null);
+	    }
+	}
+    }
+
 
 }

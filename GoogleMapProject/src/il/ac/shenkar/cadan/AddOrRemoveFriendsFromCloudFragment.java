@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
@@ -31,11 +32,11 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
     private List<CampusInUser> friensList;
     private ChooseFriendAction action;
     private ICampusInController controller = null;
+    ProgressDialog progressDialog;
 
     static AddOrRemoveFriendsFromCloudFragment newInstance(ChooseFriendAction action)
     {
 	AddOrRemoveFriendsFromCloudFragment f = new AddOrRemoveFriendsFromCloudFragment();
-
 	// Supply num input as an argument.
 	Bundle args = new Bundle();
 	args.putSerializable("action", action);
@@ -50,7 +51,6 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 	super.onCreateDialog(savedInstanceState);
 	controller = Controller.getInstance(getActivity());
 	initFriendList();
-	MessageHalper.showProgressDialog("Loading Friends", getActivity());
 	if (view == null)
 	    view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -164,7 +164,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 
     @Override
     public void onAttach(Activity activity)
-    {
+    {	
 	super.onAttach(activity);
 	// This makes sure that the container activity has implemented
 	// the callback interface. If not, it throws an exception
@@ -184,6 +184,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
      */
     private void initFriendList()
     {
+	//progressDialog = ProgressDialog.show(getActivity(), "Loading Friends", "Loading FRiends from cloud");
 	if (action == ChooseFriendAction.ADD)
 	{
 	    // the user want to add friends to his friend list
@@ -205,7 +206,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 				Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
 				friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
-				MessageHalper.closeProggresDialog();
+				progressDialog.dismiss();
 			    }
 			});
 		    }
@@ -238,7 +239,8 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 					view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 				    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
 				    friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
-				    MessageHalper.closeProggresDialog();
+				    if (progressDialog != null)
+					progressDialog.dismiss();
 				}
 
 			    }
@@ -247,6 +249,14 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 		}
 	    });
 	}
+    }
+
+    @Override
+    public void onStart()
+    {
+	super.onStart();
+	if (action == ChooseFriendAction.ADD)
+	    progressDialog = ProgressDialog.show(getActivity(), "Loading Friends", "Loading FRiends from cloud");
     }
 
     private ArrayList<CampusInUserChecked> getFriends()

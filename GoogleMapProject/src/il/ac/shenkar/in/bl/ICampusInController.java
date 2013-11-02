@@ -25,6 +25,7 @@ public interface ICampusInController
 	
 	void drawAllEvents(MapManager manager);
 	void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd);
+	void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove);
 	CampusInEvent getEvent(String eventId);
 	
 }

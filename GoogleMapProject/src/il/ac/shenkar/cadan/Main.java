@@ -551,9 +551,12 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	}
 	else
 	{
-	    // do something with the friendList to Remove
+	// Remove friends from friend list  
 	    if (friensList != null)
+	    {
 		Toast.makeText(getApplication(), "Removed friendList Size: " + friensList.size(), 3000).show();
+		controller.removeFriendsFromCurrentUserFriendList(friensList);
+	    }
 	    else
 		Toast.makeText(getApplication(), "Removed friendList Size: " + 0 , 3000).show();
 	}
