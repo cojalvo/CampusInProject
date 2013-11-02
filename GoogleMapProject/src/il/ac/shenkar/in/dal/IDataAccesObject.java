@@ -10,45 +10,42 @@ import com.parse.ParseObject;
 
 import il.ac.shenkar.common.*;
 
-public interface IDataAccesObject {
-	
-	void getEvents(DataAccesObjectCallBack<List<CampusInEvent>> callBack);
-	void getMessages(DataAccesObjectCallBack<List<CampusInMessage>> callback);
+public interface IDataAccesObject
+{
 
-	void sendMessage(CampusInMessage message,DataAccesObjectCallBack<Integer> callback);
+    void getEvents(DataAccesObjectCallBack<List<CampusInEvent>> callBack);
 
-	//Return the Parse Id if the Object we just saved
-	//use it in order to enter the id to the Hash Maps in the View Model object 
-	void sendEvent(CampusInEvent event,DataAccesObjectCallBack<String> callback);			
+    void getMessages(DataAccesObjectCallBack<List<CampusInMessage>> callback);
 
-	void updateLocation(CampusInLocation location,
-			DataAccesObjectCallBack<Integer> callBack);
+    void sendMessage(CampusInMessage message, DataAccesObjectCallBack<Integer> callback);
 
-	void getUsersLocationInBackground(
-			DataAccesObjectCallBack<List<CampusInUserLocation>> callBack);
+    // Return the Parse Id if the Object we just saved
+    // use it in order to enter the id to the Hash Maps in the View Model object
+    void sendEvent(CampusInEvent event, DataAccesObjectCallBack<String> callback);
 
-	void addFriendToFriendList(CampusInUser userToAdd,
-			DataAccesObjectCallBack<Integer> callBack);
-	
-	void removeFriendFromFriendList(CampusInUser userToRemove,DataAccesObjectCallBack<Integer> callBack );
+    void updateLocation(CampusInLocation location, DataAccesObjectCallBack<Integer> callBack);
 
-	//return all the friends of the current user
-	//By default his class friend and all the rest he added manually
-	void getCurrentCampusInUserFriends(DataAccesObjectCallBack<List<CampusInUser>> callBack);
-	
-	void loadCurrentCampusInUser(DataAccesObjectCallBack<CampusInUser> callBack);
+    void getUsersLocationInBackground(DataAccesObjectCallBack<List<CampusInUserLocation>> callBack);
 
-	void putCurrentCampusInUserInbackground(CampusInUser currentCampusInUser,
-			DataAccesObjectCallBack<Integer> callBack);
+    void addFriendToFriendList(CampusInUser userToAdd, DataAccesObjectCallBack<Integer> callBack);
 
-	void getProfilePicture(DataAccesObjectCallBack<Drawable> callBack);
-	
-	
-	void getAllCumpusInUsers(DataAccesObjectCallBack<List<CampusInUser>> callBack );
-	
-	/*
-	 * return all the CampuInUser THAT THERE first or last name start with
-	 */
-	void getAllCampusInUsersStartWith(String startWith,DataAccesObjectCallBack<List<CampusInUser>> callBack);
+    void removeFriendFromFriendList(CampusInUser userToRemove, DataAccesObjectCallBack<Integer> callBack);
+
+    // return all the friends of the current user
+    // By default his class friend and all the rest he added manually
+    void getCurrentCampusInUserFriends(DataAccesObjectCallBack<List<CampusInUser>> callBack);
+
+    void loadCurrentCampusInUser(DataAccesObjectCallBack<CampusInUser> callBack);
+
+    void putCurrentCampusInUserInbackground(CampusInUser currentCampusInUser, DataAccesObjectCallBack<Integer> callBack);
+
+    void getProfilePicture(DataAccesObjectCallBack<Drawable> callBack);
+
+    void getAllCumpusInUsers(DataAccesObjectCallBack<List<CampusInUser>> callBack);
+
+    /*
+     * return all the CampuInUser THAT THERE first or last name start with
+     */
+    void getAllCampusInUsersStartWith(String startWith, DataAccesObjectCallBack<List<CampusInUser>> callBack);
 
 }

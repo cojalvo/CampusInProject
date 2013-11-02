@@ -68,9 +68,7 @@ import android.widget.PopupWindow;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-public class Main extends Activity implements OnPreferenceSelectedListener,
-	OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener,
-	onNewEventAdded
+public class Main extends Activity implements OnPreferenceSelectedListener, OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener, onNewEventAdded
 {
     CameraPosition lastPos = new CameraPosition(new LatLng(0, 0), 2, 2, 2);
     GoogleMap map = null;
@@ -91,19 +89,16 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
     protected void onCreate(Bundle savedInstanceState)
     {
 
-	if (savedInstanceState == null
-		|| !savedInstanceState.getBoolean("initLocationDone"))
+	if (savedInstanceState == null || !savedInstanceState.getBoolean("initLocationDone"))
 	{
 	    new InitLocations().execute(this);
 	}
 	super.onCreate(savedInstanceState);
-	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE",
-		"UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
+	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
 	vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	// inflate the drawerLayour
-	this.mDrawerLayout = (DrawerLayout) this.getLayoutInflater().inflate(
-		R.layout.main, null);
+	this.mDrawerLayout = (DrawerLayout) this.getLayoutInflater().inflate(R.layout.main, null);
 	// set as content view
 	this.setContentView(this.mDrawerLayout);
 	controller = Controller.getInstance(this);
@@ -151,12 +146,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	// Get the SearchView and set the searchable configuration
 	SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 	SearchView searchView = (SearchView) findViewById(R.id.searchView1);
-	SearchableInfo searchInfo = searchManager
-		.getSearchableInfo(getComponentName());
+	SearchableInfo searchInfo = searchManager.getSearchableInfo(getComponentName());
 	if (searchInfo == null)
 	{
-	    Toast.makeText(getApplicationContext(), "Search info is null", 500)
-		    .show();
+	    Toast.makeText(getApplicationContext(), "Search info is null", 500).show();
 	}
 	searchView.setSearchableInfo(searchInfo);
 	searchView.setIconifiedByDefault(false); // Do not iconify the widget;
@@ -165,8 +158,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	// running
 	// if not check if the locationServiceStart flag is true; (this might be
 	// redundant but maybe in the future we will need to use it
-	if (savedInstanceState == null
-		|| !savedInstanceState.getBoolean("locationServiceStart"))
+	if (savedInstanceState == null || !savedInstanceState.getBoolean("locationServiceStart"))
 	{
 	    startLocationReportServise();
 	}
@@ -196,12 +188,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 
     private void initMapManager()
     {
-	mapManager = MapManager.getInstance(((MapFragment) getFragmentManager()
-		.findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
+	mapManager = MapManager.getInstance(((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
 
-	mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(
-		32.089568, 34.802128), new LatLng(32.090501, 34.803617),
-		(float) 0.1);
+	mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089568, 34.802128), new LatLng(32.090501, 34.803617), (float) 0.1);
 	mapManager.moveCameraToLocation(new LatLng(32.089028, 34.80304), 18);
 	mapManager.setOnMapLongClickListener(this);
 	mapManager.setOnMarkerClickListener(this);
@@ -253,10 +242,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	     */
 
 	    // try to move it to Fragment
-	    android.app.FragmentTransaction transaction = getFragmentManager()
-		    .beginTransaction();
-	    Fragment fragment = getFragmentManager()
-		    .findFragmentByTag("dialog");
+	    android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+	    Fragment fragment = getFragmentManager().findFragmentByTag("dialog");
 	    if (fragment != null)
 	    {
 		transaction.remove(fragment);
@@ -267,10 +254,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	    return true;
 
 	case R.id.action_add_friends:
-	    android.app.FragmentTransaction ft1 = getFragmentManager()
-		    .beginTransaction();
-	    android.app.Fragment prev1 = getFragmentManager()
-		    .findFragmentByTag("dialog");
+	    android.app.FragmentTransaction ft1 = getFragmentManager().beginTransaction();
+	    android.app.Fragment prev1 = getFragmentManager().findFragmentByTag("dialog");
 	    if (prev1 != null)
 	    {
 		ft1.remove(prev1);
@@ -278,14 +263,11 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	    ft1.addToBackStack(null);
 
 	    // Create and show the dialog.
-	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment
-		    .newInstance(ChooseFriendAction.ADD);
+	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD);
 	    newFragment1.show(ft1, "dialog");
 	case R.id.action_remove_friends:
-	    android.app.FragmentTransaction ft11 = getFragmentManager()
-		    .beginTransaction();
-	    android.app.Fragment prev11 = getFragmentManager()
-		    .findFragmentByTag("dialog");
+	    android.app.FragmentTransaction ft11 = getFragmentManager().beginTransaction();
+	    android.app.Fragment prev11 = getFragmentManager().findFragmentByTag("dialog");
 	    if (prev11 != null)
 	    {
 		ft11.remove(prev11);
@@ -293,9 +275,35 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	    ft11.addToBackStack(null);
 
 	    // Create and show the dialog.
-	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment
-		    .newInstance(ChooseFriendAction.REMOVE);
+	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE);
 	    newFragment11.show(ft11, "dialog");
+	    return true;
+	case R.id.action_add_friends_from_cloud:
+	    android.app.FragmentTransaction ft111 = getFragmentManager().beginTransaction();
+	    android.app.Fragment prev111 = getFragmentManager().findFragmentByTag("dialog");
+	    if (prev111 != null)
+	    {
+		ft111.remove(prev111);
+	    }
+	    ft111.addToBackStack(null);
+
+	    // Create and show the dialog.
+	    AddOrRemoveFriendsFromCloudFragment newFragment111 = AddOrRemoveFriendsFromCloudFragment.newInstance(ChooseFriendAction.ADD);
+	    newFragment111.show(ft111, "dialog");
+	    return true;
+	case R.id.action_remove_friends_from_cloud:
+	    android.app.FragmentTransaction ft1111 = getFragmentManager().beginTransaction();
+	    android.app.Fragment prev1111 = getFragmentManager().findFragmentByTag("dialog");
+	    if (prev1111 != null)
+	    {
+		ft1111.remove(prev1111);
+	    }
+	    ft1111.addToBackStack(null);
+
+	    // Create and show the dialog.
+	    AddOrRemoveFriendsFromCloudFragment newFragment1111 = AddOrRemoveFriendsFromCloudFragment.newInstance(ChooseFriendAction.REMOVE);
+	    newFragment1111.show(ft1111, "dialog");
+	    return true;
 	default:
 	    return super.onOptionsItemSelected(item);
 	}
@@ -363,16 +371,14 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	    @Override
 	    public void onClick(DialogInterface dialog, int which)
 	    {
-		Main.this.stopService(new Intent(Main.this,
-			LocationReporterServise.class));
+		Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
 		finish();
 	    }
 	});
 
 	alertDialog.setNegativeButton("׳�׳�", null);
 
-	alertDialog
-		.setMessage("׳”׳�׳� ׳�׳×׳” ׳‘׳˜׳•׳— ׳©׳‘׳¨׳¦׳•׳ ׳� ׳�׳¦׳�׳×?");
+	alertDialog.setMessage("׳”׳�׳� ׳�׳×׳” ׳‘׳˜׳•׳— ׳©׳‘׳¨׳¦׳•׳ ׳� ׳�׳¦׳�׳×?");
 	alertDialog.setTitle(" ");
 	alertDialog.setIcon(R.drawable.campus_in_ico);
 	alertDialog.show();
@@ -411,8 +417,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	try
 	{
 	    // We need to get the instance of the LayoutInflater
-	    LayoutInflater inflater = (LayoutInflater) Main.this
-		    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	    LayoutInflater inflater = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	    View layout = inflater.inflate(R.layout.popup_menu, null);
 	    pwindo = new PopupWindow(layout, 750, 350, true);
 	    pwindo.setAnimationStyle(R.style.Animation);
@@ -420,7 +425,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	    ColorDrawable bcolor = new ColorDrawable();
 	    pwindo.setBackgroundDrawable(bcolor);
 	    pwindo.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
-	} catch (Exception e)
+	}
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}
@@ -428,11 +434,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 
     public void addEventClicked(View v)
     {
-	Toast.makeText(
-		this,
-		"add event was clicked on location: lat:"
-			+ lastMapLongClick.latitude + " long: "
-			+ lastMapLongClick.longitude, 300).show();
+	Toast.makeText(this, "add event was clicked on location: lat:" + lastMapLongClick.latitude + " long: " + lastMapLongClick.longitude, 300).show();
 	pwindo.dismiss();
 	createEventProcess();
     }
@@ -441,78 +443,58 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
     {
 	Toast.makeText(this, "add message was clicked", 300).show();
 	pwindo.dismiss();
-	CloudAccessObject.getInstance().getUsersLocationInBackground(
-		new DataAccesObjectCallBack<List<CampusInUserLocation>>()
-		{
+	CloudAccessObject.getInstance().getUsersLocationInBackground(new DataAccesObjectCallBack<List<CampusInUserLocation>>()
+	{
 
-		    @Override
-		    public void done(List<CampusInUserLocation> retObject,
-			    Exception e)
-		    {
-			Toast.makeText(Main.this,
-				"Number of friends is:" + retObject.size(), 500)
-				.show();
+	    @Override
+	    public void done(List<CampusInUserLocation> retObject, Exception e)
+	    {
+		Toast.makeText(Main.this, "Number of friends is:" + retObject.size(), 500).show();
 
-		    }
-		});
+	    }
+	});
 	lastMapLongClick = null;
     }
 
     public void addTestClicked(View v)
     {
 	Toast.makeText(this, "add test was clicked", 300).show();
-	CloudAccessObject.getInstance().getAllCampusInUsersStartWith("R",
-		new DataAccesObjectCallBack<List<CampusInUser>>()
+	CloudAccessObject.getInstance().getAllCampusInUsersStartWith("R", new DataAccesObjectCallBack<List<CampusInUser>>()
+	{
+
+	    @Override
+	    public void done(final List<CampusInUser> retObject, Exception e)
+	    {
+		if (e == null && retObject != null)
 		{
-
-		    @Override
-		    public void done(final List<CampusInUser> retObject,
-			    Exception e)
+		    if (retObject.size() > 0)
 		    {
-			if (e == null && retObject != null)
+			CloudAccessObject.getInstance().addFriendToFriendList(retObject.get(0), new DataAccesObjectCallBack<Integer>()
 			{
-			    if (retObject.size() > 0)
+
+			    @Override
+			    public void done(Integer intRet, Exception e)
 			    {
-				CloudAccessObject
-					.getInstance()
-					.addFriendToFriendList(
-						retObject.get(0),
-						new DataAccesObjectCallBack<Integer>()
-						{
+				if (e == null)
+				{
+				    Toast.makeText(Main.this, "new friend wass add:" + retObject.get(0).getFirstName(), 300).show();
+				}
 
-						    @Override
-						    public void done(
-							    Integer intRet,
-							    Exception e)
-						    {
-							if (e == null)
-							{
-							    Toast.makeText(
-								    Main.this,
-								    "new friend wass add:"
-									    + retObject
-										    .get(0)
-										    .getFirstName(),
-								    300).show();
-							}
-
-						    }
-						});
 			    }
-			}
-
+			});
 		    }
-		});
+		}
+
+	    }
+	});
 	pwindo.dismiss();
 	lastMapLongClick = null;
     }
 
     private void createEventProcess()
     {
-	android.app.FragmentTransaction ft = getFragmentManager()
-		.beginTransaction();
-	android.app.Fragment prev = getFragmentManager().findFragmentByTag(
-		"dialog");
+	android.app.FragmentTransaction ft = getFragmentManager().beginTransaction();
+	android.app.Fragment prev = getFragmentManager().findFragmentByTag("dialog");
 	if (prev != null)
 	{
 	    ft.remove(prev);
@@ -543,22 +525,34 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
     }
 
     @Override
-    public void onFriendsWereChoosen(ArrayList<CampusInUser> friensList,
-	    Fragment targetedFragment, ChooseFriendAction action)
+    public void onFriendsWereChoosen(ArrayList<CampusInUser> friensList, Fragment targetedFragment, ChooseFriendAction action)
     {
 	if (action == ChooseFriendAction.ADD)
 	{
 	    if (targetedFragment != null)
 	    {
-		// the calling fragment is add event
+		// the calling fragment is "add event" fragment 
 		AddNewEventFragment tmp = (AddNewEventFragment) targetedFragment;
 		tmp.setAddedFriends(friensList);
 	    }
-	} else
+	    else
+	    {
+		// the finished fragment was "AddOrRemoveFriendsFromCloudFragment"
+		// we need to do something with the choose friends
+		//TODO: yaki - add the friend list to the user friendList
+		if (friensList != null)
+		    Toast.makeText(getApplicationContext(), "the user Added: " + friensList.size() + " friends", 3000).show();
+		else
+		    Toast.makeText(getApplicationContext(), "the user Added: " + 0 + " friends", 3000).show();
+	    }
+	}
+	else
 	{
 	    // do something with the friendList to Remove
-	    Toast.makeText(getApplication(),"Removed friendList Size: " + friensList.size(), 3000)
-		    .show();
+	    if (friensList != null)
+		Toast.makeText(getApplication(), "Removed friendList Size: " + friensList.size(), 3000).show();
+	    else
+		Toast.makeText(getApplication(), "Removed friendList Size: " + 0 , 3000).show();
 	}
 
     }
@@ -583,7 +577,14 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		    Toast.makeText(getApplicationContext(), "Event Was Added - from Acrivity", 3000).show();
 		    // add the event to the Alarm manager
 		    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		    String reminderTime = sharedPrefs.getString("event_reminder","300000"); /* default reminder is 5 minutes before*/
+		    String reminderTime = sharedPrefs.getString("event_reminder", "300000"); /*
+											      * default
+											      * reminder
+											      * is
+											      * 5
+											      * minutes
+											      * before
+											      */
 		    long reminderTimeInMiliseconds = Long.parseLong(reminderTime);
 		    /* value '0' mean no reminder is needed */
 		    if (reminderTimeInMiliseconds > 0)
@@ -598,10 +599,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 		    }
 		    MessageHalper.closeProggresDialog();
 		    controller.updateViewModel(null);
-		} else
+		}
+		else
 		{
-		    Log.i(ALARM_SERVICE,
-			    "Error in saving Event: " + e.getMessage());
+		    Log.i(ALARM_SERVICE, "Error in saving Event: " + e.getMessage());
 		}
 	    }
 	});
@@ -624,14 +625,11 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	    float x = event.getRawX() + w.getLeft() - scrcoords[0];
 	    float y = event.getRawY() + w.getTop() - scrcoords[1];
 
-	    if (event.getAction() == MotionEvent.ACTION_UP
-		    && (x < w.getLeft() || x >= w.getRight() || y < w.getTop() || y > w
-			    .getBottom()))
+	    if (event.getAction() == MotionEvent.ACTION_UP && (x < w.getLeft() || x >= w.getRight() || y < w.getTop() || y > w.getBottom()))
 	    {
 
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(getWindow().getCurrentFocus()
-			.getWindowToken(), 0);
+		imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
 	    }
 	}
 	return ret;
@@ -647,11 +645,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	    @Override
 	    public void onReceive(Context context, Intent intent)
 	    {
-		if (intent.getAction().equals(
-			CampusInConstant.VIEW_MODEL_UPDATED))
+		if (intent.getAction().equals(CampusInConstant.VIEW_MODEL_UPDATED))
 		{
-		    Toast.makeText(Main.this, "view model was updated", 500)
-			    .show();
+		    Toast.makeText(Main.this, "view model was updated", 500).show();
 		    updateView();
 		}
 
@@ -671,35 +667,31 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
     private void updateView()
     {
 	mapManager.clearMap();
-	controller
-		.getCurrentUserAllEvents(new ControllerCallback<List<CampusInEvent>>()
+	controller.getCurrentUserAllEvents(new ControllerCallback<List<CampusInEvent>>()
+	{
+	    @Override
+	    public void done(List<CampusInEvent> retObject, Exception e)
+	    {
+		for (CampusInEvent campusInEvent : retObject)
 		{
-		    @Override
-		    public void done(List<CampusInEvent> retObject, Exception e)
-		    {
-			for (CampusInEvent campusInEvent : retObject)
-			{
-			    mapManager.addOrUpdateEventMarker(campusInEvent);
-			}
+		    mapManager.addOrUpdateEventMarker(campusInEvent);
+		}
 
-		    }
-		});
-	controller
-		.getCurrentUserFriendsLocationList(new ControllerCallback<List<CampusInUserLocation>>()
+	    }
+	});
+	controller.getCurrentUserFriendsLocationList(new ControllerCallback<List<CampusInUserLocation>>()
+	{
+
+	    @Override
+	    public void done(List<CampusInUserLocation> retObject, Exception e)
+	    {
+		for (CampusInUserLocation campusInUserLocation : retObject)
 		{
+		    mapManager.addOrUpdatePersonMarker(campusInUserLocation);
+		}
 
-		    @Override
-		    public void done(List<CampusInUserLocation> retObject,
-			    Exception e)
-		    {
-			for (CampusInUserLocation campusInUserLocation : retObject)
-			{
-			    mapManager
-				    .addOrUpdatePersonMarker(campusInUserLocation);
-			}
-
-		    }
-		});
+	    }
+	});
     }
 
     @Override
@@ -708,8 +700,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener,
 	// TODO Auto-generated method stub
 	super.onDestroy();
 	// stop the report location service
-	Main.this.stopService(new Intent(Main.this,
-		LocationReporterServise.class));
+	Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
 	unRegisterViewModelReciever();
     }
 

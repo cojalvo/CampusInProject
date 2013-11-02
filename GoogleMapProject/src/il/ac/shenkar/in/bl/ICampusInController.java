@@ -21,6 +21,8 @@ public interface ICampusInController
 	void getCurrentUser(ControllerCallback<CampusInUser> callBack);
 	void updateViewModel(ControllerCallback<Integer> callBack);
 	
+	void getAllCumpusInUsers(ControllerCallback<List<CampusInUser>> callback);
+	
 	void drawAllEvents(MapManager manager);
 	CampusInEvent getEvent(String eventId);
 }

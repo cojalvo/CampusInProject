@@ -1,42 +1,30 @@
 package il.ac.shenkar.cadan;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import il.ac.shenkar.cadan.AddNewEventFragment.DatePickerFragment;
-import il.ac.shenkar.common.CampusInEvent;
+import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
+import il.ac.shenkar.cadan.ChooseFriendsFragment.onFriendsAddedListener;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserChecked;
 import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.in.bl.ControllerCallback;
 import il.ac.shenkar.in.bl.ICampusInController;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.MeasureSpec;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class ChooseFriendsFragment extends DialogFragment
+public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 {
     onFriendsAddedListener mCallback;
     private View view;
@@ -44,16 +32,16 @@ public class ChooseFriendsFragment extends DialogFragment
     private ChooseFriendAction action;
     private ICampusInController controller = null;
 
-    static ChooseFriendsFragment newInstance(ChooseFriendAction action)
+    static AddOrRemoveFriendsFromCloudFragment newInstance(ChooseFriendAction action)
     {
-	ChooseFriendsFragment f = new ChooseFriendsFragment();
+	AddOrRemoveFriendsFromCloudFragment f = new AddOrRemoveFriendsFromCloudFragment();
 
 	// Supply num input as an argument.
 	Bundle args = new Bundle();
 	args.putSerializable("action", action);
 	f.setArguments(args);
 	f.action = action;
-	return f;//
+	return f;
     }
 
     @Override
@@ -61,9 +49,9 @@ public class ChooseFriendsFragment extends DialogFragment
     {
 	super.onCreateDialog(savedInstanceState);
 	controller = Controller.getInstance(getActivity());
+	initFriendList();
 	MessageHalper.showProgressDialog("Loading Friends", getActivity());
 	view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
-	initFriendList();
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	if (action == ChooseFriendAction.ADD)
 	{
@@ -88,7 +76,6 @@ public class ChooseFriendsFragment extends DialogFragment
 			    toReturn.add(currUserChecked.getUser());
 			}
 		    }
-
 		    mCallback.onFriendsWereChoosen(toReturn, getTargetFragment(), ChooseFriendAction.ADD);
 		}
 	    }).setNegativeButton("׳‘׳™׳˜׳•׳�", new DialogInterface.OnClickListener()
@@ -190,6 +177,75 @@ public class ChooseFriendsFragment extends DialogFragment
 	}
     }
 
+    /**
+     * this method is ment to bring all of the friends from cloud right on the
+     * fragment is beeing started
+     */
+    private void initFriendList()
+    {
+	if (action == ChooseFriendAction.ADD)
+	{
+	    // the user want to add friends to his friend list
+	    // i need to get all users from the cloud
+	    controller.getCurrentUser(new ControllerCallback<CampusInUser>()
+	    {
+		@Override
+		public void done(final CampusInUser curretntUser, Exception e)
+		{
+		    if (e == null && curretntUser != null)
+		    {
+			controller.getAllCumpusInUsers(new ControllerCallback<List<CampusInUser>>()
+			{
+			    @Override
+			    public void done(List<CampusInUser> retObject, Exception e)
+			    {
+				if (retObject != null)
+				    friensList = retObject;
+				Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
+				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
+				friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
+				MessageHalper.closeProggresDialog();
+			    }
+			});
+		    }
+		}
+	    });
+	}
+	else
+	{
+	    // the user want to remove friends from his friend list
+	    // i need to get only his friends from the cloud
+	    controller.getCurrentUser(new ControllerCallback<CampusInUser>()
+	    {
+
+		@Override
+		public void done(final CampusInUser curretntUser, Exception e)
+		{
+		    if (e == null && curretntUser != null)
+		    {
+			controller.getCurrentUserFriendList(new ControllerCallback<List<CampusInUser>>()
+			{
+
+			    @Override
+			    public void done(List<CampusInUser> retObject, Exception e)
+			    {
+				if (retObject != null)
+				{
+				    friensList = retObject;
+				    Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
+				    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
+				    friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
+				    MessageHalper.closeProggresDialog();
+				}
+
+			    }
+			});
+		    }
+		}
+	    });
+	}
+    }
+
     private ArrayList<CampusInUserChecked> getFriends()
     {
 
@@ -204,68 +260,9 @@ public class ChooseFriendsFragment extends DialogFragment
 	for (CampusInUser friend : friensList)
 	{
 	    CampusInUserChecked u = new CampusInUserChecked(friend);
-	    u.setChecked(true);
+	    u.setChecked(false);
 	    toReturn.add(u);
 	}
 	return toReturn;
     }
-
-    private void initFriendList()
-    {
-	controller.getCurrentUser(new ControllerCallback<CampusInUser>()
-	{
-
-	    @Override
-	    public void done(final CampusInUser curretntUser, Exception e)
-	    {
-		if (e == null && curretntUser != null)
-		{
-		    controller.getCurrentUserFriendList(new ControllerCallback<List<CampusInUser>>()
-		    {
-
-			@Override
-			public void done(List<CampusInUser> retObject, Exception e)
-			{
-			    if (retObject != null)
-				friensList = retObject;
-			    Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
-			    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-			    friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
-			    MessageHalper.closeProggresDialog();
-
-			}
-		    });
-		}
-	    }
-	});
-    }
-
-    public interface friendChoice
-    {
-	public void onFriendChosed(ArrayList<CampusInUser> friendChosedList);
-    }
-
-    /**
-     * this interface should be implemented by any Activity or Fragment which
-     * want to add friend list for example: invite some friends to some event or
-     * decide which friends will see me
-     * 
-     * once the Friend Picker fragment is finished, the fragment will call
-     * OnFriendsWereAdded() the method return a list of the added friends and
-     * reference to targeted fragment if the activity want to access the
-     * fragment which called the add friends picker
-     * 
-     * @author Jacob
-     * 
-     */
-    public interface onFriendsAddedListener
-    {
-	public void onFriendsWereChoosen(ArrayList<CampusInUser> friensList, Fragment targetedFragment, ChooseFriendAction action);
-    }
-
-    public enum ChooseFriendAction
-    {
-	ADD, REMOVE
-    }
-
 }

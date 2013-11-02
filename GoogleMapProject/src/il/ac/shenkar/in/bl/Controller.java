@@ -55,21 +55,20 @@ public class Controller implements ICampusInController
 	saveToCLoudEventQue = new ArrayList<CampusInEvent>();
 	// get the current logged in user
 
-	cloudAccessObject
-		.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
+	cloudAccessObject.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
+	{
+
+	    @Override
+	    public void done(CampusInUser retObject, Exception e)
+	    {
+
+		if (e == null && retObject != null)
 		{
+		    currentUser = retObject;
+		}
 
-		    @Override
-		    public void done(CampusInUser retObject, Exception e)
-		    {
-
-			if (e == null && retObject != null)
-			{
-			    currentUser = retObject;
-			}
-
-		    }
-		});
+	    }
+	});
 
     }
 
@@ -81,15 +80,11 @@ public class Controller implements ICampusInController
     }
 
     @Override
-    public void getCurrentUserFriendList(
-	    final ControllerCallback<List<CampusInUser>> callBack)
+    public void getCurrentUserFriendList(final ControllerCallback<List<CampusInUser>> callBack)
     {
-	MessageHalper.showProgressDialog("gettig " + currentUser.getFirstName()
-		+ " friends", context);
+	MessageHalper.showProgressDialog("gettig " + currentUser.getFirstName() + " friends", context);
 	if (callBack != null)
-	    callBack.done(
-		    new ArrayList<CampusInUser>(viewModel.getAllFriends()),
-		    null);
+	    callBack.done(new ArrayList<CampusInUser>(viewModel.getAllFriends()), null);
     }
 
     @Override
@@ -99,32 +94,31 @@ public class Controller implements ICampusInController
 	    callBack.done(currentUser, null);
 	else
 	{
-	    cloudAccessObject
-		    .loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
+	    cloudAccessObject.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
+	    {
+
+		@Override
+		public void done(CampusInUser retObject, Exception e)
+		{
+		    if (retObject != null && e == null)
 		    {
+			// load is a success -> return the recived
+			// Object
+			callBack.done(retObject, null);
+		    }
+		    else
+		    {
+			// en error occered -> retutn the Exeptiom
+			callBack.done(null, e);
+		    }
 
-			@Override
-			public void done(CampusInUser retObject, Exception e)
-			{
-			    if (retObject != null && e == null)
-			    {
-				// load is a success -> return the recived
-				// Object
-				callBack.done(retObject, null);
-			    } else
-			    {
-				// en error occered -> retutn the Exeptiom
-				callBack.done(null, e);
-			    }
-
-			}
-		    });
+		}
+	    });
 	}
     }
 
     @Override
-    public void getCurrentUserAllEvents(
-	    ControllerCallback<List<CampusInEvent>> callBack)
+    public void getCurrentUserAllEvents(ControllerCallback<List<CampusInEvent>> callBack)
     {
 
 	// in the mean tiime just a dummy implementation to display some data in
@@ -134,9 +128,7 @@ public class Controller implements ICampusInController
 	ArrayList<CampusInEvent> toReturn = new ArrayList<CampusInEvent>();
 	CampusInEvent currEvent;
 	if (callBack != null)
-	    callBack.done(
-		    new ArrayList<CampusInEvent>(viewModel.getAllEvents()),
-		    null);
+	    callBack.done(new ArrayList<CampusInEvent>(viewModel.getAllEvents()), null);
 
 	// for (int i=0; i<40; i++)
 	// {
@@ -152,63 +144,61 @@ public class Controller implements ICampusInController
     }
 
     @Override
-    public void sendMessage(CampusInMessage message,
-	    ControllerCallback<Integer> callBack)
+    public void sendMessage(CampusInMessage message, ControllerCallback<Integer> callBack)
     {
 	// TODO Auto-generated method stub
 
     }
 
     @Override
-    public void saveEvent(CampusInEvent toAdd,
-	    final ControllerCallback<String> callBack)
+    public void saveEvent(CampusInEvent toAdd, final ControllerCallback<String> callBack)
     {
-	// TODO: to draw the event to the user interface before saving it to the cloud
+	// TODO: to draw the event to the user interface before saving it to the
+	// cloud
 	if (toAdd != null)
 	{
 	    // add the toAdd Object to the EventQue;
 	    saveToCLoudEventQue.add(toAdd);
 	    for (final CampusInEvent event : saveToCLoudEventQue)
 	    {
-		cloudAccessObject.sendEvent(event,
-			new DataAccesObjectCallBack<String>()
-			{
+		cloudAccessObject.sendEvent(event, new DataAccesObjectCallBack<String>()
+		{
 
-			    @Override
-			    public void done(String retObject, Exception e)
-			    {
-				if (retObject != null)
-				{
-				    saveToCLoudEventQue.remove(event);
-				    // viewModel
-				    callBack.done(retObject, null);
-				} else
-				    callBack.done(null, e);
-			    }
-			});
+		    @Override
+		    public void done(String retObject, Exception e)
+		    {
+			if (retObject != null)
+			{
+			    saveToCLoudEventQue.remove(event);
+			    // viewModel
+			    callBack.done(retObject, null);
+			}
+			else
+			    callBack.done(null, e);
+		    }
+		});
 	    }
-	} else
+	}
+	else
 	{
-	    callBack.done(null, new NullPointerException(
-		    "the Event you tried to save is null"));
+	    callBack.done(null, new NullPointerException("the Event you tried to save is null"));
 	}
     }
 
     @Override
     public void updateViewModel(final ControllerCallback<Integer> callBack)
     {
-	viewModel
-		.updateViewModelInBackground(new DataAccesObjectCallBack<Integer>()
-		{
+	viewModel.updateViewModelInBackground(new DataAccesObjectCallBack<Integer>()
+	{
 
-		    @Override
-		    public void done(Integer retObject, Exception e)
-		    {
-			if (callBack != null)
-			    callBack.done(retObject, e);
-			invokeViewModelUpdated();
-		    }
-		});
+	    @Override
+	    public void done(Integer retObject, Exception e)
+	    {
+		if (callBack != null)
+		    callBack.done(retObject, e);
+		invokeViewModelUpdated();
+	    }
+	});
 
     }
 
@@ -235,13 +225,10 @@ public class Controller implements ICampusInController
     }
 
     @Override
-    public void getCurrentUserFriendsLocationList(
-	    ControllerCallback<List<CampusInUserLocation>> callBack)
+    public void getCurrentUserFriendsLocationList(ControllerCallback<List<CampusInUserLocation>> callBack)
     {
 	if (callBack != null)
-	    callBack.done(
-		    new ArrayList<CampusInUserLocation>(viewModel
-			    .getAllFriendsLocation()), null);
+	    callBack.done(new ArrayList<CampusInUserLocation>(viewModel.getAllFriendsLocation()), null);
     }
 
     @Override
@@ -249,10 +236,29 @@ public class Controller implements ICampusInController
     {
 	return eventId == null ? null : viewModel.getEventById(eventId);
     }
-	
+
     public void addEventToLocalMap(CampusInEvent toAdd)
     {
 	viewModel.addEvent(toAdd);
     }
+
+    @Override
+    public void getAllCumpusInUsers(final ControllerCallback<List<CampusInUser>> callback)
+    {
+	if (callback != null)
+	{
+	    cloudAccessObject.getAllCumpusInUsers(new DataAccesObjectCallBack<List<CampusInUser>>()
+	    {
+	        @Override
+	        public void done(List<CampusInUser> retObject, Exception e)
+	        {
+	            callback.done(retObject, e);
+	        }
+	    });
+	}
+	else
+	    return;
+    }
+
 
 }
