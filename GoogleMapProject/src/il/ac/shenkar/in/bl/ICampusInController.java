@@ -24,5 +24,7 @@ public interface ICampusInController
 	void getAllCumpusInUsers(ControllerCallback<List<CampusInUser>> callback);
 	
 	void drawAllEvents(MapManager manager);
+	void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd);
 	CampusInEvent getEvent(String eventId);
+	
 }

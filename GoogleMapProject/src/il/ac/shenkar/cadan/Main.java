@@ -541,7 +541,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		// we need to do something with the choose friends
 		//TODO: yaki - add the friend list to the user friendList
 		if (friensList != null)
+		{
 		    Toast.makeText(getApplicationContext(), "the user Added: " + friensList.size() + " friends", 3000).show();
+		    controller.addFriendsToCurrentUserFriendList(friensList);
+		}
 		else
 		    Toast.makeText(getApplicationContext(), "the user Added: " + 0 + " friends", 3000).show();
 	    }

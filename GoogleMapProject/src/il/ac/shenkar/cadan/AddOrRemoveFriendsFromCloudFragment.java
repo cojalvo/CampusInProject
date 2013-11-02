@@ -51,7 +51,8 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 	controller = Controller.getInstance(getActivity());
 	initFriendList();
 	MessageHalper.showProgressDialog("Loading Friends", getActivity());
-	view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
+	if (view == null)
+	    view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	if (action == ChooseFriendAction.ADD)
 	{
@@ -233,6 +234,8 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 				{
 				    friensList = retObject;
 				    Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
+				    if (view == null)
+					view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 				    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
 				    friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
 				    MessageHalper.closeProggresDialog();

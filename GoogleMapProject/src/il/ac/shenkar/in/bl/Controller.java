@@ -260,5 +260,19 @@ public class Controller implements ICampusInController
 	    return;
     }
 
+    @Override
+    public void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd)
+    {
+	// for now i add it one by one 
+	// Cadan need to implement a method to save bulk of friends all at one 
+	if (friendsTOAdd != null)
+	{
+	    for (CampusInUser user : friendsTOAdd)
+	    {
+		cloudAccessObject.addFriendToFriendList(user, null);
+	    }
+	}
+    }
+
 
 }
