@@ -1,5 +1,6 @@
 package il.ac.shenkar.cadan;
 
+import java.util.Date;
 import java.util.List;
 
 import il.ac.shenkar.cadan.PrefsFragment.OnPreferenceSelectedListener;
@@ -13,6 +14,7 @@ import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
+import il.ac.shenkar.common.ParsingHelper;
 import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.in.bl.ControllerCallback;
 import il.ac.shenkar.in.bl.ICampusInController;
@@ -63,6 +65,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AnalogClock;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -452,6 +455,20 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 				break;
 			case EventInfo:
 				layout = inflater.inflate(R.layout.event_info_popup, null);
+				pwindo = new PopupWindow(layout, 750, 750, true);
+				CampusInEvent event=controller.getEvent(mapManager.getEventIdFromMarker(lastMarkerClicked));
+				TextView title=(TextView) layout.findViewById(R.id.event_title);
+				title.setText(event.getHeadLine());
+				TextView description=(TextView) layout.findViewById(R.id.event_description);
+				description.setText(event.getDescription());
+				TextView location=(TextView) layout.findViewById(R.id.event_location);
+				location.setText("מקום: "+event.getLocation().getLocationName());
+				TextView time=(TextView) layout.findViewById(R.id.time_text);
+				Date d=event.getDate();
+				time.setText("שעה: "+ParsingHelper.fromDateToString(d, "HH:mm:ss"));
+				TextView date=(TextView) layout.findViewById(R.id.date_text);
+				date.setText("תאריך: "+ParsingHelper.fromDateToString(d, "dd/MM/yyyy"));
+				break;
 
 			default:
 				break;

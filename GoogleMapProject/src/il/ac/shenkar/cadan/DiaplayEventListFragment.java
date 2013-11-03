@@ -53,8 +53,8 @@ public class DiaplayEventListFragment extends DialogFragment
 		});
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-			.setTitle("ψωιξϊ ΰιψεςιν")
-			.setPositiveButton("ηζεψ", new DialogInterface.OnClickListener() {
+			.setTitle("Χ”Χ•Χ΅Χ¤Χª ΧΧ™Χ¨Χ•ΧΆ")
+			.setPositiveButton("ΧΧ™Χ©Χ•Χ¨", new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {

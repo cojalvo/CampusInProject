@@ -219,4 +219,10 @@ public class MapManager {
 			return markerPersondictiobnary.get(marker);
 		return null;
 	}
+	public String getEventIdFromMarker(Marker marker)
+	{
+		if(markerEventDictionary.containsKey(marker))
+			return markerEventDictionary.get(marker);
+		return null;
+	}
 }

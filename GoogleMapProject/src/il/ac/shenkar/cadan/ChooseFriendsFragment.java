@@ -68,7 +68,7 @@ public class ChooseFriendsFragment extends DialogFragment
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	if (action == ChooseFriendAction.ADD)
 	{
-	    builder.setTitle("׳‘׳—׳¨ ׳—׳‘׳¨׳™׳�").setPositiveButton("׳�׳™׳©׳•׳¨", new DialogInterface.OnClickListener()
+	    builder.setTitle("בחר חברים").setPositiveButton("אישור", new DialogInterface.OnClickListener()
 	    {
 
 		@Override
@@ -92,7 +92,7 @@ public class ChooseFriendsFragment extends DialogFragment
 
 		    mCallback.onFriendsWereChoosen(toReturn, getTargetFragment(), ChooseFriendAction.ADD);
 		}
-	    }).setNegativeButton("׳‘׳™׳˜׳•׳�", new DialogInterface.OnClickListener()
+	    }).setNegativeButton("ביטול", new DialogInterface.OnClickListener()
 	    {
 
 		@Override
@@ -105,7 +105,7 @@ public class ChooseFriendsFragment extends DialogFragment
 	}
 	else
 	{
-	    builder.setTitle("׳¨׳©׳™׳�׳× ׳—׳‘׳¨׳™׳�").setPositiveButton("׳�׳™׳©׳•׳¨", new DialogInterface.OnClickListener()
+	    builder.setTitle("◊≥¬®◊≥¬©◊≥‚Ñ¢◊≥ÔøΩ◊≥√ó ◊≥‚Äî◊≥‚Äò◊≥¬®◊≥‚Ñ¢◊≥ÔøΩ").setPositiveButton("◊≥ÔøΩ◊≥‚Ñ¢◊≥¬©◊≥‚Ä¢◊≥¬®", new DialogInterface.OnClickListener()
 	    {
 
 		@Override
@@ -129,7 +129,7 @@ public class ChooseFriendsFragment extends DialogFragment
 
 		    mCallback.onFriendsWereChoosen(toReturn, getTargetFragment(), ChooseFriendAction.REMOVE);
 		}
-	    }).setNegativeButton("׳‘׳™׳˜׳•׳�", new DialogInterface.OnClickListener()
+	    }).setNegativeButton("◊≥‚Äò◊≥‚Ñ¢◊≥Àú◊≥‚Ä¢◊≥ÔøΩ", new DialogInterface.OnClickListener()
 	    {
 
 		@Override

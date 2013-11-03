@@ -1105,9 +1105,12 @@ public class CloudAccessObject implements IDataAccesObject
 			public void done(ParseObject retObject, Exception e) {
 				if(retObject!=null && e==null)
 				{
+					if(status!=null)
+					{
 					retObject.remove("status");
 					retObject.put("status", status);
 					retObject.saveInBackground();
+					}
 				}
 				
 			}
