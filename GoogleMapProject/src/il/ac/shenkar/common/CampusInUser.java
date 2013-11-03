@@ -10,6 +10,14 @@ public class CampusInUser implements Serializable
   private String parseUserId;
   private String trend;
   private String year;
+  private String status;
+  
+public String getStatus() {
+	return status;
+}
+public void setStatus(String status) {
+	this.status = status;
+}
 public String getFaceBookUserId() {
 	return faceBookUserId;
 }

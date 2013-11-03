@@ -6,6 +6,7 @@ import java.util.Iterator;
 import il.ac.shenkar.cadan.R;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInMessage;
+import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
 
 import android.location.Location;
@@ -30,6 +31,8 @@ public class MapManager {
 	private HashMap<String, Marker> personMarkerdictionary;
 	private HashMap<String, Marker> eventMarkerdictionary;
 	private HashMap<String, Marker> messageMarkerdictionary;
+	private HashMap<Marker, String> markerPersondictiobnary=new HashMap<Marker, String>();
+	private HashMap<Marker, String> markerEventDictionary=new HashMap<Marker, String>();
 	// the key is the lat+long -as string
 	private HashMap<String, HashMap<String, Marker>> positionMarkerDic;
 	private LatLng lastlongClicked = null;
@@ -62,6 +65,10 @@ public class MapManager {
 		positionMarkerDic = new HashMap<String, HashMap<String, Marker>>();
 	}
 
+	public static void resetInstance()
+	{
+		instance=null;
+	}
 	static MapManager getInstance(GoogleMap map, int mapType) {
 		if (instance == null)
 			instance = new MapManager(map, mapType);
@@ -89,7 +96,9 @@ public class MapManager {
 
 		}
 		personMarkerdictionary.clear();
+		markerPersondictiobnary.clear();
 		eventMarkerdictionary.clear();
+		markerEventDictionary.clear();
 	}
 
 	private void InsertMarkers() {
@@ -150,6 +159,7 @@ public class MapManager {
 							.fromResource(R.drawable.student_marker)));
 			this.personMarkerdictionary.put(user.getUser().getParseUserId(),
 					marker);
+			markerPersondictiobnary.put(marker, user.getUser().getParseUserId());
 		}
 	}
 
@@ -163,7 +173,7 @@ public class MapManager {
 		markerOptions.snippet(event.getDescription());
 		Marker eventMarker = map.addMarker(markerOptions);
 		eventMarkerdictionary.put(event.getParseId(), eventMarker);
-
+		markerEventDictionary.put(eventMarker, event.getParseId());
 	}
 
 	public void addOrUpdateMessageMarker(CampusInMessage event) {
@@ -181,7 +191,14 @@ public class MapManager {
 	public void removeMessageMarker(String id) {
 
 	}
-
+	public MarkerType getMarkerType(Marker marker)
+	{
+		if(personMarkerdictionary.containsValue(marker))
+			return MarkerType.Person;
+		if(eventMarkerdictionary.containsValue(marker))
+			return MarkerType.Event;
+		return MarkerType.Message;
+	}
 	public static LatLng getmyLocation() {
 		if (instance != null) {
 			Location loc = instance.map.getMyLocation();
@@ -189,6 +206,17 @@ public class MapManager {
 				return null;
 			return new LatLng(loc.getLatitude(), loc.getLongitude());
 		}
+		return null;
+	}
+	public enum MarkerType
+	{
+		Person,Event,Message
+	}
+	
+	public String getCampusInUserIdFromMarker(Marker marker)
+	{
+		if(markerPersondictiobnary.containsKey(marker))
+			return markerPersondictiobnary.get(marker);
 		return null;
 	}
 }

@@ -23,7 +23,9 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceManager;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
@@ -54,11 +56,31 @@ public class PrefsFragment extends PreferenceFragment {
 		// update the full name and the profile picture of current user
 		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.preference);
+		EditTextPreference me =(EditTextPreference) findPreference("me");
+		me.setSummary(me.getText());
+		me.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object arg1) {
+				EditTextPreference me=(EditTextPreference) preference;
+				preference.setSummary(me.getText());
+				CloudAccessObject.getInstance().updateCurrentUserStatus(new DataAccesObjectCallBack<Integer>() {
+					
+					@Override
+					public void done(Integer retObject, Exception e) {
+						
+					}
+				},me.getText());
+				return true;
+			}
+		});
+
 		final CheckBoxPreference showMe = (CheckBoxPreference) findPreference("display_me");
 		showMe.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 
 			@Override
 			public boolean onPreferenceClick(Preference preference) {
+	
 				Intent inti = new Intent();
 				inti.setAction(ACTION_INTENT);
 				context.sendBroadcast(inti);

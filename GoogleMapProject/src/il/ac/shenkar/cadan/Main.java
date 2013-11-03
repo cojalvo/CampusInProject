@@ -48,6 +48,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.*;
 import android.support.v4.widget.DrawerLayout;
@@ -63,9 +64,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Main extends Activity implements OnPreferenceSelectedListener, OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener, onNewEventAdded
@@ -365,7 +368,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
 	AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
-	alertDialog.setPositiveButton("׳›׳�", new OnClickListener()
+	alertDialog.setPositiveButton("כן", new OnClickListener()
 	{
 
 	    @Override
@@ -376,9 +379,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    }
 	});
 
-	alertDialog.setNegativeButton("׳�׳�", null);
+	alertDialog.setNegativeButton("לא", null);
 
-	alertDialog.setMessage("׳”׳�׳� ׳�׳×׳” ׳‘׳˜׳•׳— ׳©׳‘׳¨׳¦׳•׳ ׳� ׳�׳¦׳�׳×?");
+	alertDialog.setMessage("האם אתה בטוח שברצונך לצאת?");
 	alertDialog.setTitle(" ");
 	alertDialog.setIcon(R.drawable.campus_in_ico);
 	alertDialog.show();
@@ -389,15 +392,27 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     {
 	vibrator.vibrate(50);
 	lastMapLongClick = point;
-	initiatePopupWindow();
+	initiatePopupWindow(PopUpKind.Menu);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker)
     {
-	marker.showInfoWindow();
-	lastMarkerClicked = marker;
-	return true;
+    	marker.showInfoWindow();
+		lastMarkerClicked = marker;
+		switch (mapManager.getMarkerType(marker)) {
+		case Event:
+			initiatePopupWindow(PopUpKind.EventInfo);
+			break;
+		case Person:
+			initiatePopupWindow(PopUpKind.FriendInfo);
+		break;
+		default:
+			break;
+		}
+
+		return true;
+
 
     }
 
@@ -412,24 +427,44 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     /*
      * popup the menu in long press on the map
      */
-    private void initiatePopupWindow()
+    private void initiatePopupWindow(PopUpKind kind)
     {
-	try
-	{
-	    // We need to get the instance of the LayoutInflater
-	    LayoutInflater inflater = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    View layout = inflater.inflate(R.layout.popup_menu, null);
-	    pwindo = new PopupWindow(layout, 750, 350, true);
-	    pwindo.setAnimationStyle(R.style.Animation);
-	    pwindo.setFocusable(true);
-	    ColorDrawable bcolor = new ColorDrawable();
-	    pwindo.setBackgroundDrawable(bcolor);
-	    pwindo.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
-	}
-	catch (Exception e)
-	{
-	    e.printStackTrace();
-	}
+    	View layout = null;
+		// We need to get the instance of the LayoutInflater
+		LayoutInflater inflater = (LayoutInflater) Main.this
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		try {
+			switch (kind) {
+			case Menu:
+				layout = inflater.inflate(R.layout.popup_menu, null);
+				pwindo = new PopupWindow(layout, 750, 350, true);
+				break;
+			case FriendInfo:
+				layout = inflater.inflate(R.layout.friend_info_popup, null);
+				CampusInUser user=controller.getCampusInUser(mapManager.getCampusInUserIdFromMarker(lastMarkerClicked));
+				ImageView profilePictre=(ImageView) layout.findViewById(R.id.profile_picture);
+				profilePictre.setImageDrawable(controller.getFreindProfilePicture(user.getParseUserId(), 150, 130));
+				TextView fulName=(TextView) layout.findViewById(R.id.full_name);
+				TextView status=(TextView) layout.findViewById(R.id.face_status);
+				status.setText(user.getStatus());
+				fulName.setText(user.getFirstName()+" "+user.getLastName());
+				pwindo = new PopupWindow(layout, 750, 350, true);
+				break;
+			case EventInfo:
+				layout = inflater.inflate(R.layout.event_info_popup, null);
+
+			default:
+				break;
+			}
+			pwindo.setAnimationStyle(R.style.Animation);
+			pwindo.setFocusable(true);
+			ColorDrawable bcolor = new ColorDrawable(Color.WHITE);
+			pwindo.setBackgroundDrawable(bcolor);
+			pwindo.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 
     public void addEventClicked(View v)
@@ -708,6 +743,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	// stop the report location service
 	Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
 	unRegisterViewModelReciever();
+	MapManager.resetInstance();
     }
+	enum PopUpKind {
+		Menu, FriendInfo, EventInfo
+	}
 
 }

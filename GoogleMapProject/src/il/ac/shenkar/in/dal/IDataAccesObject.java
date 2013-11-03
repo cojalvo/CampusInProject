@@ -48,4 +48,10 @@ public interface IDataAccesObject
      */
     void getAllCampusInUsersStartWith(String startWith, DataAccesObjectCallBack<List<CampusInUser>> callBack);
 
+	void updateCurrentUserStatus(DataAccesObjectCallBack<Integer> callback,
+			String status);
+
+	void getFriendProfilePicture(String facebookId,
+			DataAccesObjectCallBack<Drawable> callback);
+
 }

@@ -59,6 +59,7 @@ public class CloudAccessObject implements IDataAccesObject
     private HashMap<String, CampusInUser> userTotalFriendsList = new HashMap<String, CampusInUser>();
     private HashMap<String, CampusInUserLocation> usersLocationList = new HashMap<String, CampusInUserLocation>();
     private HashMap<String, CampusInUser> allUsersList = new HashMap<String, CampusInUser>();
+    private HashMap<String, Drawable> friendsProfilePictures=new HashMap<String, Drawable>();
 
     private CloudAccessObject()
     {
@@ -661,6 +662,7 @@ public class CloudAccessObject implements IDataAccesObject
 	    user.setLastName(obj.getString("lastName"));
 	    user.setParseUserId(obj.getString("parseUserId"));
 	    user.setYear(obj.getString("year"));
+	    user.setStatus(obj.getString("status"));
 	}
 	return user;
     }
@@ -688,6 +690,7 @@ public class CloudAccessObject implements IDataAccesObject
 			currentUserParseObject.put("parseUserId", currentCampusInUser.getParseUserId());
 			currentUserParseObject.put("trend", currentCampusInUser.getTrend());
 			currentUserParseObject.put("year", currentCampusInUser.getYear());
+			currentUserParseObject.put("status", " ");
 			currentUserParseObject.saveInBackground(new SaveCallback()
 			{
 			    public void done(ParseException e)
@@ -1068,4 +1071,48 @@ public class CloudAccessObject implements IDataAccesObject
 	    }
 	});
     }
+    @Override
+	public void getFriendProfilePicture(final String facebookId,
+			final DataAccesObjectCallBack<Drawable> callback) {
+		if(friendsProfilePictures.containsKey(facebookId))
+			if(callback!=null)
+			{
+				callback.done(friendsProfilePictures.get(facebookId), null);
+				return;
+			}
+		FacebookServices.getPictureForFacebookId(
+				facebookId,
+				new DataAccesObjectCallBack<Drawable>() {
+					@Override
+					public void done(Drawable retPic, Exception e) {
+						if (e == null && retPic!=null) {
+							CloudAccessObject.this.friendsProfilePictures.put(facebookId, retPic);
+							callback.done(retPic, e);
+							return;
+						}
+					}
+				});
+		
+		
+	}
+
+	@Override
+	public void updateCurrentUserStatus(
+			DataAccesObjectCallBack<Integer> callback, final String status) {
+		loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+			
+			@Override
+			public void done(ParseObject retObject, Exception e) {
+				if(retObject!=null && e==null)
+				{
+					retObject.remove("status");
+					retObject.put("status", status);
+					retObject.saveInBackground();
+				}
+				
+			}
+		});
+		
+	}
 }
+

@@ -16,6 +16,7 @@ import java.util.List;
 import android.R.integer;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 
 public class ViewModel
@@ -45,6 +46,7 @@ public class ViewModel
     private HashMap<String, CampusInUserLocation> friendsLocation = new HashMap<String, CampusInUserLocation>();
     private HashMap<String, CampusInUser> friendsHash = new HashMap<String, CampusInUser>();
     private HashMap<String, CampusInEvent> allEvents = new HashMap<String, CampusInEvent>();
+	private HashMap<String,Drawable> friendsProfilePictures=new HashMap<String, Drawable>();
 
     /*
      * this method update the view model, this method is synchronized in order
@@ -91,6 +93,8 @@ public class ViewModel
 			friendsHash.put(campusInUser.getParseUserId(),
 				campusInUser);
 		    }
+			//done in lazy loading
+			getfacebookProfilePictures();
 		    updateUsersDone = true;
 		}
 		dao.getUsersLocationInBackground(new DataAccesObjectCallBack<List<CampusInUserLocation>>()
@@ -145,6 +149,20 @@ public class ViewModel
 	updateUsersDone = false;
 	updateUsersLocationDone = false;
     }
+	private void getfacebookProfilePictures()
+	{
+		for (final CampusInUser friend: friendsHash.values()) {
+			dao.getFriendProfilePicture(friend.getFaceBookUserId(), new DataAccesObjectCallBack<Drawable>() {
+				
+				@Override
+				public void done(Drawable retObject, Exception e) {
+					friendsProfilePictures.put(friend.getParseUserId(), retObject);
+					
+				}
+			});
+			
+		}
+	}
 
     // this method will cerate a new thread in order to update the view mpdel in
     // case a thread is allready doing it the current thread will
@@ -297,5 +315,17 @@ public class ViewModel
     {
 	return idToGet == null ? null : allEvents.get(idToGet);
     }
+    public Drawable getUserProfilePicture(String parseUserId)
+	{
+		if(friendsProfilePictures.containsKey(parseUserId))
+			return friendsProfilePictures.get(parseUserId);
+		return null;
+	}
+	public CampusInUser getCampusInUser(String parseId)
+	{
+		if(friendsHash.containsKey(parseId))
+			return friendsHash.get(parseId);
+		return null;
+	}
 
 }

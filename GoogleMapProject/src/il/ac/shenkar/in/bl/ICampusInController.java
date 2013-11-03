@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.R.integer;
+import android.graphics.drawable.Drawable;
 
 import il.ac.shenkar.cadan.MapManager;
 import il.ac.shenkar.common.CampusInEvent;
@@ -20,9 +21,9 @@ public interface ICampusInController
 	void sendMessage(CampusInMessage message,ControllerCallback<Integer> callBack);
 	void getCurrentUser(ControllerCallback<CampusInUser> callBack);
 	void updateViewModel(ControllerCallback<Integer> callBack);
-	
+	Drawable  getFreindProfilePicture(String parseId,int width,int height);
 	void getAllCumpusInUsers(ControllerCallback<List<CampusInUser>> callback);
-	
+	CampusInUser getCampusInUser(String parseId);
 	void drawAllEvents(MapManager manager);
 	void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd);
 	void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove);

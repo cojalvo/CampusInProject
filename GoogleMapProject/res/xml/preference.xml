@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"  >
-            <Preference
-            android:icon="@drawable/test_icon"
+            <EditTextPreference
+            android:icon="@drawable/com_facebook_profile_picture_blank_square"
             android:key="me"
             android:textSize="50px"
-            android:title="me" />
+            android:summary="הוסף סטטוס"
+            android:title="סטטוס" />
     <PreferenceCategory
         android:key="my_area"
         android:title="האזור שלי">

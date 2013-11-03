@@ -10,6 +10,9 @@ import java.util.Stack;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import il.ac.shenkar.cadan.MapManager;
 import il.ac.shenkar.cadan.MessageHalper;
 import il.ac.shenkar.cadan.ViewModel;
@@ -273,6 +276,7 @@ public class Controller implements ICampusInController
 	    }
 	}
     }
+    
 
     @Override
     public void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove)
@@ -285,6 +289,32 @@ public class Controller implements ICampusInController
 	    }
 	}
     }
+
+	@Override
+	public Drawable getFreindProfilePicture(String parseId, int width,
+			int height) {
+		Drawable retPic=viewModel.getUserProfilePicture(parseId);
+		if(retPic!=null)
+			try {
+				return resizePic(retPic, width, width);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				return null;
+			}
+		return null;
+	}
+    
+	private Drawable resizePic(Drawable paramDrawable, int paramInt1,
+			int paramInt2) throws Exception {
+		Bitmap localBitmap = ((BitmapDrawable) paramDrawable).getBitmap();
+		return new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(
+				localBitmap, paramInt1, paramInt2, true));
+	}
+
+	@Override
+	public CampusInUser getCampusInUser(String parseId) {
+		return viewModel.getCampusInUser(parseId);
+	}
 
 
 }
