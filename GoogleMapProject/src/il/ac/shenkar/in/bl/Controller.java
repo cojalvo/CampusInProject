@@ -289,6 +289,7 @@ public class Controller implements ICampusInController {
 		cloudAccessObject.removeFriendFromFriendList(user, null);
 	    }
 	}
+	}
 
     @Override
     public Drawable getFreindProfilePicture(String parseId, int width, int height)
