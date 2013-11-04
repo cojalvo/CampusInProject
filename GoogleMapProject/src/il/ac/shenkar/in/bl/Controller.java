@@ -253,11 +253,11 @@ public class Controller implements ICampusInController
 	{
 	    cloudAccessObject.getAllCumpusInUsers(new DataAccesObjectCallBack<List<CampusInUser>>()
 	    {
-	        @Override
-	        public void done(List<CampusInUser> retObject, Exception e)
-	        {
-	            callback.done(retObject, e);
-	        }
+		@Override
+		public void done(List<CampusInUser> retObject, Exception e)
+		{
+		    callback.done(retObject, e);
+		}
 	    });
 	}
 	else
@@ -267,8 +267,8 @@ public class Controller implements ICampusInController
     @Override
     public void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd)
     {
-	// for now i add it one by one 
-	// Cadan need to implement a method to save bulk of friends all at one 
+	// for now i add it one by one
+	// Cadan need to implement a method to save bulk of friends all at one
 	if (friendsTOAdd != null)
 	{
 	    for (CampusInUser user : friendsTOAdd)
@@ -277,56 +277,62 @@ public class Controller implements ICampusInController
 	    }
 	}
     }
-    
 
     @Override
     public void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove)
     {
 	if (friendsToRemove != null)
 	{
-	    for (CampusInUser user: friendsToRemove)
+	    for (CampusInUser user : friendsToRemove)
 	    {
 		cloudAccessObject.removeFriendFromFriendList(user, null);
 	    }
 	}
     }
 
-	@Override
-	public Drawable getFreindProfilePicture(String parseId, int width,
-			int height) {
-		Drawable retPic=viewModel.getUserProfilePicture(parseId);
-		if(retPic!=null)
-			try {
-				return resizePic(retPic, width, width);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				return null;
-			}
+    @Override
+    public Drawable getFreindProfilePicture(String parseId, int width, int height)
+    {
+	Drawable retPic = viewModel.getUserProfilePicture(parseId);
+	if (retPic != null)
+	    try
+	    {
+		return resizePic(retPic, width, width);
+	    }
+	    catch (Exception e)
+	    {
+		// TODO Auto-generated catch block
 		return null;
-	}
-    
-	private Drawable resizePic(Drawable paramDrawable, int paramInt1,
-			int paramInt2) throws Exception {
-		Bitmap localBitmap = ((BitmapDrawable) paramDrawable).getBitmap();
-		return new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(
-				localBitmap, paramInt1, paramInt2, true));
-	}
+	    }
+	return null;
+    }
 
-	@Override
-	public CampusInUser getCampusInUser(String parseId) {
-		return viewModel.getCampusInUser(parseId);
-	}
+    private Drawable resizePic(Drawable paramDrawable, int paramInt1, int paramInt2) throws Exception
+    {
+	Bitmap localBitmap = ((BitmapDrawable) paramDrawable).getBitmap();
+	return new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(localBitmap, paramInt1, paramInt2, true));
+    }
 
-	@Override
-	public void navigateToEvent(CampusInEvent event)
+    @Override
+    public CampusInUser getCampusInUser(String parseId)
+    {
+	return viewModel.getCampusInUser(parseId);
+    }
+
+    @Override
+    public void navigateToEvent(CampusInEvent event)
+    {
+	if (event != null)
 	{
-	   if (event != null)
-	   {   	    
-    	    	// navigate to the location
-    	    	mapManager = MapManager.getInstance(null, 0); /* in this point the map is already initialized so i pass dummy params */
-    	    	mapManager.moveCameraToEvent(event.getParseId());
-	   }
+	    // navigate to the location
+	    mapManager = MapManager.getInstance(null, 0); /*
+							   * in this point the
+							   * map is already
+							   * initialized so i
+							   * pass dummy params
+							   */
+	    mapManager.moveCameraToEvent(event.getParseId());
 	}
-
+    }
 
 }

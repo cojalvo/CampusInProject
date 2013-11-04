@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -61,6 +62,7 @@ public class FriendListBaseAdapter extends BaseAdapter implements Filterable
     public View getView(int position, View convertView, ViewGroup parent)
     {
 	CheckBox currCheckBox;
+	ImageView currProfilePicture;
 	ViewHolder holder;
 
 	if (convertView == null)
@@ -69,6 +71,7 @@ public class FriendListBaseAdapter extends BaseAdapter implements Filterable
 	    holder = new ViewHolder();
 	    holder.txt_itemFullName = (TextView) convertView.findViewById(R.id.friend_name);
 	    holder.checkBox = (CheckBox) convertView.findViewById(R.id.friend_check_box);
+	    holder.imageView = (ImageView) convertView.findViewById(R.id.friend_profile_picture_imageView);
 	    convertView.setTag(holder);
 	}
 	else
@@ -91,7 +94,10 @@ public class FriendListBaseAdapter extends BaseAdapter implements Filterable
 		filteredFriendsArrayList.get((Integer) buttonView.getTag()).setChecked(isChecked);
 	    }
 	});
-
+	// setting the facebook profile picture
+	currProfilePicture = (ImageView) convertView.findViewById(R.id.friend_profile_picture_imageView);
+	currProfilePicture.setImageDrawable(filteredFriendsArrayList.get(position).getProfilePicture());
+	
 	holder.txt_itemFullName.setText(filteredFriendsArrayList.get(position).getUser().getFirstName() + " " + filteredFriendsArrayList.get(position).getUser().getLastName());
 	if (filteredFriendsArrayList.get(position).isChecked())
 	{
@@ -118,6 +124,7 @@ public class FriendListBaseAdapter extends BaseAdapter implements Filterable
     {
 	TextView txt_itemFullName;
 	CheckBox checkBox;
+	ImageView imageView;
     }
 
     @Override
