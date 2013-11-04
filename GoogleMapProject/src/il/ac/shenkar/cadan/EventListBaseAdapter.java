@@ -1,9 +1,11 @@
 package il.ac.shenkar.cadan;
 
 import il.ac.shenkar.common.CampusInEvent;
+import il.ac.shenkar.in.bl.Controller;
 
 import java.util.ArrayList;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 public class EventListBaseAdapter extends BaseAdapter implements Filterable
@@ -21,13 +24,15 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 	private static ArrayList<CampusInEvent> eventArrayList;
 	private static ArrayList<CampusInEvent> filteredEventArrayList;
 	private LayoutInflater l_Inflater;
+	private DiaplayEventListFragment dialog;
 	
 	
-	public EventListBaseAdapter(Context context,ArrayList<CampusInEvent> arrayList)
+	public EventListBaseAdapter(Context context,ArrayList<CampusInEvent> arrayList, DiaplayEventListFragment dialog)
 	{
 		this.eventArrayList = arrayList;
 		this.filteredEventArrayList = arrayList;
 		this.l_Inflater = LayoutInflater.from(context);
+		this.dialog = dialog;
 	}
 	@Override
 	public int getCount()
@@ -51,6 +56,7 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		Button currButton;
+		ImageButton naviButton;
 		ViewHolder holder;
 		
 		if (convertView == null)
@@ -79,9 +85,25 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 				
 			}
 		});
+		naviButton =(ImageButton) convertView.findViewById(R.id.event_navigation_button);
+		naviButton.setOnClickListener(new OnClickListener()
+		{
+		    
+		    @Override
+		    public void onClick(View v)
+		    {
+			// navigate to the the event;
+			Integer position = (Integer) v.getTag();
+			CampusInEvent navigateTo = filteredEventArrayList.get(position);
+			dialog.dismiss();
+			Controller.getInstance(null).navigateToEvent(navigateTo);
+			
+		    }
+		});		
 		holder.txt_itemDescription.setText(filteredEventArrayList.get(position).getDescription());
 		holder.txt_itemTitle.setText(filteredEventArrayList.get(position).getHeadLine());
 		currButton.setTag(position);
+		naviButton.setTag(position);
 		return convertView;
 	}
 

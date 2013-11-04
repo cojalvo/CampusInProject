@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -314,6 +315,17 @@ public class Controller implements ICampusInController
 	@Override
 	public CampusInUser getCampusInUser(String parseId) {
 		return viewModel.getCampusInUser(parseId);
+	}
+
+	@Override
+	public void navigateToEvent(CampusInEvent event)
+	{
+	   if (event != null)
+	   {   	    
+    	    	// navigate to the location
+    	    	mapManager = MapManager.getInstance(null, 0); /* in this point the map is already initialized so i pass dummy params */
+    	    	mapManager.moveCameraToEvent(event.getParseId());
+	   }
 	}
 
 

@@ -10,7 +10,8 @@
 	    android:paddingTop="10dp"
 	    android:textColor="#000000"
 	    android:textSize="25sp"
-	    android:textStyle="bold">
+	    android:textStyle="bold"
+	    android:layout_marginLeft="3dp">
 	</TextView>
 		
 	<TextView
@@ -20,13 +21,22 @@
 	    android:layout_below="@+id/eventTitle"	    
 	    android:paddingTop="5dp"
 	    android:textColor="#000000"
-	    android:textSize="15sp" >
+	    android:textSize="15sp" 
+	    android:layout_marginLeft="3dp">
 	</TextView>
-	
+	<ImageButton 
+	    android:id="@+id/event_navigation_button"
+	    android:layout_height="wrap_content"
+	    android:layout_width="wrap_content"
+	    android:layout_marginTop="15dp"
+	    android:src="@drawable/navigate_img"
+	    android:background="@drawable/blue_button"
+	    style="@style/ButtonText"
+		android:layout_toLeftOf="@+id/eventButton"
+		/>"
 	<Button
 	    android:id="@+id/eventButton"
 	    android:layout_alignParentRight="true"
-	    android:layout_alignParentTop="true"
 	    android:text="@string/do_somthing"
 	    android:layout_marginTop="12dp"
 	    android:background="@drawable/blue_button"

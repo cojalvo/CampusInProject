@@ -53,8 +53,8 @@ public class DiaplayEventListFragment extends DialogFragment
 		});
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-			.setTitle("הוספת אירוע")
-			.setPositiveButton("אישור", new DialogInterface.OnClickListener() {
+			.setTitle("׳”׳•׳¡׳₪׳× ׳�׳™׳¨׳•׳¢")
+			.setPositiveButton("׳�׳™׳©׳•׳¨", new DialogInterface.OnClickListener() {
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -68,7 +68,7 @@ public class DiaplayEventListFragment extends DialogFragment
 		
 		//set the adapter to the list 
 		final ListView eventsList = (ListView) view.findViewById(R.id.eventsList);
-		eventsList.setAdapter(new EventListBaseAdapter(getActivity(), this.eventList));
+		eventsList.setAdapter(new EventListBaseAdapter(getActivity(), this.eventList, this));
 		
 		//attache a listener to the text box in order to filter the events
 		EditText searchBox = (EditText) view.findViewById(R.id.event_search_edit_text);

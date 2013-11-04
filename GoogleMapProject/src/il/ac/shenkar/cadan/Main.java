@@ -762,7 +762,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	unRegisterViewModelReciever();
 	MapManager.resetInstance();
     }
-	enum PopUpKind {
+	public enum PopUpKind {
 		Menu, FriendInfo, EventInfo
 	}
 
