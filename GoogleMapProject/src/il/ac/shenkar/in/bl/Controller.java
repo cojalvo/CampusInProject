@@ -18,6 +18,7 @@ import android.util.Log;
 import android.widget.Toast;
 import il.ac.shenkar.cadan.MapManager;
 import il.ac.shenkar.cadan.MessageHalper;
+import il.ac.shenkar.cadan.R;
 import il.ac.shenkar.cadan.ViewModel;
 import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInEvent;
@@ -223,105 +224,114 @@ public class Controller implements ICampusInController {
 		}
 	}
 
-	public void setMapManager(MapManager mapManager) {
-		this.mapManager = mapManager;
-	}
+    public void setMapManager(MapManager mapManager)
+    {
+	this.mapManager = mapManager;
+    }
 
-	@Override
-	public void getCurrentUserFriendsLocationList(
-			ControllerCallback<List<CampusInUserLocation>> callBack) {
-		if (callBack != null)
-			callBack.done(
-					new ArrayList<CampusInUserLocation>(viewModel
-							.getAllFriendsLocation()), null);
-	}
+    @Override
+    public void getCurrentUserFriendsLocationList(ControllerCallback<List<CampusInUserLocation>> callBack)
+    {
+	if (callBack != null)
+	    callBack.done(new ArrayList<CampusInUserLocation>(viewModel.getAllFriendsLocation()), null);
+    }
 
-	@Override
-	public CampusInEvent getEvent(String eventId) {
-		return eventId == null ? null : viewModel.getEventById(eventId);
-	}
+    @Override
+    public CampusInEvent getEvent(String eventId)
+    {
+	return eventId == null ? null : viewModel.getEventById(eventId);
+    }
 
-	public void addEventToLocalMap(CampusInEvent toAdd) {
-		viewModel.addEvent(toAdd);
-	}
+    public void addEventToLocalMap(CampusInEvent toAdd)
+    {
+	viewModel.addEvent(toAdd);
+    }
 
-	@Override
-	public void getAllCumpusInUsers(
-			final ControllerCallback<List<CampusInUser>> callback) {
-		if (callback != null) {
-			cloudAccessObject
-					.getAllCumpusInUsers(new DataAccesObjectCallBack<List<CampusInUser>>() {
-						@Override
-						public void done(List<CampusInUser> retObject,
-								Exception e) {
-							callback.done(retObject, e);
-						}
-					});
-		} else
-			return;
-	}
-
-	@Override
-	public void addFriendsToCurrentUserFriendList(
-			List<CampusInUser> friendsTOAdd) {
-		// for now i add it one by one
-		// Cadan need to implement a method to save bulk of friends all at one
-		if (friendsTOAdd != null) {
-			for (CampusInUser user : friendsTOAdd) {
-				cloudAccessObject.addFriendToFriendList(user, null);
-			}
+    @Override
+    public void getAllCumpusInUsers(final ControllerCallback<List<CampusInUser>> callback)
+    {
+	if (callback != null)
+	{
+	    cloudAccessObject.getAllCumpusInUsers(new DataAccesObjectCallBack<List<CampusInUser>>()
+	    {
+		@Override
+		public void done(List<CampusInUser> retObject, Exception e)
+		{
+		    callback.done(retObject, e);
 		}
+	    });
+	}
+	else
+	    return;
+    }
+
+    @Override
+    public void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd)
+    {
+	// for now i add it one by one
+	// Cadan need to implement a method to save bulk of friends all at one
+	if (friendsTOAdd != null)
+	{
+	    for (CampusInUser user : friendsTOAdd)
+	    {
+		cloudAccessObject.addFriendToFriendList(user, null);
+	    }
+	}
+    }
+
+    @Override
+    public void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove)
+    {
+	if (friendsToRemove != null)
+	{
+	    for (CampusInUser user : friendsToRemove)
+	    {
+		cloudAccessObject.removeFriendFromFriendList(user, null);
+	    }
 	}
 
-	@Override
-	public void removeFriendsFromCurrentUserFriendList(
-			List<CampusInUser> friendsToRemove) {
-		if (friendsToRemove != null) {
-			for (CampusInUser user : friendsToRemove) {
-				cloudAccessObject.removeFriendFromFriendList(user, null);
-			}
-		}
-	}
+    @Override
+    public Drawable getFreindProfilePicture(String parseId, int width, int height)
+    {
+	Drawable retPic = viewModel.getUserProfilePicture(parseId);
+	if (retPic != null)
+	    try
+	    {
+		return resizePic(retPic, width, width);
+	    }
+	    catch (Exception e)
+	    {
+		// TODO Auto-generated catch block
+		return context.getResources().getDrawable(R.drawable.com_facebook_profile_picture_blank_portrait);
+	    }
+	return context.getResources().getDrawable(R.drawable.com_facebook_profile_picture_blank_portrait);
+    }
 
-	@Override
-	public Drawable getFreindProfilePicture(String parseId, int width,
-			int height) {
-		Drawable retPic = viewModel.getUserProfilePicture(parseId);
-		if (retPic != null)
-			try {
-				return resizePic(retPic, width, width);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				return null;
-			}
-		return null;
-	}
+    private Drawable resizePic(Drawable paramDrawable, int paramInt1, int paramInt2) throws Exception
+    {
+	Bitmap localBitmap = ((BitmapDrawable) paramDrawable).getBitmap();
+	return new BitmapDrawable(context.getResources(), Bitmap.createScaledBitmap(localBitmap, paramInt1, paramInt2, true));
+    }
 
-	private Drawable resizePic(Drawable paramDrawable, int paramInt1,
-			int paramInt2) throws Exception {
-		Bitmap localBitmap = ((BitmapDrawable) paramDrawable).getBitmap();
-		return new BitmapDrawable(context.getResources(),
-				Bitmap.createScaledBitmap(localBitmap, paramInt1, paramInt2,
-						true));
+    @Override
+    public CampusInUser getCampusInUser(String parseId)
+    {
+	return viewModel.getCampusInUser(parseId);
+    }
+    @Override
+    public void navigateToEvent(CampusInEvent event)
+    {
+	if (event != null)
+	{
+	    // navigate to the location
+	    mapManager = MapManager.getInstance(null, 0); /*
+							   * in this point the
+							   * map is already
+							   * initialized so i
+							   * pass dummy params
+							   */
+	    mapManager.moveCameraToEvent(event.getParseId());
 	}
-
-	@Override
-	public CampusInUser getCampusInUser(String parseId) {
-		return viewModel.getCampusInUser(parseId);
-	}
-
-	@Override
-	public void navigateToEvent(CampusInEvent event) {
-		if (event != null) {
-			// navigate to the location
-			mapManager = MapManager.getInstance(null, 0); /*
-														 * in this point the map
-														 * is already
-														 * initialized so i pass
-														 * dummy params
-														 */
-			mapManager.moveCameraToEvent(event.getParseId());
-		}
-	}
+    }
 
 }

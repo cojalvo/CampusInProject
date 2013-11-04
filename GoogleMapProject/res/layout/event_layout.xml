@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
     
 	<TextView
 	    android:id="@+id/eventTitle"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:paddingTop="10dp"
+	    android:paddingLeft="10dp"
 	    android:textColor="#000000"
 	    android:textSize="25sp"
 	    android:textStyle="bold"
@@ -30,9 +32,11 @@
 	    android:layout_width="20dp"
 	    android:layout_height="20dp"
 	    android:layout_marginTop="15dp"
-	    android:layout_toLeftOf="@+id/eventButton"
-	    android:src="@drawable/location" />
-
+	    android:src="@drawable/navigate_img"
+	    android:background="@drawable/blue_button"
+	    style="@style/ButtonText"
+		android:layout_toLeftOf="@+id/eventButton"
+		android:layout_centerVertical="true"/>"
 	<Button
 	    android:id="@+id/eventButton"
 	    style="@style/ButtonText"
@@ -40,8 +44,8 @@
 	    android:layout_marginTop="12dp"
 	    android:background="@drawable/blue_button"
 	    android:text="@string/do_somthing"
-	    android:visibility="invisible" >
-
+	    style="@style/ButtonText"
+	    android:layout_centerVertical="true">
 	</Button>
 
 	
