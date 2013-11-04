@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -24,7 +25,7 @@ public class JacobEventActivity extends Activity
 		setContentView(R.layout.events_list_layout);
 		
 		 final ListView eventsList = (ListView) findViewById(R.id.eventsList);
-		 eventsList.setAdapter(new EventListBaseAdapter(this, getEvents()));
+		// eventsList.setAdapter(new EventListBaseAdapter(this, getEvents(), new DiaplayEventListFragment());
 		 
 	}
 	@Override
