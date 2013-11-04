@@ -24,23 +24,24 @@
 	    android:textSize="15sp" 
 	    android:layout_marginLeft="3dp">
 	</TextView>
-	<ImageButton 
+
+	<ImageView
 	    android:id="@+id/event_navigation_button"
-	    android:layout_height="wrap_content"
-	    android:layout_width="wrap_content"
+	    android:layout_width="20dp"
+	    android:layout_height="20dp"
 	    android:layout_marginTop="15dp"
-	    android:src="@drawable/navigate_img"
-	    android:background="@drawable/blue_button"
-	    style="@style/ButtonText"
-		android:layout_toLeftOf="@+id/eventButton"
-		/>"
+	    android:layout_toLeftOf="@+id/eventButton"
+	    android:src="@drawable/location" />
+
 	<Button
 	    android:id="@+id/eventButton"
+	    style="@style/ButtonText"
 	    android:layout_alignParentRight="true"
-	    android:text="@string/do_somthing"
 	    android:layout_marginTop="12dp"
 	    android:background="@drawable/blue_button"
-	    style="@style/ButtonText">
+	    android:text="@string/do_somthing"
+	    android:visibility="invisible" >
+
 	</Button>
 
 	

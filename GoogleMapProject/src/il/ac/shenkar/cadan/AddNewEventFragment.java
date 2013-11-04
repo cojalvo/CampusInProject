@@ -177,9 +177,9 @@ public class AddNewEventFragment extends DialogFragment
 		locatinSrinner.setAdapter(dataAdapter);
 		if(!showLocationsSpinner)
 		{
-			locatinSrinner.setVisibility(View.INVISIBLE);
+			locatinSrinner.setVisibility(View.GONE);
 			if(locationLabel!=null)
-				locationLabel.setVisibility(View.INVISIBLE);
+				locationLabel.setVisibility(View.GONE);
 		}
 
 		 // becouse it's a fragment and i want to deal with the events in here i will put listenets manualy - 

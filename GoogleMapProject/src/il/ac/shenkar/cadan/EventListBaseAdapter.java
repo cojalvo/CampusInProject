@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 public class EventListBaseAdapter extends BaseAdapter implements Filterable
@@ -56,7 +57,7 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 	public View getView(int position, View convertView, ViewGroup parent)
 	{
 		Button currButton;
-		ImageButton naviButton;
+		ImageView naviButton;
 		ViewHolder holder;
 		
 		if (convertView == null)
@@ -85,7 +86,7 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 				
 			}
 		});
-		naviButton =(ImageButton) convertView.findViewById(R.id.event_navigation_button);
+		naviButton =(ImageView) convertView.findViewById(R.id.event_navigation_button);
 		naviButton.setOnClickListener(new OnClickListener()
 		{
 		    

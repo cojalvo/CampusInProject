@@ -14,6 +14,7 @@ import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
+import il.ac.shenkar.common.GuiHelper;
 import il.ac.shenkar.common.ParsingHelper;
 import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.in.bl.ControllerCallback;
@@ -22,6 +23,8 @@ import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.services.InitLocations;
 import il.ac.shenkar.in.services.LocationReporterServise;
+import il.ac.shenkar.in.services.ModelUpdateService;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -32,6 +35,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 
+import android.R.integer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -55,6 +59,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.*;
 import android.support.v4.widget.DrawerLayout;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -90,6 +95,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     private BroadcastReceiver viewModelUpdatedReciever;
     private Vibrator vibrator = null;
     FragmentManager fm;
+    private int myScreenWidth;
+    private int myScreenHeight;
+    private float widthMultScreenFactor;
+    private Float heightMultScreenFactor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -102,6 +111,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	super.onCreate(savedInstanceState);
 	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
+	calcMyScreen();
 	vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	// inflate the drawerLayour
 	this.mDrawerLayout = (DrawerLayout) this.getLayoutInflater().inflate(R.layout.main, null);
@@ -167,12 +177,37 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	if (savedInstanceState == null || !savedInstanceState.getBoolean("locationServiceStart"))
 	{
 	    startLocationReportServise();
+	    startAutoViewModelUpdatingService();
 	}
 	updateView();
 	registerViewModelReciever();
     }
-
+    private void calcMyScreen()
+    {
+    	DisplayMetrics mat=GuiHelper.getDisplayMatric(this);
+    	if(mat!=null)
+    	{
+    		myScreenHeight=mat.heightPixels;
+    		myScreenWidth=mat.widthPixels;
+    		heightMultScreenFactor=(float) (GuiHelper.getHeightDimentionMultFactor(myScreenHeight)*(1.1));
+    		widthMultScreenFactor=(float) (GuiHelper.getWidthDimentionMultFactor(myScreenWidth)*(1.1));
+    	}
+    }
     @Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		stopAutoViewModelUpdatingService();
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		startAutoViewModelUpdatingService();
+	}
+
+	@Override
     protected void onSaveInstanceState(Bundle outState)
     {
 
@@ -191,6 +226,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	this.startService(i);
 
     }
+
 
     private void initMapManager()
     {
@@ -440,22 +476,22 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 			switch (kind) {
 			case Menu:
 				layout = inflater.inflate(R.layout.popup_menu, null);
-				pwindo = new PopupWindow(layout, 750, 350, true);
+				pwindo = new PopupWindow(layout, (int)(750*widthMultScreenFactor), (int)(350*heightMultScreenFactor), true);
 				break;
 			case FriendInfo:
 				layout = inflater.inflate(R.layout.friend_info_popup, null);
 				CampusInUser user=controller.getCampusInUser(mapManager.getCampusInUserIdFromMarker(lastMarkerClicked));
 				ImageView profilePictre=(ImageView) layout.findViewById(R.id.profile_picture);
-				profilePictre.setImageDrawable(controller.getFreindProfilePicture(user.getParseUserId(), 150, 130));
+				profilePictre.setImageDrawable(controller.getFreindProfilePicture(user.getParseUserId(),(int) (150*widthMultScreenFactor), (int)(130*heightMultScreenFactor)));
 				TextView fulName=(TextView) layout.findViewById(R.id.full_name);
 				TextView status=(TextView) layout.findViewById(R.id.face_status);
 				status.setText(user.getStatus());
 				fulName.setText(user.getFirstName()+" "+user.getLastName());
-				pwindo = new PopupWindow(layout, 750, 350, true);
+				pwindo = new PopupWindow(layout, (int)(750*widthMultScreenFactor), (int)(350*heightMultScreenFactor), true);
 				break;
 			case EventInfo:
 				layout = inflater.inflate(R.layout.event_info_popup, null);
-				pwindo = new PopupWindow(layout, 750, 750, true);
+				pwindo = new PopupWindow(layout,(int) (750*widthMultScreenFactor), (int)(750*heightMultScreenFactor), true);
 				CampusInEvent event=controller.getEvent(mapManager.getEventIdFromMarker(lastMarkerClicked));
 				TextView title=(TextView) layout.findViewById(R.id.event_title);
 				title.setText(event.getHeadLine());
@@ -759,11 +795,22 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	super.onDestroy();
 	// stop the report location service
 	Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
+	stopAutoViewModelUpdatingService();
 	unRegisterViewModelReciever();
 	MapManager.resetInstance();
     }
 	public enum PopUpKind {
 		Menu, FriendInfo, EventInfo
 	}
+    
+    private void startAutoViewModelUpdatingService()
+    {
+    	Intent i = new Intent(this, ModelUpdateService.class);
+    	this.startService(i);
+    }
+    private void stopAutoViewModelUpdatingService()
+    {
+    	stopService(new Intent(this,ModelUpdateService.class));
+    }
 
 }

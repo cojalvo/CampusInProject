@@ -36,13 +36,13 @@ public class LocationReporterServise extends Service {
 			Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE",
 					"UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 			ParseFacebookUtils.initialize("635010643194002");
-			locationReporter=new LocationoReporter(9000,getBaseContext());
+			locationReporter=new LocationoReporter(20000,getBaseContext());
 		}
 
 		@Override
 		public int onStartCommand(Intent intent, int flags, int startId) {
 			Log.i("cadan","Service has started");
-			Toast.makeText(getBaseContext(), "Servise has started", 50000).show();
+			Toast.makeText(getBaseContext(), "Servise has started", 2000).show();
 			sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 			if(sharedPreferences!=null)
 			{

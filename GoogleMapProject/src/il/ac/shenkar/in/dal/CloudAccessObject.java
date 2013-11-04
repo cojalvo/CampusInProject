@@ -47,7 +47,6 @@ public class CloudAccessObject implements IDataAccesObject
     // single tone
     private static CloudAccessObject instace;
     private CampusInUser curentCampusInUser = null;
-    private Date eventsLastUpate;
     private Date messagesLastUpdate;
     private ParseObject parseCurrentCampusInUser = null;
     private Drawable profilePic = null;
