@@ -16,6 +16,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import il.ac.shenkar.cadan.MapManager;
 import il.ac.shenkar.cadan.MessageHalper;
+import il.ac.shenkar.cadan.R;
 import il.ac.shenkar.cadan.ViewModel;
 import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInEvent;
@@ -302,9 +303,9 @@ public class Controller implements ICampusInController
 	    catch (Exception e)
 	    {
 		// TODO Auto-generated catch block
-		return null;
+		return context.getResources().getDrawable(R.drawable.com_facebook_profile_picture_blank_portrait);
 	    }
-	return null;
+	return context.getResources().getDrawable(R.drawable.com_facebook_profile_picture_blank_portrait);
     }
 
     private Drawable resizePic(Drawable paramDrawable, int paramInt1, int paramInt2) throws Exception

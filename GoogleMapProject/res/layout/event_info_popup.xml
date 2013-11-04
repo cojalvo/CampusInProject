@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.36"
         android:gravity="right"
-        android:layoutDirection="rtl"
         android:orientation="vertical"
         android:padding="10dp" >
 
@@ -18,7 +17,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/border"
             android:gravity="right"
-            android:layoutDirection="rtl"
             android:orientation="horizontal" >
 
             <TextView
