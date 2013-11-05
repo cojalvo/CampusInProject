@@ -54,6 +54,7 @@ public class ViewModel
      */
     private synchronized void updateViewModel()
     {
+    	clearHashes();
 	dao.getEvents(new DataAccesObjectCallBack<List<CampusInEvent>>()
 	{
 
@@ -75,6 +76,7 @@ public class ViewModel
 
 	    }
 	});
+	
 
 	// the location and the campus in user are connected this is the reason
 	// it is not safe to it asynchronous
@@ -142,7 +144,18 @@ public class ViewModel
 	    }
 	});
     }
-
+    
+    private void clearHashes()
+    {
+    	//clear the hash table in order to remove old events
+    	allEvents.clear();
+    	meeting.clear();
+    	tests.clear();
+    	lesons.clear();
+    	messages.clear();
+    	friendsLocation.clear();
+    	friendsHash.clear();
+    }
     private void resetUpdateflags()
     {
 	updateEventDone = false;
@@ -163,7 +176,6 @@ public class ViewModel
 			
 		}
 	}
-
     // this method will cerate a new thread in order to update the view mpdel in
     // case a thread is allready doing it the current thread will
     // sleep since

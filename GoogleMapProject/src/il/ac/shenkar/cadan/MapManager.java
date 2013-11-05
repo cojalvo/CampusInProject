@@ -112,7 +112,16 @@ public class MapManager
 	eventMarkerdictionary.clear();
 	markerEventDictionary.clear();
     }
-
+    public void disableMap()
+    {
+    	if(map!=null)
+    		map.getUiSettings().setAllGesturesEnabled(false);
+    }
+    public void enableMap()
+    {
+    	if(map!=null)
+    		map.getUiSettings().setAllGesturesEnabled(true);
+    }
     private void InsertMarkers()
     {
 

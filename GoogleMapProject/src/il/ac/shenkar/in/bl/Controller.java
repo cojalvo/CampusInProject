@@ -198,22 +198,17 @@ public class Controller implements ICampusInController {
 							Log.i("CampusIn","Finish updating the view model");
 							invokeViewModelUpdated();
 							updatingViewModel=false;
-							if (updateAgainViewModel) {
-								Log.i("CampusIn"," update again the view model");
-								updateAgainViewModel=false;
-								updateViewModel(null);
-							}
 						}
 					});
-		} else
-			updateAgainViewModel = true;
-
+		}
 	}
+
 
 	private void invokeViewModelUpdated() {
 		Intent inti = new Intent();
 		inti.setAction(CampusInConstant.VIEW_MODEL_UPDATED);
-		context.sendBroadcast(inti);
+		if(context!=null)
+			context.sendBroadcast(inti);
 	}
 
 	@Override

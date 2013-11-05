@@ -101,6 +101,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     private int myScreenHeight;
     private float widthMultScreenFactor;
     private Float heightMultScreenFactor;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -504,18 +505,28 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     @Override
     public boolean onMarkerClick(Marker marker)
     {
-    	marker.showInfoWindow();
-		lastMarkerClicked = marker;
-		switch (mapManager.getMarkerType(marker)) {
-		case Event:
-			initiatePopupWindow(PopUpKind.EventInfo);
-			break;
-		case Person:
-			initiatePopupWindow(PopUpKind.FriendInfo);
-		break;
-		default:
-			break;
-		}
+    	//we are in a middle of updating process
+    	try
+    	{
+    		marker.showInfoWindow();
+    		lastMarkerClicked = marker;
+    		switch (mapManager.getMarkerType(marker)) {
+    		case Event:
+    			initiatePopupWindow(PopUpKind.EventInfo);
+    			break;
+    		case Person:
+    			initiatePopupWindow(PopUpKind.FriendInfo);
+    		break;
+    		default:
+    			break;
+    		}
+
+    	}
+    	catch (Exception e)
+    	{
+    		Toast.makeText(Main.this, "marker click was failed", 100).show();
+    		Log.e("markerClick","marker click was failed");
+    	}
 
 		return true;
 
@@ -827,9 +838,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     private void updateView()
     {
-	mapManager.clearMap();
+    	mapManager.clearMap();
 	controller.getCurrentUserAllEvents(new ControllerCallback<List<CampusInEvent>>()
 	{
+		
 	    @Override
 	    public void done(List<CampusInEvent> retObject, Exception e)
 	    {
@@ -837,7 +849,6 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		{
 		    mapManager.addOrUpdateEventMarker(campusInEvent);
 		}
-
 	    }
 	});
 	controller.getCurrentUserFriendsLocationList(new ControllerCallback<List<CampusInUserLocation>>()
@@ -850,7 +861,6 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		{
 		    mapManager.addOrUpdatePersonMarker(campusInUserLocation);
 		}
-
 	    }
 	});
     }
@@ -877,7 +887,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     }
     private void stopAutoViewModelUpdatingService()
     {
-    	stopService(new Intent(this,ModelUpdateService.class));
+    	stopService(new Intent(Main.this,ModelUpdateService.class));
     }
 
 }
