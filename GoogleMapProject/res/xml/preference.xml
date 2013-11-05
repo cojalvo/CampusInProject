@@ -1,40 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"  >
-            <EditTextPreference
-            android:icon="@drawable/com_facebook_profile_picture_blank_square"
-            android:key="me"
-            android:textSize="50px"
-            android:summary="הוסף סטטוס"
-            android:title="סטטוס" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <EditTextPreference
+        android:icon="@drawable/com_facebook_profile_picture_blank_square"
+        android:key="me"
+        android:summary="הוסף סטטוס"
+        android:textSize="50px"
+        android:title="סטטוס" />
+
     <PreferenceCategory
         android:key="my_area"
-        android:title="האזור שלי">
-
-        <CheckBoxPreference android:icon="@drawable/marker_icon" android:key="display_me" android:summary="@string/show_hidw_mee" android:title="@string/show_hide_me_title" />
-        <CheckBoxPreference android:icon="@drawable/group_icon" android:key="display_my_friend_only" android:summary="הצג את כולם/את חברי בלבד" android:title="הצג רק את חברי" />
+        android:title="האזור שלי" >
+        <CheckBoxPreference
+            android:icon="@drawable/marker_icon"
+            android:key="display_me"
+            android:summary="@string/show_hidw_mee"
+            android:title="@string/show_hide_me_title" />
         <Preference
             android:icon="@drawable/calendar_icon"
             android:key="my_calendar"
-            android:summary="ערוך את מערכת השעות"
-            android:title="מערכת + שלי" />
-
+            android:summary="הצכ את מערכת השעות"
+            android:title="מערכת השעות שלי" />
         <Preference
             android:icon="@drawable/test_icon"
             android:key="my_tests"
-            android:summary="ערוך את לוח המבחנים שלי"
+            android:summary="הצג את לוח המבחנים שלי"
             android:title="לוח המבחנים שלי" />
-        
     </PreferenceCategory>
-    <PreferenceCategory 
+    <PreferenceCategory
+        android:key="my_friends"
+        android:title="חברים בקמפוס" >
+        <Preference
+            android:icon="@drawable/group_icon"
+            android:key="show_my_friends"
+            android:summary="הצג את החברים שליי"
+            android:title="החברים שלי" />
+        <Preference
+            android:icon="@drawable/group_icon"
+            android:key="add_friends"
+            android:summary="הוסף חברים חדשים"
+            android:title="הוספת חברים" />
+        <Preference
+            android:icon="@drawable/group_icon"
+            android:key="show_my_friends"
+            android:summary="הסר מרשימת החברים שלי"
+            android:title="הסרת חברים" />
+    </PreferenceCategory>
+    <PreferenceCategory
         android:key="my_area"
-       	android:title="אירועים בקמפוס">
-        <ListPreference 
-            android:key="event_reminder"
+        android:title="אירועים בקמפוס" >
+        <Preference
+            android:icon="@drawable/group_icon"
+            android:key="show_campus_events"
+            android:summary="הצג את האירועים בקמפוס"
+            android:title="אירועים בקמפוס" />
+        <Preference
+            android:icon="@drawable/group_icon"
+            android:key="show_campus_events"
+            android:summary="צור אירוע חדש "
+            android:title="יצירת אירוע" />
+        <Preference>
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="my_aea"
+        android:title="הודעות" >
+        <Preference
+            android:icon="@drawable/group_icon"
+            android:key="send_message"
+            android:summary="השאר הודעה לחברים בקמפוס"
+            android:title="השארת הודעה " />
+        <Preference
+            android:icon="@drawable/group_icon"
+            android:key="show_my_messages"
+            android:summary="הצג את ההודעות שלי"
+            android:title="הצגת הודעות" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="my_settings"
+        android:title="הגדרות כלליות" >
+        <ListPreference
+            android:defaultValue="300000"
             android:entries="@array/event_reminder"
             android:entryValues="@array/event_reminder_values"
-            android:title="תזכורות לאירועים"
-            android:defaultValue="300000"
-            android:summary="קבל תזכורות לאירועים"/>
-       		
+            android:key="event_reminder"
+            android:summary="קבל תזכורות לאירועים"
+            android:title="תזכורות לאירועים" />
+        <ListPreference
+            android:defaultValue="30"
+            android:entries="@array/event_reminder"
+            android:entryValues="@array/messages_radius_display"
+            android:key="event_reminder"
+            android:summary="הצג הודעות ברדיוס של"
+            android:title="הצגת הודעות" />
     </PreferenceCategory>
+
 </PreferenceScreen>

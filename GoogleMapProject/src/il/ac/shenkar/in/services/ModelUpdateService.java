@@ -14,7 +14,7 @@ public class ModelUpdateService  extends Service
 {
 	Handler handler=new Handler();
 	private boolean lastUpdateFinish=true;
-	private int interval=5000;
+	private int interval=7000;
 	ICampusInController controller=Controller.getInstance(getBaseContext());
 	
 

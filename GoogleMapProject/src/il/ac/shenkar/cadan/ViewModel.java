@@ -54,7 +54,7 @@ public class ViewModel
      */
     private synchronized void updateViewModel()
     {
-    	clearHashes();
+    	//clearHashes();
 	dao.getEvents(new DataAccesObjectCallBack<List<CampusInEvent>>()
 	{
 
@@ -63,9 +63,10 @@ public class ViewModel
 	    {
 		if (e == null && retObject != null)
 		{
-		    meeting = new HashMap<String, CampusInEvent>();
-		    tests = new HashMap<String, CampusInEvent>();
-		    lesons = new HashMap<String, CampusInEvent>();
+		    meeting.clear();
+		    tests.clear(); 
+		    lesons.clear();
+		    allEvents.clear();
 		    for (CampusInEvent campusInEvent : retObject)
 		    {
 			addEvent(campusInEvent);
@@ -89,7 +90,7 @@ public class ViewModel
 
 		if (e == null && retObject != null)
 		{
-		    friendsHash = new HashMap<String, CampusInUser>();
+		    friendsHash.clear();
 		    for (CampusInUser campusInUser : retObject)
 		    {
 			friendsHash.put(campusInUser.getParseUserId(),
@@ -106,7 +107,7 @@ public class ViewModel
 		    public void done(List<CampusInUserLocation> retObject,
 			    Exception e)
 		    {
-			friendsLocation = new HashMap<String, CampusInUserLocation>();
+			friendsLocation.clear();
 			if (e == null && retObject != null)
 			{
 			    for (CampusInUserLocation campusInUserLocation : retObject)
