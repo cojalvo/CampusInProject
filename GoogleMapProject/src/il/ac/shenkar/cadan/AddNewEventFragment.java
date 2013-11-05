@@ -146,8 +146,8 @@ public class AddNewEventFragment extends DialogFragment
 			showLocationsSpinner=args.getBoolean("showLocationSpinner");
 		}
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-				.setTitle("׳”׳•׳¡׳£ ׳�׳™׳¨׳•׳¢")
-				.setPositiveButton("׳”׳•׳¡׳£", new DialogInterface.OnClickListener() {
+				.setTitle(R.string.add_event_title)
+				.setPositiveButton(R.string.add_event_positiv_button, new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) 
@@ -156,7 +156,7 @@ public class AddNewEventFragment extends DialogFragment
 						// this could validate the data in the fields before closing the dialog
 					}
 				})
-				.setNegativeButton("׳‘׳˜׳�", new DialogInterface.OnClickListener() {
+				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) 

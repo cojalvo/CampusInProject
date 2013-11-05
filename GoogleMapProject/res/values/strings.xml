@@ -37,4 +37,13 @@
         <item>שיעור</item>
         <item>פגישה</item>
     </string-array>
+        <string name="add_event_title">הוסף אירוע</string>
+        <string name="add_event_positiv_button">הוסף אירוע</string>
+        <string name="cancel">בטל</string>
+        <string name="add_friends">בחר חברים</string>
+        <string name="add">הוסף</string>
+        <string name="remove">הסר</string>
+        <string name="remove_friends">הסר חברים</string>
+        <string name="my_event_list">רשימת האירועים שלי</string>
+        <string name="close">סגור</string>
 </resources>

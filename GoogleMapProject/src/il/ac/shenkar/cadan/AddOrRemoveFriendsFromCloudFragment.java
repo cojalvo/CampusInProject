@@ -56,7 +56,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	if (action == ChooseFriendAction.ADD)
 	{
-	    builder.setTitle("׳‘׳—׳¨ ׳—׳‘׳¨׳™׳�").setPositiveButton("׳�׳™׳©׳•׳¨", new DialogInterface.OnClickListener()
+	    builder.setTitle(R.string.add_friends).setPositiveButton(R.string.add, new DialogInterface.OnClickListener()
 	    {
 
 		@Override
@@ -79,7 +79,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 		    }
 		    mCallback.onFriendsWereChoosen(toReturn, getTargetFragment(), ChooseFriendAction.ADD);
 		}
-	    }).setNegativeButton("׳‘׳™׳˜׳•׳�", new DialogInterface.OnClickListener()
+	    }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 	    {
 
 		@Override
@@ -92,7 +92,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 	}
 	else
 	{
-	    builder.setTitle("׳¨׳©׳™׳�׳× ׳—׳‘׳¨׳™׳�").setPositiveButton("׳�׳™׳©׳•׳¨", new DialogInterface.OnClickListener()
+	    builder.setTitle(R.string.add_friends).setPositiveButton(R.string.remove, new DialogInterface.OnClickListener()
 	    {
 
 		@Override
@@ -116,7 +116,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 
 		    mCallback.onFriendsWereChoosen(toReturn, getTargetFragment(), ChooseFriendAction.REMOVE);
 		}
-	    }).setNegativeButton("׳‘׳™׳˜׳•׳�", new DialogInterface.OnClickListener()
+	    }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 	    {
 
 		@Override

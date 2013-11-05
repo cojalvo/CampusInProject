@@ -33,7 +33,7 @@ public class ReminderBroadCastReceiver extends BroadcastReceiver
 	{
 	    NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 	    
-	    Intent resultIntent = new Intent(context,Main.class);
+	    Intent resultIntent = new Intent("il.ac.shenkar.cadan.Login");
 	    PendingIntent pendingIntent = PendingIntent.getBroadcast(context,0,resultIntent,0);
 	    
 	    NotificationCompat.Builder builder  = new NotificationCompat.Builder(context)
@@ -43,7 +43,7 @@ public class ReminderBroadCastReceiver extends BroadcastReceiver
 		    					.setContentIntent(pendingIntent);
 	 
 	    
-	    notificationManager.notify( 0, builder.build());
+	    notificationManager.notify( eventId.hashCode(), builder.build());
 	}
     }
 

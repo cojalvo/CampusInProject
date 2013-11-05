@@ -29,5 +29,6 @@ public interface ICampusInController
 	void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove);
 	CampusInEvent getEvent(String eventId);
 	void navigateToEvent(CampusInEvent event);
+	void addNotificationToEvent(CampusInEvent event);
 	
 }

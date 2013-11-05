@@ -101,7 +101,6 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     private int myScreenHeight;
     private float widthMultScreenFactor;
     private Float heightMultScreenFactor;
-    
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -185,32 +184,36 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	updateView();
 	registerViewModelReciever();
     }
+
     private void calcMyScreen()
     {
-    	DisplayMetrics mat=GuiHelper.getDisplayMatric(this);
-    	if(mat!=null)
-    	{
-    		myScreenHeight=mat.heightPixels;
-    		myScreenWidth=mat.widthPixels;
-    		heightMultScreenFactor=(float) (GuiHelper.getHeightDimentionMultFactor(myScreenHeight)*(1.1));
-    		widthMultScreenFactor=(float) (GuiHelper.getWidthDimentionMultFactor(myScreenWidth)*(1.1));
-    	}
+	DisplayMetrics mat = GuiHelper.getDisplayMatric(this);
+	if (mat != null)
+	{
+	    myScreenHeight = mat.heightPixels;
+	    myScreenWidth = mat.widthPixels;
+	    heightMultScreenFactor = (float) (GuiHelper.getHeightDimentionMultFactor(myScreenHeight) * (1.1));
+	    widthMultScreenFactor = (float) (GuiHelper.getWidthDimentionMultFactor(myScreenWidth) * (1.1));
+	}
     }
+
     @Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		stopAutoViewModelUpdatingService();
-	}
+    protected void onPause()
+    {
+	// TODO Auto-generated method stub
+	super.onPause();
+	stopAutoViewModelUpdatingService();
+    }
 
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		startAutoViewModelUpdatingService();
-	}
+    @Override
+    protected void onResume()
+    {
+	// TODO Auto-generated method stub
+	super.onResume();
+	startAutoViewModelUpdatingService();
+    }
 
-	@Override
+    @Override
     protected void onSaveInstanceState(Bundle outState)
     {
 
@@ -230,7 +233,6 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     }
 
-
     private void initMapManager()
     {
 	mapManager = MapManager.getInstance(((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
@@ -241,64 +243,67 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	mapManager.setOnMarkerClickListener(this);
 	mapManager.getMap().setInfoWindowAdapter(new InfoWindowAdapter()
 	{
-	    
-	    //use default look of the "container" info window 
+
+	    // use default look of the "container" info window
 	    @Override
 	    public View getInfoWindow(Marker arg0)
 	    {
 		return null;
 	    }
-	    
+
 	    @Override
 	    public View getInfoContents(Marker marker)
 	    {
 		View v;
 		String id;
-		// get the marker type 
-		MarkerType markerType =  mapManager.getMarkerType(marker);
-		
+		// get the marker type
+		MarkerType markerType = mapManager.getMarkerType(marker);
+
 		if (markerType == MarkerType.Person)
 		{
 		    // inflate the view
 		    v = getLayoutInflater().inflate(R.layout.info_window_person_content_layout, null);
-		    
-		    //get the marker (which is a person) information
+
+		    // get the marker (which is a person) information
 		    id = mapManager.getCampusInUserIdFromMarker(marker);
 		    CampusInUser currUser = controller.getCampusInUser(id);
-		    
-		    //set the image view 
+
+		    // set the image view
 		    ImageView imageView = (ImageView) v.findViewById(R.id.info_window_friend_profile_picture_imageView);
 		    imageView.setImageDrawable(controller.getFreindProfilePicture(id, 40, 40));
-		    
-		    //set the Name 
+
+		    // set the Name
 		    TextView name = (TextView) v.findViewById(R.id.info_window_friend_name);
 		    name.setText(currUser.getFirstName() + " " + currUser.getLastName());
-		    
-		    //set the status
+
+		    // set the status
 		    TextView status = (TextView) v.findViewById(R.id.info_window_status);
 		    status.setText(currUser.getStatus());
-		    
+
 		    return v;
 		}
 		else if (markerType == MarkerType.Event)
 		{
 		    v = getLayoutInflater().inflate(R.layout.info_window_event_content_layout, null);
-		    
-		    //get the marker (which is a person) information
+
+		    // get the marker (which is a person) information
 		    id = mapManager.getEventIdFromMarker(marker);
 		    CampusInEvent currEvent = controller.getEvent(id);
-		    
-		    //set the image view 
-		   /* ImageView imageView = (ImageView) v.findViewById(R.id.info_window_event_imageView);
-		    imageView.setImageDrawable();*/
-		    //set the Name 
+
+		    // set the image view
+		    /*
+		     * ImageView imageView = (ImageView)
+		     * v.findViewById(R.id.info_window_event_imageView);
+		     * imageView.setImageDrawable();
+		     */
+		    // set the Name
 		    TextView name = (TextView) v.findViewById(R.id.info_window_location_name);
 		    name.setText(currEvent.getHeadLine() + " - " + currEvent.getLocation().getLocationName());
-		    
-		  //set the status
+
+		    // set the status
 		    TextView status = (TextView) v.findViewById(R.id.info_window_time);
 		    status.setText(ParsingHelper.fromDateToString(currEvent.getDate(), "dd/MM/yyyy"));
-		    
+
 		    return v;
 		}
 		return null;
@@ -505,31 +510,31 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     @Override
     public boolean onMarkerClick(Marker marker)
     {
-    	//we are in a middle of updating process
-    	try
-    	{
-    		marker.showInfoWindow();
-    		lastMarkerClicked = marker;
-    		switch (mapManager.getMarkerType(marker)) {
-    		case Event:
-    			initiatePopupWindow(PopUpKind.EventInfo);
-    			break;
-    		case Person:
-    			initiatePopupWindow(PopUpKind.FriendInfo);
-    		break;
-    		default:
-    			break;
-    		}
+	// we are in a middle of updating process
+	try
+	{
+	    marker.showInfoWindow();
+	    lastMarkerClicked = marker;
+	    switch (mapManager.getMarkerType(marker))
+	    {
+	    case Event:
+		initiatePopupWindow(PopUpKind.EventInfo);
+		break;
+	    case Person:
+		initiatePopupWindow(PopUpKind.FriendInfo);
+		break;
+	    default:
+		break;
+	    }
 
-    	}
-    	catch (Exception e)
-    	{
-    		Toast.makeText(Main.this, "marker click was failed", 100).show();
-    		Log.e("markerClick","marker click was failed");
-    	}
+	}
+	catch (Exception e)
+	{
+	    Toast.makeText(Main.this, "marker click was failed", 100).show();
+	    Log.e("markerClick", "marker click was failed");
+	}
 
-		return true;
-
+	return true;
 
     }
 
@@ -546,56 +551,60 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
      */
     private void initiatePopupWindow(PopUpKind kind)
     {
-    	View layout = null;
-		// We need to get the instance of the LayoutInflater
-		LayoutInflater inflater = (LayoutInflater) Main.this
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		try {
-			switch (kind) {
-			case Menu:
-				layout = inflater.inflate(R.layout.popup_menu, null);
-				pwindo = new PopupWindow(layout, (int)(750*widthMultScreenFactor), (int)(350*heightMultScreenFactor), true);
-				break;
-			case FriendInfo:
-				layout = inflater.inflate(R.layout.friend_info_popup, null);
-				CampusInUser user=controller.getCampusInUser(mapManager.getCampusInUserIdFromMarker(lastMarkerClicked));
-				ImageView profilePictre=(ImageView) layout.findViewById(R.id.profile_picture);
-				profilePictre.setImageDrawable(controller.getFreindProfilePicture(user.getParseUserId(),(int) (150*widthMultScreenFactor), (int)(130*heightMultScreenFactor)));
-				TextView fulName=(TextView) layout.findViewById(R.id.full_name);
-				TextView status=(TextView) layout.findViewById(R.id.face_status);
-				status.setText(user.getStatus());
-				fulName.setText(user.getFirstName()+" "+user.getLastName());
-				pwindo = new PopupWindow(layout, (int)(750*widthMultScreenFactor), (int)(350*heightMultScreenFactor), true);
-				break;
-			case EventInfo:
-				layout = inflater.inflate(R.layout.event_info_popup, null);
-				pwindo = new PopupWindow(layout,(int) (750*widthMultScreenFactor), (int)(750*heightMultScreenFactor), true);
-				CampusInEvent event=controller.getEvent(mapManager.getEventIdFromMarker(lastMarkerClicked));
-				TextView title=(TextView) layout.findViewById(R.id.event_title);
-				title.setText(event.getHeadLine());
-				TextView description=(TextView) layout.findViewById(R.id.event_description);
-				description.setText(event.getDescription());
-				TextView location=(TextView) layout.findViewById(R.id.event_location);
-				location.setText("מקום: "+event.getLocation().getLocationName());
-				TextView time=(TextView) layout.findViewById(R.id.time_text);
-				Date d=event.getDate();
-				time.setText("שעה: "+ParsingHelper.fromDateToString(d, "HH:mm:ss"));
-				TextView date=(TextView) layout.findViewById(R.id.date_text);
-				date.setText("תאריך: "+ParsingHelper.fromDateToString(d, "dd/MM/yyyy"));
-				break;
+	View layout = null;
+	// We need to get the instance of the LayoutInflater
+	LayoutInflater inflater = (LayoutInflater) Main.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	try
+	{
+	    switch (kind)
+	    {
+	    case Menu:
+		layout = inflater.inflate(R.layout.popup_menu, null);
+		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (350 * heightMultScreenFactor), true);
+		break;
+	    case FriendInfo:
+		layout = inflater.inflate(R.layout.friend_info_popup, null);
+		CampusInUser user = controller.getCampusInUser(mapManager.getCampusInUserIdFromMarker(lastMarkerClicked));
+		ImageView profilePictre = (ImageView) layout.findViewById(R.id.profile_picture);
+		profilePictre
+			.setImageDrawable(controller.getFreindProfilePicture(user.getParseUserId(), (int) (150 * widthMultScreenFactor), (int) (130 * heightMultScreenFactor)));
+		TextView fulName = (TextView) layout.findViewById(R.id.full_name);
+		TextView status = (TextView) layout.findViewById(R.id.face_status);
+		status.setText(user.getStatus());
+		fulName.setText(user.getFirstName() + " " + user.getLastName());
+		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (350 * heightMultScreenFactor), true);
+		break;
+	    case EventInfo:
+		layout = inflater.inflate(R.layout.event_info_popup, null);
+		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (750 * heightMultScreenFactor), true);
+		CampusInEvent event = controller.getEvent(mapManager.getEventIdFromMarker(lastMarkerClicked));
+		TextView title = (TextView) layout.findViewById(R.id.event_title);
+		title.setText(event.getHeadLine());
+		TextView description = (TextView) layout.findViewById(R.id.event_description);
+		description.setText(event.getDescription());
+		TextView location = (TextView) layout.findViewById(R.id.event_location);
+		location.setText("מקום: " + event.getLocation().getLocationName());
+		TextView time = (TextView) layout.findViewById(R.id.time_text);
+		Date d = event.getDate();
+		time.setText("שעה: " + ParsingHelper.fromDateToString(d, "HH:mm:ss"));
+		TextView date = (TextView) layout.findViewById(R.id.date_text);
+		date.setText("תאריך: " + ParsingHelper.fromDateToString(d, "dd/MM/yyyy"));
+		break;
 
-			default:
-				break;
-			}
-			pwindo.setAnimationStyle(R.style.Animation);
-			pwindo.setFocusable(true);
-			ColorDrawable bcolor = new ColorDrawable(Color.WHITE);
-			pwindo.setBackgroundDrawable(bcolor);
-			pwindo.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
+	    default:
+		break;
+	    }
+	    pwindo.setAnimationStyle(R.style.Animation);
+	    pwindo.setFocusable(true);
+	    ColorDrawable bcolor = new ColorDrawable(Color.WHITE);
+	    pwindo.setBackgroundDrawable(bcolor);
+	    pwindo.showAtLocation(layout, Gravity.BOTTOM, 0, 0);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	}
+	catch (Exception e)
+	{
+	    e.printStackTrace();
+	}
     }
 
     public void addEventClicked(View v)
@@ -697,15 +706,16 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	{
 	    if (targetedFragment != null)
 	    {
-		// the calling fragment is "add event" fragment 
+		// the calling fragment is "add event" fragment
 		AddNewEventFragment tmp = (AddNewEventFragment) targetedFragment;
 		tmp.setAddedFriends(friensList);
 	    }
 	    else
 	    {
-		// the finished fragment was "AddOrRemoveFriendsFromCloudFragment"
+		// the finished fragment was
+		// "AddOrRemoveFriendsFromCloudFragment"
 		// we need to do something with the choose friends
-		//TODO: yaki - add the friend list to the user friendList
+		// TODO: yaki - add the friend list to the user friendList
 		if (friensList != null)
 		{
 		    Toast.makeText(getApplicationContext(), "the user Added: " + friensList.size() + " friends", 3000).show();
@@ -717,20 +727,20 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	}
 	else
 	{
-	// Remove friends from friend list  
+	    // Remove friends from friend list
 	    if (friensList != null)
 	    {
 		Toast.makeText(getApplication(), "Removed friendList Size: " + friensList.size(), 3000).show();
 		controller.removeFriendsFromCurrentUserFriendList(friensList);
 	    }
 	    else
-		Toast.makeText(getApplication(), "Removed friendList Size: " + 0 , 3000).show();
+		Toast.makeText(getApplication(), "Removed friendList Size: " + 0, 3000).show();
 	}
 
     }
 
     @Override
-    public void onEventCreated(CampusInEvent addedEvent)
+    public void onEventCreated(final CampusInEvent addedEvent)
     {
 	addedEvent.setLocation(new CampusInLocation());
 	addedEvent.getLocation().setMapLocation(lastMapLongClick);
@@ -747,28 +757,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		{
 		    // event was added
 		    Toast.makeText(getApplicationContext(), "Event Was Added - from Acrivity", 3000).show();
-		    // add the event to the Alarm manager
-		    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-		    String reminderTime = sharedPrefs.getString("event_reminder", "300000"); /*
-											      * default
-											      * reminder
-											      * is
-											      * 5
-											      * minutes
-											      * before
-											      */
-		    long reminderTimeInMiliseconds = Long.parseLong(reminderTime);
-		    /* value '0' mean no reminder is needed */
-		    if (reminderTimeInMiliseconds > 0)
-		    {
-			CampusInEvent event = Controller.getInstance(getApplicationContext()).getEvent(retObject);
-			Context context = getApplicationContext();
-			Intent activityIntent = new Intent("il.ac.asenkar.brodcast_receiver");
-			activityIntent.putExtra("event_id", (String) retObject);
-			PendingIntent pendingInent = PendingIntent.getBroadcast(context, 0, activityIntent, 0);
-			AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-			alarmManager.set(AlarmManager.RTC_WAKEUP, event.getDate().getTime() - reminderTimeInMiliseconds, pendingInent);
-		    }
+		    // set a reminder
+		    controller.addNotificationToEvent(controller.getEvent(retObject));
 		    MessageHalper.closeProggresDialog();
 		    controller.updateViewModel(null);
 		}
@@ -838,10 +828,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     private void updateView()
     {
-    	mapManager.clearMap();
+	mapManager.clearMap();
 	controller.getCurrentUserAllEvents(new ControllerCallback<List<CampusInEvent>>()
 	{
-		
+
 	    @Override
 	    public void done(List<CampusInEvent> retObject, Exception e)
 	    {
@@ -876,18 +866,21 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	unRegisterViewModelReciever();
 	MapManager.resetInstance();
     }
-	public enum PopUpKind {
-		Menu, FriendInfo, EventInfo
-	}
-    
+
+    public enum PopUpKind
+    {
+	Menu, FriendInfo, EventInfo
+    }
+
     private void startAutoViewModelUpdatingService()
     {
-    	Intent i = new Intent(this, ModelUpdateService.class);
-    	this.startService(i);
+	Intent i = new Intent(this, ModelUpdateService.class);
+	this.startService(i);
     }
+
     private void stopAutoViewModelUpdatingService()
     {
-    	stopService(new Intent(Main.this,ModelUpdateService.class));
+	stopService(new Intent(Main.this, ModelUpdateService.class));
     }
 
 }

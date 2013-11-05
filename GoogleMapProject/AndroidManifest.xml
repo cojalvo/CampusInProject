@@ -104,10 +104,10 @@
             android:icon="@drawable/marker_icon"
             android:label="Update view model service" >
         </service>
-                <receiver 	android:name="il.ac.shenkar.in.services.ReminderBroadCastReceiver"
+        <receiver 	android:name="il.ac.shenkar.in.services.ReminderBroadCastReceiver"
                             android:exported="false">
 					<intent-filter>	
-							<action	android:name="il.ac.asenkar.brodcast_receiver"/>	
+							<action	android:name="il.ac.asenkar.brodcast_receiver_costum_reciver"></action>	
 					</intent-filter>	
 		</receiver>
     </application>
