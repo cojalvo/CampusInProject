@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
 import il.ac.shenkar.cadan.ChooseFriendsFragment.onFriendsAddedListener;
 import il.ac.shenkar.cadan.AddNewEventFragment.onNewEventAdded;
+import il.ac.shenkar.cadan.MapManager.MarkerType;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInUser;
@@ -23,6 +24,7 @@ import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.services.InitLocations;
 import il.ac.shenkar.in.services.LocationReporterServise;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
@@ -200,6 +202,54 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	mapManager.moveCameraToLocation(new LatLng(32.089028, 34.80304), 18);
 	mapManager.setOnMapLongClickListener(this);
 	mapManager.setOnMarkerClickListener(this);
+	mapManager.getMap().setInfoWindowAdapter(new InfoWindowAdapter()
+	{
+	    
+	    //use default look of the "container" info window 
+	    @Override
+	    public View getInfoWindow(Marker arg0)
+	    {
+		return null;
+	    }
+	    
+	    @Override
+	    public View getInfoContents(Marker marker)
+	    {
+		View v;
+		String id;
+		// get the marker type 
+		MarkerType markerType =  mapManager.getMarkerType(marker);
+		
+		if (markerType == MarkerType.Person)
+		{
+		    // inflate the view
+		    v = getLayoutInflater().inflate(R.layout.info_window_content_layout, null);
+		    
+		    //get the marker (which is a person) information
+		    id = mapManager.getCampusInUserIdFromMarker(marker);
+		    CampusInUser currUser = controller.getCampusInUser(id);
+		    
+		    //set the image view 
+		    ImageView imageView = (ImageView) v.findViewById(R.id.info_window_friend_profile_picture_imageView);
+		    imageView.setImageDrawable(controller.getFreindProfilePicture(id, 40, 40));
+		    
+		    //set the Name 
+		    TextView name = (TextView) v.findViewById(R.id.info_window_friend_name);
+		    name.setText(currUser.getFirstName() + " " + currUser.getLastName());
+		    
+		    //set the status
+		    TextView status = (TextView) v.findViewById(R.id.info_window_status);
+		    status.setText(currUser.getStatus());
+		    
+		    return v;
+		}
+		else if (markerType == MarkerType.Event)
+		{
+		    
+		}
+		return null;
+	    }
+	});
     }
 
     @Override

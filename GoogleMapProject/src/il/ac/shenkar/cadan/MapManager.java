@@ -255,4 +255,10 @@ public class MapManager
 	    return markerEventDictionary.get(marker);
 	return null;
     }
+
+    public GoogleMap getMap()
+    {
+        return map;
+    }
+    
 }
