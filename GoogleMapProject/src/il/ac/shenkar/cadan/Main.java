@@ -259,7 +259,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		if (markerType == MarkerType.Person)
 		{
 		    // inflate the view
-		    v = getLayoutInflater().inflate(R.layout.info_window_content_layout, null);
+		    v = getLayoutInflater().inflate(R.layout.info_window_person_content_layout, null);
 		    
 		    //get the marker (which is a person) information
 		    id = mapManager.getCampusInUserIdFromMarker(marker);
@@ -281,7 +281,24 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		}
 		else if (markerType == MarkerType.Event)
 		{
+		    v = getLayoutInflater().inflate(R.layout.info_window_event_content_layout, null);
 		    
+		    //get the marker (which is a person) information
+		    id = mapManager.getEventIdFromMarker(marker);
+		    CampusInEvent currEvent = controller.getEvent(id);
+		    
+		    //set the image view 
+		   /* ImageView imageView = (ImageView) v.findViewById(R.id.info_window_event_imageView);
+		    imageView.setImageDrawable();*/
+		    //set the Name 
+		    TextView name = (TextView) v.findViewById(R.id.info_window_location_name);
+		    name.setText(currEvent.getHeadLine() + " - " + currEvent.getLocation().getLocationName());
+		    
+		  //set the status
+		    TextView status = (TextView) v.findViewById(R.id.info_window_time);
+		    status.setText(ParsingHelper.fromDateToString(currEvent.getDate(), "dd/MM/yyyy"));
+		    
+		    return v;
 		}
 		return null;
 	    }
