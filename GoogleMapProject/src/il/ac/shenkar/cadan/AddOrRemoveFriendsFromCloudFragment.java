@@ -233,7 +233,15 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 			    {
 				if (retObject != null)
 				{
-				    friensList = retObject;
+					
+				    friensList =  new ArrayList<CampusInUser>();
+				    //	TODO this is not suppose o be here it must be removed to the controller
+				    //  TOTO in addition the controller shouldn't get any callback this data exist locally-change the method in the controller
+				    for (CampusInUser campusInUser : retObject) {
+						if(campusInUser.getTrend().equals(curretntUser.getTrend()) && campusInUser.getYear().equals(curretntUser.getYear())) continue;
+						friensList.add(campusInUser);
+					}
+
 				    Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 				    if (view == null)
 					view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);

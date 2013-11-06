@@ -785,8 +785,6 @@ public class CloudAccessObject implements IDataAccesObject
 	ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
 	//dont return me, and my friends to school since by default they are my friend and i cannot remove them
     query.whereNotEqualTo("parseUserId", curentCampusInUser.getParseUserId());
-    query.whereNotEqualTo("year", curentCampusInUser.getYear());
-    query.whereNotEqualTo("trend", curentCampusInUser.getTrend());
 	if (allUsersLastUpdate != null)
 	{
 	    query.whereGreaterThanOrEqualTo("createdAt", allUsersLastUpdate);

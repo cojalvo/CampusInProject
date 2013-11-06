@@ -273,7 +273,19 @@ public class Controller implements ICampusInController
 		@Override
 		public void done(List<CampusInUser> retObject, Exception e)
 		{
-		    callback.done(retObject, e);
+			List<CampusInUser> retList=new ArrayList<CampusInUser>();
+			//remove all the friends to school -by default they are my friends and can't be removed
+			if(retObject!=null && e==null)
+			{
+				
+				for (CampusInUser campusInUser : retObject) {
+					if(campusInUser.getTrend().equals(currentUser.getTrend()) && campusInUser.getYear().equals(currentUser.getYear()))
+						continue;
+					retList.add(campusInUser);
+				}
+			}
+			if(callback!=null)
+				callback.done(retList, e);
 		}
 	    });
 	}
