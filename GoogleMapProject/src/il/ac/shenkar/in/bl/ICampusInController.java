@@ -30,5 +30,7 @@ public interface ICampusInController
 	CampusInEvent getEvent(String eventId);
 	void navigateToEvent(CampusInEvent event);
 	void addNotificationToEvent(CampusInEvent event);
+	Boolean isMyFriend(CampusInUser user);
+	Boolean isMyFriendToSchool(CampusInUser user);
 	
 }

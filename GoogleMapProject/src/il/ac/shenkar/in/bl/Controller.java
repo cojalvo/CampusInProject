@@ -273,17 +273,9 @@ public class Controller implements ICampusInController
 		@Override
 		public void done(List<CampusInUser> retObject, Exception e)
 		{
-			List<CampusInUser> retList=new ArrayList<CampusInUser>();
+			List<CampusInUser> retList=retObject;
 			//remove all the friends to school -by default they are my friends and can't be removed
-			if(retObject!=null && e==null)
-			{
-				
-				for (CampusInUser campusInUser : retObject) {
-					if(campusInUser.getTrend().equals(currentUser.getTrend()) && campusInUser.getYear().equals(currentUser.getYear()))
-						continue;
-					retList.add(campusInUser);
-				}
-			}
+			if(retList==null) retList=new ArrayList<CampusInUser>();
 			if(callback!=null)
 				callback.done(retList, e);
 		}
@@ -293,29 +285,33 @@ public class Controller implements ICampusInController
 	    return;
     }
 
+ 
     @Override
     public void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd)
     {
 	// for now i add it one by one
 	// Cadan need to implement a method to save bulk of friends all at one
-	if (friendsTOAdd != null)
+	if (friendsTOAdd != null && friendsTOAdd.size()>0)
 	{
 	    for (CampusInUser user : friendsTOAdd)
 	    {
-		cloudAccessObject.addFriendToFriendList(user, null);
+	    	cloudAccessObject.addFriendToFriendList(user, null);
 	    }
+	    updateViewModel(null);
+	    
 	}
     }
 
     @Override
     public void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove)
     {
-	if (friendsToRemove != null)
+	if (friendsToRemove != null && friendsToRemove.size()>0)
 	{
 	    for (CampusInUser user : friendsToRemove)
 	    {
-		cloudAccessObject.removeFriendFromFriendList(user, null);
+	    	cloudAccessObject.removeFriendFromFriendList(user, null);
 	    }
+	    updateViewModel(null);
 	}
     }
 
@@ -384,5 +380,21 @@ public class Controller implements ICampusInController
 	}
 
     }
+
+	@Override
+	public Boolean isMyFriend(CampusInUser user) {
+		if(isMyFriendToSchool(user)) return true;
+		List< CampusInUser> friends=new ArrayList<CampusInUser>(viewModel.getAllFriends());
+		for (CampusInUser campusInUser : friends) {
+			if(campusInUser.getParseUserId().equals(user.getParseUserId())) return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Boolean isMyFriendToSchool(CampusInUser user) {
+			if(user.getTrend().equals(currentUser.getTrend()) && user.getYear().equals(currentUser.getYear())) return true;
+		return false;
+	}
 
 }
