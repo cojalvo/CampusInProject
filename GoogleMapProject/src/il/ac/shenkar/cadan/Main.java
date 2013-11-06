@@ -1,5 +1,6 @@
 package il.ac.shenkar.cadan;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -570,6 +571,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 			.setImageDrawable(controller.getFreindProfilePicture(user.getParseUserId(), (int) (150 * widthMultScreenFactor), (int) (130 * heightMultScreenFactor)));
 		TextView fulName = (TextView) layout.findViewById(R.id.full_name);
 		TextView status = (TextView) layout.findViewById(R.id.face_status);
+		TextView distance=(TextView) layout.findViewById(R.id.distance_from_me);
+		distance.setText(getDistanceStringFromLastClickMarker());
+	
 		status.setText(user.getStatus());
 		fulName.setText(user.getFirstName() + " " + user.getLastName());
 		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (350 * heightMultScreenFactor), true);
@@ -588,6 +592,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		Date d = event.getDate();
 		time.setText("שעה: " + ParsingHelper.fromDateToString(d, "HH:mm:ss"));
 		TextView date = (TextView) layout.findViewById(R.id.date_text);
+		TextView distanceEvent=(TextView) layout.findViewById(R.id.event_distance);
+		distanceEvent.setText(getDistanceStringFromLastClickMarker());
 		date.setText("תאריך: " + ParsingHelper.fromDateToString(d, "dd/MM/yyyy"));
 		break;
 
@@ -607,6 +613,30 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	}
     }
 
+    private String getDistanceStringFromLastClickMarker()
+    {
+    	float dist=mapManager.getDistanceFromMe(lastMarkerClicked);
+		if(dist>0)
+		{
+			String unit;
+			String finalDist;
+			if(dist>1000)
+			{
+				unit="ק״מ";
+				
+				finalDist=String.format("%.2f", dist/1000);
+			}
+			else
+			{
+				unit="מטרים";
+				finalDist=String.format("%.0f", dist);
+			}
+			
+			
+			return ("נמצא כ "+finalDist+" "+unit+" " +"ממני");
+		}
+		return "";
+    }
     public void addEventClicked(View v)
     {
 	Toast.makeText(this, "add event was clicked on location: lat:" + lastMapLongClick.latitude + " long: " + lastMapLongClick.longitude, 300).show();

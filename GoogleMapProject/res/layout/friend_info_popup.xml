@@ -38,7 +38,17 @@
                         android:layout_height="wrap_content"
                         android:text="Status"
                         android:paddingLeft="15dp"
-                        android:textColor="@color/common_signin_btn_text_light"                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textColor="@color/common_signin_btn_text_light"                    
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/distance_from_me"
+                        android:paddingLeft="15dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/common_signin_btn_text_light"   
+                        android:text=""
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
         

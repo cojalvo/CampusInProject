@@ -58,6 +58,14 @@ public class ModelUpdateService  extends Service
 					@Override
 					public void done(Integer retObject, Exception e) {
 						lastUpdateFinish=true;
+						//up
+						if(retObject==1 && e!=null)
+						{
+							Toast.makeText(getBaseContext(), e.getMessage(), 500).show();
+						
+							handler.postDelayed(autoRefresh,(long)( interval*1.2));
+						}
+							
 						handler.postDelayed(autoRefresh, interval);
 					}
 				});

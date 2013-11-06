@@ -213,12 +213,17 @@ public class Controller implements ICampusInController
 		public void done(Integer retObject, Exception e)
 		{
 		    if (callBack != null)
-			callBack.done(retObject, e);
+		    	callBack.done(retObject, e);
 		    Log.i("CampusIn", "Finish updating the view model");
 		    invokeViewModelUpdated();
 		    updatingViewModel = false;
 		}
 	    });
+	}
+	else
+	{
+		if(callBack!=null)
+			callBack.done(1, new Exception("View model is in a middle of updating process, try in the nex loop"));
 	}
     }
 
@@ -260,7 +265,7 @@ public class Controller implements ICampusInController
 
     public void addEventToLocalMap(CampusInEvent toAdd)
     {
-	viewModel.addEvent(toAdd);
+    	viewModel.addEvent(toAdd);
     }
 
     @Override
