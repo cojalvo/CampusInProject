@@ -46,6 +46,8 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.app.SearchableInfo;
@@ -76,6 +78,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AnalogClock;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.SearchView;
@@ -102,6 +105,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     private int myScreenHeight;
     private float widthMultScreenFactor;
     private Float heightMultScreenFactor;
+    private boolean viewModelServiceRunning=false;
+    private boolean inExitProcess=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -111,6 +116,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	{
 	    new InitLocations().execute(this);
 	}
+	Toast.makeText(this, "onCreate was called", 150).show();
 	super.onCreate(savedInstanceState);
 	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
@@ -202,16 +208,24 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     protected void onPause()
     {
 	// TODO Auto-generated method stub
-	super.onPause();
+    Toast.makeText(this, "onPause was called", 150).show();
 	stopAutoViewModelUpdatingService();
+	if(!inExitProcess)
+		setPendingIntent();
+	super.onPause();
     }
 
     @Override
     protected void onResume()
     {
 	// TODO Auto-generated method stub
-	super.onResume();
-	startAutoViewModelUpdatingService();
+    	Toast.makeText(this, "onResume was called", 150).show();
+    	if(!viewModelServiceRunning && !inExitProcess)
+    	{
+    		Toast.makeText(this, "vieModel service wasnt run- start it again", 150).show();
+    		startAutoViewModelUpdatingService();
+    	}
+    	super.onResume();
     }
 
     @Override
@@ -478,7 +492,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     //
     private void doExit()
     {
-
+    	
 	AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
 	alertDialog.setPositiveButton("כן", new OnClickListener()
@@ -488,6 +502,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    public void onClick(DialogInterface dialog, int which)
 	    {
 		Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
+		stopAutoViewModelUpdatingService();
+		inExitProcess=true;
 		finish();
 	    }
 	});
@@ -561,7 +577,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    {
 	    case Menu:
 		layout = inflater.inflate(R.layout.popup_menu, null);
-		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (350 * heightMultScreenFactor), true);
+		pwindo = new PopupWindow(layout, (int) (600 * widthMultScreenFactor), (int) (400 * heightMultScreenFactor), true);
 		break;
 	    case FriendInfo:
 		layout = inflater.inflate(R.layout.friend_info_popup, null);
@@ -580,7 +596,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		break;
 	    case EventInfo:
 		layout = inflater.inflate(R.layout.event_info_popup, null);
-		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (750 * heightMultScreenFactor), true);
+		LinearLayout l=(LinearLayout) layout.findViewById(R.id.event_pop_layout);
+	
+		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (800 * heightMultScreenFactor), true);
 		CampusInEvent event = controller.getEvent(mapManager.getEventIdFromMarker(lastMarkerClicked));
 		TextView title = (TextView) layout.findViewById(R.id.event_title);
 		title.setText(event.getHeadLine());
@@ -889,6 +907,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     protected void onDestroy()
     {
 	// TODO Auto-generated method stub
+    	Toast.makeText(this, "onDestroy was called", 150).show();
 	super.onDestroy();
 	// stop the report location service
 	Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
@@ -904,13 +923,44 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     private void startAutoViewModelUpdatingService()
     {
+    	viewModelServiceRunning=true;
 	Intent i = new Intent(this, ModelUpdateService.class);
 	this.startService(i);
     }
 
     private void stopAutoViewModelUpdatingService()
     {
-	stopService(new Intent(Main.this, ModelUpdateService.class));
+    	viewModelServiceRunning=false;
+    	stopService(new Intent(Main.this, ModelUpdateService.class));
+    }
+    
+    private void setPendingIntent()
+    {
+		try
+		{
+			Intent intent = new Intent(this, Main.class);
+			PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			
+			// build notification
+			// the addAction re-use the same intent to keep the example short
+			Notification n  = new Notification.Builder(this)
+			        .setContentTitle("CampusIn")
+			        .setContentText("האפליקציה מדווחת על מיקומך ברקע")
+			        .setSmallIcon(R.drawable.ic_launcher)
+			        .setContentIntent(pIntent)
+			        .setAutoCancel(true).build();
+			    
+			  
+			NotificationManager notificationManager = 
+			  (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+			
+			notificationManager.notify(0, n); 
+		}
+		catch(Exception e)
+		{
+			Log.e("MainMap", e.getMessage());
+		}
     }
 
 }

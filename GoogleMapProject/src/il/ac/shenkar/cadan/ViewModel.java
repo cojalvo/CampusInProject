@@ -165,6 +165,7 @@ public class ViewModel
     }
 	private void getfacebookProfilePictures()
 	{
+		friendsProfilePictures.clear();
 		for (final CampusInUser friend: friendsHash.values()) {
 			dao.getFriendProfilePicture(friend.getFaceBookUserId(), new DataAccesObjectCallBack<Drawable>() {
 				

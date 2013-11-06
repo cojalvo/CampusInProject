@@ -6,33 +6,29 @@
     <!-- The main content view -->
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
         android:id="@+id/map_layout"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:theme="@style/MyTheme"
         tools:context=".Main" >
 
         <fragment
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_margin="0dp"
-            tools:ignore="MissingPrefix" />
+            android:layout_margin="0dp"/>
     </RelativeLayout>
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/menu_layout"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#b5e5fe"
-        android:id="@+id/menu_layout"
         android:orientation="vertical"
         android:padding="3dp" >
 

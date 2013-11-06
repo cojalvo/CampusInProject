@@ -327,7 +327,7 @@ public class Controller implements ICampusInController
 	if (retPic != null)
 	    try
 	    {
-		return resizePic(retPic, width, width);
+		return retPic;
 	    }
 	    catch (Exception e)
 	    {
