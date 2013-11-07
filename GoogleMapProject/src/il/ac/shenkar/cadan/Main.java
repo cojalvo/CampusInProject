@@ -124,7 +124,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	super.onCreate(savedInstanceState);
 	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
-	Log.i("Main","onCreate was called");
+	Log.i("Main", "onCreate was called");
 	calcMyScreen();
 	vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	// inflate the drawerLayour
@@ -212,27 +212,26 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     @Override
     protected void onPause()
     {
-    Log.i("Main","onPause was called");
-    Toast.makeText(this, "onPause was called", 150).show();
-    if(!isFinishing())
-    {
-                setPendingIntent();
-                controller.pauseAutoViewModelUpdatingService();
-    }
-            
-        super.onPause();
+	Log.i("Main", "onPause was called");
+	Toast.makeText(this, "onPause was called", 150).show();
+	if (!isFinishing())
+	{
+	    setPendingIntent();
+	    controller.pauseAutoViewModelUpdatingService();
+	}
+
+	super.onPause();
     }
 
     @Override
     protected void onResume()
     {
-        // TODO Auto-generated method stub
-            Toast.makeText(this, "onResume was called", 150).show();
-            Log.i("Main","onResume was called");
-            controller.resumeAutoViewModelUpdatingService();
-            super.onResume();
+	// TODO Auto-generated method stub
+	Toast.makeText(this, "onResume was called", 150).show();
+	Log.i("Main", "onResume was called");
+	controller.resumeAutoViewModelUpdatingService();
+	super.onResume();
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState)
@@ -490,7 +489,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		doExit();
 	    }
 	}
-	else if(keyCode==KeyEvent.KEYCODE_HOME)
+	else if (keyCode == KeyEvent.KEYCODE_HOME)
 	{
 	}
 	return super.onKeyDown(keyCode, event);
@@ -974,31 +973,13 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	{
 	    Toast.makeText(getApplicationContext(), "New Massage creted: '" + sentMassage.getContent() + "'", 4000).show();
 	}
-		try
-		{
-			Intent intent = new Intent(this, Main.class);
-			PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);	
-			
-			// build notification
-			// the addAction re-use the same intent to keep the example short
-			Notification n  = new Notification.Builder(this)
-			        .setContentTitle("CampusIn")
-			        .setContentText("חזור ל CampusIn")
-			        .setSmallIcon(R.drawable.ic_launcher)
-			        .setContentIntent(pIntent)
-			        .setAutoCancel(true).build();
-			    
-			  
-			NotificationManager notificationManager = 
-			  (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-			
-			notificationManager.notify(0, n); 
-		}
-		catch(Exception e)
-		{
-			Log.e("MainMap", e.getMessage());
-		}
+	else
+	{
+	    sentMassage.setLocation(new CampusInLocation());
+	    sentMassage.getLocation().setMapLocation(lastMapLongClick);
+	    // TODO just for testing hard coded name
+	    sentMassage.getLocation().setLocationName("Shenkar");
+	}
     }
 
 }
