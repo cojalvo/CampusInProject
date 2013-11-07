@@ -34,7 +34,8 @@ public class MapManager
     private GoogleMap map = null;
     private HashMap<String, Marker> personMarkerdictionary;
     private HashMap<String, Marker> eventMarkerdictionary;
-    private HashMap<String, Marker> messageMarkerdictionary;
+    private HashMap<String, Marker> messageMarkerdictionary=new HashMap<String, Marker>();
+    private HashMap<Marker, String> markerMessageDictiobnary = new HashMap<Marker, String>();
     private HashMap<Marker, String> markerPersondictiobnary = new HashMap<Marker, String>();
     private HashMap<Marker, String> markerEventDictionary = new HashMap<Marker, String>();
     private final LatLng shenkarLatLong=new LatLng(32.090049, 34.802807);
@@ -160,6 +161,8 @@ public class MapManager
 
 	}
 	personMarkerdictionary.clear();
+	messageMarkerdictionary.clear();
+	markerMessageDictiobnary.clear();
 	markerPersondictiobnary.clear();
 	eventMarkerdictionary.clear();
 	markerEventDictionary.clear();
@@ -258,9 +261,17 @@ public class MapManager
 	markerEventDictionary.put(eventMarker, event.getParseId());
     }
 
-    public void addOrUpdateMessageMarker(CampusInMessage event)
+    public void addOrUpdateMessageMarker(CampusInMessage message)
     {
-
+    	// create and config the marker Option
+    	MarkerOptions markerOptions = new MarkerOptions();
+    	markerOptions.position(message.getLocation().getMapLocation());
+    	markerOptions.title("from: "+message.getSenderFullName());
+    	markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.message_narker_ico));
+    	markerOptions.snippet(message.getContent());
+    	Marker messageMarker = map.addMarker(markerOptions);
+    	messageMarkerdictionary.put(message.getParseId(), messageMarker);
+    	markerMessageDictiobnary.put(messageMarker, message.getParseId());
     }
 
     public void removePersonMarker(String id)

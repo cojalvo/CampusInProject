@@ -6,8 +6,17 @@ import java.util.List;
 public class CampusInMessage extends CampusInElement
 {
     private String parseId;
+    private String senderFullName;
 
-    public String getParseId()
+    public String getSenderFullName() {
+		return senderFullName;
+	}
+
+	public void setSenderFullName(String senderFullName) {
+		this.senderFullName = senderFullName;
+	}
+
+	public String getParseId()
     {
 	return parseId;
     }

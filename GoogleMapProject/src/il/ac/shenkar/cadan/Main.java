@@ -674,8 +674,6 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     public void addMessageClicked(View v)
     {
 	pwindo.dismiss();
-	lastMapLongClick = null;
-
 	android.app.FragmentTransaction ft1 = getFragmentManager().beginTransaction();
 	android.app.Fragment prev1 = getFragmentManager().findFragmentByTag("dialog");
 	if (prev1 != null)
@@ -909,6 +907,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		}
 	    }
 	});
+		List<CampusInMessage> allMessages=controller.getAllMessages();
+		for (CampusInMessage campusInMessage : allMessages) {
+			mapManager.addOrUpdateMessageMarker(campusInMessage);
+	}
     }
 
     @Override

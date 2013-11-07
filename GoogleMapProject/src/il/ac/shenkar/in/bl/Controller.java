@@ -71,6 +71,7 @@ public class Controller implements ICampusInController
 	cloudAccessObject = CloudAccessObject.getInstance();
 	viewModel = new ViewModel(context);
 	saveToCLoudEventQue = new ArrayList<CampusInEvent>();
+	saveToCloudMessageQue=new ArrayList<CampusInMessage>();
 	// get the current logged in user
 
 	cloudAccessObject.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
@@ -447,6 +448,11 @@ public class Controller implements ICampusInController
 		inti.setAction(ModelUpdateService.START_COMMAND);
 		if (context != null)
 		    context.sendBroadcast(inti);
+	}
+
+	@Override
+	public List<CampusInMessage> getAllMessages() {
+		return new ArrayList<CampusInMessage>(viewModel.getAllMessages());
 	}
 
 

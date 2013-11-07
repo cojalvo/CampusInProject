@@ -28,13 +28,22 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class SendMassageFragment extends AddNewEventFragment
 {
     private onNewMassagecreated callBack;
+    private SeekBar sb;
+    private CheckBox cb;
     
     static SendMassageFragment newInstance(Bundle args)
     {
@@ -75,8 +84,8 @@ public class SendMassageFragment extends AddNewEventFragment
 	    }
 	});
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	builder.setTitle("δωΰψ δεγςδ μηαψιν");
-	builder.setPositiveButton("ωμη", new DialogInterface.OnClickListener()
+	builder.setTitle("Χ©ΧΧ— Χ”Χ•Χ“ΧΆΧ”");
+	builder.setPositiveButton("Χ©ΧΧ—", new DialogInterface.OnClickListener()
 	{
 	    
 	    @Override
@@ -97,6 +106,39 @@ public class SendMassageFragment extends AddNewEventFragment
 	});
 	view = getActivity().getLayoutInflater().inflate(R.layout.send_massage_layout, null);
 	Button addFriendsButton = (Button) view.findViewById(R.id.massage_add_friends_button);
+	cb=(CheckBox) view.findViewById(R.id.distance_check);
+	sb=(SeekBar) view.findViewById(R.id.seekBar1);
+	sb.setEnabled(false);
+	cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		sb.setEnabled(isChecked);
+			
+		}
+	});
+	final TextView tv=(TextView) view.findViewById(R.id.distance_text);
+	sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+		
+		@Override
+		public void onStopTrackingTouch(SeekBar seekBar) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onStartTrackingTouch(SeekBar seekBar) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onProgressChanged(SeekBar seekBar, int progress,
+				boolean fromUser) {
+			tv.setText(" Χ Χ™ΧªΧ Χª ΧΧ§Χ¨Χ™ΧΧ” Χ‘Χ¨Χ“Χ™Χ•Χ΅ Χ©Χ "+ progress +" ΧΧΧ¨Χ™Χ ");
+			
+		}
+	});
 	addFriendsButton.setOnClickListener(new OnClickListener()
 	{
 
@@ -181,6 +223,7 @@ public class SendMassageFragment extends AddNewEventFragment
     public CampusInElement validate()
     {
 	CampusInMessage toReturn = new CampusInMessage();
+	toReturn.setSenderFullName(currentUser.getFirstName()+ " "+currentUser.getLastName());
 	if (this.addedFriends  == null || this.addedFriends.isEmpty())
 	{
 	    Toast.makeText(getActivity(), "please choose friends to send the massage to",3000).show();
@@ -191,6 +234,15 @@ public class SendMassageFragment extends AddNewEventFragment
 	  toReturn.setReciversList(addedFriends);
 	}
 	EditText massageContent = (EditText) view.findViewById(R.id.massage_content);
+	if(cb.isChecked())
+	{
+		toReturn.setReadInRadius(sb.getProgress());
+	}
+	else
+	{
+		//-1 mean that there is no limitation
+		toReturn.setReadInRadius(-1);
+	}
 	if (massageContent.getText().toString().isEmpty())
 	{
 	    massageContent.setHint(R.string.empty_massage);

@@ -26,6 +26,7 @@ public class ViewModel
 
     private Boolean updateEventDone = false;
     private Boolean updateUsersDone = false;
+    private Boolean updateMesagesDone = false;
     private Boolean updateUsersLocationDone = false;
 
     // TODO -remove it the context should be in he controller.
@@ -77,7 +78,18 @@ public class ViewModel
 
 	    }
 	});
-	
+	dao.getMessages(new DataAccesObjectCallBack<List<CampusInMessage>>() {
+		
+		@Override
+		public void done(List<CampusInMessage> retObject, Exception e) {
+			messages.clear();
+			for (CampusInMessage campusInMessage : retObject) {
+				messages.put(campusInMessage.getParseId(), campusInMessage);
+			}
+			 updateMesagesDone = true;
+			
+		}
+	});
 
 	// the location and the campus in user are connected this is the reason
 	// it is not safe to it asynchronous
@@ -197,7 +209,7 @@ public class ViewModel
 
 		    updateViewModel();
 		    while (!updateEventDone || !updateUsersDone
-			    || !updateUsersLocationDone)
+			    || !updateUsersLocationDone || !updateMesagesDone)
 		    {
 			try
 			{

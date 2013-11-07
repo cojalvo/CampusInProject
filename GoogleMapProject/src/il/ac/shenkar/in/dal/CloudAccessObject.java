@@ -237,6 +237,7 @@ public class CloudAccessObject implements IDataAccesObject
     		message.setParseId(parseObj.getObjectId());
     		message.setContent(parseObj.getString("content"));
     		message.setReadInRadius(parseObj.getInt("readInRadius"));
+    		message.setSenderFullName(parseObj.getString("senderName"));
     		CampusInLocation loc=new CampusInLocation();
     		loc.setLocationName(parseObj.getString("locationName"));
     		loc.setMapLocation(new LatLng(parseObj.getDouble("lat"), parseObj.getDouble("long")));
@@ -262,6 +263,7 @@ public class CloudAccessObject implements IDataAccesObject
     	{
     		    final ParseObject theMessage = new ParseObject("Message");
     		    theMessage.put("content", message.getContent());
+    		    theMessage.put("senderName", message.getSenderFullName());
     		    theMessage.put("readInRadius", message.getReadInRadius());
     		    theMessage.put("locationName", message.getLocation().getLocationName());
     		    theMessage.put("lat", message.getLocation().getMapLocation().latitude);
