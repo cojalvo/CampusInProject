@@ -48,6 +48,7 @@ public class Controller implements ICampusInController
     private Boolean viewModelIsUpdating = false;
     private Context context;
     private IDataAccesObject cloudAccessObject;
+    private NotificationManager notificationManager;
     private ViewModel viewModel;
     private CampusInUser currentUser;
     private MapManager mapManager;
@@ -66,6 +67,7 @@ public class Controller implements ICampusInController
 	cloudAccessObject = CloudAccessObject.getInstance();
 	viewModel = new ViewModel(context);
 	saveToCLoudEventQue = new ArrayList<CampusInEvent>();
+	notificationManager = new NotificationManager();
 	// get the current logged in user
 
 	cloudAccessObject.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
@@ -214,6 +216,8 @@ public class Controller implements ICampusInController
 		{
 		    if (callBack != null)
 			callBack.done(retObject, e);
+		    notificationManager.updateNotificationsToAllEvents(viewModel.getAllEvents());
+		    Log.i("CampusIn", "updatig Notifications");
 		    Log.i("CampusIn", "Finish updating the view model");
 		    invokeViewModelUpdated();
 		    updatingViewModel = false;
@@ -273,19 +277,21 @@ public class Controller implements ICampusInController
 		@Override
 		public void done(List<CampusInUser> retObject, Exception e)
 		{
-			List<CampusInUser> retList=new ArrayList<CampusInUser>();
-			//remove all the friends to school -by default they are my friends and can't be removed
-			if(retObject!=null && e==null)
+		    List<CampusInUser> retList = new ArrayList<CampusInUser>();
+		    // remove all the friends to school -by default they are my
+		    // friends and can't be removed
+		    if (retObject != null && e == null)
+		    {
+
+			for (CampusInUser campusInUser : retObject)
 			{
-				
-				for (CampusInUser campusInUser : retObject) {
-					if(campusInUser.getTrend().equals(currentUser.getTrend()) && campusInUser.getYear().equals(currentUser.getYear()))
-						continue;
-					retList.add(campusInUser);
-				}
+			    if (campusInUser.getTrend().equals(currentUser.getTrend()) && campusInUser.getYear().equals(currentUser.getYear()))
+				continue;
+			    retList.add(campusInUser);
 			}
-			if(callback!=null)
-				callback.done(retList, e);
+		    }
+		    if (callback != null)
+			callback.done(retList, e);
 		}
 	    });
 	}
@@ -354,12 +360,9 @@ public class Controller implements ICampusInController
 	if (event != null)
 	{
 	    // navigate to the location
-	    mapManager = MapManager.getInstance(null, 0); /*
-							   * in this point the
-							   * map is already
-							   * initialized so i
-							   * pass dummy params
-							   */
+	    // in this point the map is already initialized so i pass dummy
+	    // params
+	    mapManager = MapManager.getInstance(null, 0);
 	    mapManager.moveCameraToEvent(event.getParseId());
 	}
     }
@@ -367,20 +370,108 @@ public class Controller implements ICampusInController
     @Override
     public void addNotificationToEvent(CampusInEvent event)
     {
-	// add the event to the Alarm manager
-	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-	// default reminder is 5 minuts before
-	String reminderTime = sharedPrefs.getString("event_reminder", "300000");
+	notificationManager.updateNotification(event);
+    }
 
-	long reminderTimeInMiliseconds = Long.parseLong(reminderTime);
-	/* value '0' mean no reminder is needed */
-	if (reminderTimeInMiliseconds > 0)
+    /**
+     * the Notification Manager Class is the class that manages the adding,
+     * removing and updating the notifications for the user the class holds a
+     * HashMap of the current Notification applied for the current user, every
+     * time the updateNotification method is called the class then deside which
+     * Notification to update remove or add.
+     * 
+     * @author Jacob
+     * 
+     */
+    public class NotificationManager
+    {
+	HashMap<Integer, PendingIntent> norificationsList = new HashMap<Integer, PendingIntent>();
+	HashMap<Integer, CampusInEvent> eventsList = new HashMap<Integer, CampusInEvent>();
+	String currUserParseId;
+	AlarmManager alarmManager;
+	
+	public NotificationManager()
 	{
-	    Intent activityIntent = new Intent("il.ac.asenkar.brodcast_receiver_costum_reciver");
-	    activityIntent.putExtra("event_id", (String) event.getParseId());
-	    PendingIntent pendingInent = PendingIntent.getBroadcast(context, 0, activityIntent, 0);
-	    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-	    alarmManager.set(AlarmManager.RTC_WAKEUP, event.getDate().getTime() - reminderTimeInMiliseconds, pendingInent);
+	    currUserParseId = currentUser.getParseUserId();
+	    alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	}
+	/**
+	 * this method is being used for new events created on this device
+	 * 
+	 * @param event
+	 */
+	public void updateNotification(CampusInEvent event)
+	{
+	    if (event != null)
+	    {
+		Integer key = event.getParseId().hashCode();
+		PendingIntent NotifictionToAdd = this.builSndSendNotificationToEvent(event);
+		//add notification
+		norificationsList.put(key, NotifictionToAdd);
+		//add event 
+		eventsList.put(key, event);
+	    }
+	}
+	
+	public void updateNotificationsToAllEvents(Collection<CampusInEvent> events)
+	{
+	    if (norificationsList.size() > events.size())
+	    {
+		// we got more notifications then events - we need to remove some notifications
+		RemoveNotifications(events);
+	    }
+	    for (CampusInEvent currEvent: events)
+	    {
+		if (!norificationsList.containsValue(currEvent) && currEvent.getReceiversId().contains(currUserParseId))
+		{
+		    // new event - add it like new event
+		    updateNotification(currEvent);
+		}
+		
+	    }
+	}
+	private void RemoveNotifications(Collection<CampusInEvent> eventsFromCloud)
+	{
+	    // go over all of my events with the notifications and check if the event is arrived from the cloud
+	    for(CampusInEvent eventWithNotification : this.eventsList.values())
+	    {
+		if (!eventsFromCloud.contains(eventWithNotification))
+		{
+		    Integer keyToRemove = eventWithNotification.getParseId().hashCode();
+		    PendingIntent pendingIntentToRemove = this.norificationsList.get(keyToRemove);
+		    try
+		    {
+			alarmManager.cancel(pendingIntentToRemove);
+			this.eventsList.remove(keyToRemove);
+			this.norificationsList.remove(keyToRemove);
+		    }
+		    catch (Exception e)
+		    {
+			Log.i(this.toString(),"could not remove alarm manager notification for event name:  " + eventsList.get(keyToRemove).getHeadLine());
+		    }
+		    
+		}
+	    }
+	}
+
+	private PendingIntent builSndSendNotificationToEvent(CampusInEvent event)
+	{
+	    // add the event to the Alarm manager
+	    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+	    // default reminder is 5 minuts before
+	    String reminderTime = sharedPrefs.getString("event_reminder", "300000");
+
+	    long reminderTimeInMiliseconds = Long.parseLong(reminderTime);
+	    /* value '0' mean no reminder is needed */
+	    if (reminderTimeInMiliseconds > 0)
+	    {
+		Intent activityIntent = new Intent("il.ac.asenkar.brodcast_receiver_costum_reciver");
+		activityIntent.putExtra("event_id", (String) event.getParseId());
+		PendingIntent pendingInent = PendingIntent.getBroadcast(context, 0, activityIntent, 0);
+		alarmManager.set(AlarmManager.RTC_WAKEUP, event.getDate().getTime() - reminderTimeInMiliseconds, pendingInent);
+		return pendingInent;
+	    }
+	    return null;
 	}
 
     }
