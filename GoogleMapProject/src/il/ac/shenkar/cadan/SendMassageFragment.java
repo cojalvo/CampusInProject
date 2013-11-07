@@ -15,12 +15,18 @@ import java.util.Currency;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -98,14 +104,19 @@ public class SendMassageFragment extends AddNewEventFragment
 	    public void onClick(View v)
 	    {
 		// show add Friends fragment
-		ChooseFriendsFragment newFragment = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD);
+		ChooseFriendsFragment newFragment = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD,isfriendsAdded,addedFriends);
 		newFragment.setTargetFragment(SendMassageFragment.this, 0);
 		newFragment.show(getFragmentManager(), "addFriendsPicher");
 	    }
 	});
+	
+	EditText messageContent = (EditText) view.findViewById(R.id.massage_content);
+	messageContent.requestFocus();
+	
 	builder.setView(view);
-
-	return builder.create();
+	Dialog dialog = builder.create();
+	dialog.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE | LayoutParams.SOFT_INPUT_ADJUST_PAN );
+	return dialog;
     }
 
     @Override
@@ -119,10 +130,14 @@ public class SendMassageFragment extends AddNewEventFragment
 	    {
 		CampusInUser user = addedFriends.get(0);
 		recivers.setText(user.getFirstName() +" " + user.getLastName() + ", ...");
+		Button editFriends = (Button) view.findViewById(R.id.massage_add_friends_button);
+		editFriends.setText(R.string.edit_friends);
+		isfriendsAdded =true;
 	    }
 	    else
 	    {
 		recivers.setText(R.string.no_friend_added);
+		isfriendsAdded = false;
 	    }
 	}
     }

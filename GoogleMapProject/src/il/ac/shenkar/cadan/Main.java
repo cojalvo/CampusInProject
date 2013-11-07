@@ -398,7 +398,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    ft1.addToBackStack(null);
 
 	    // Create and show the dialog.
-	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD);
+	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD,false,new ArrayList<CampusInUser>());
 	    newFragment1.show(ft1, "dialog");
 	case R.id.action_remove_friends:
 	    android.app.FragmentTransaction ft11 = getFragmentManager().beginTransaction();
@@ -410,7 +410,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    ft11.addToBackStack(null);
 
 	    // Create and show the dialog.
-	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE);
+	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE,false,new ArrayList<CampusInUser>());
 	    newFragment11.show(ft11, "dialog");
 	    return true;
 	case R.id.action_add_friends_from_cloud:

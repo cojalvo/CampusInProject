@@ -42,19 +42,27 @@ public class ChooseFriendsFragment extends DialogFragment
     onFriendsAddedListener mCallback;
     private View view;
     private List<CampusInUser> friensList;
+    private List<CampusInUser> priviousAddedFriend = new ArrayList<CampusInUser>();
     private ChooseFriendAction action;
+    private boolean isfriendAdded = false;
     private ICampusInController controller = null;
     ProgressDialog progressDialog;
 
-    static ChooseFriendsFragment newInstance(ChooseFriendAction action)
+    static ChooseFriendsFragment newInstance(ChooseFriendAction action, boolean isfriendAdded, List<CampusInUser> priviousAddedFriend)
     {
 	ChooseFriendsFragment f = new ChooseFriendsFragment();
 
 	// Supply num input as an argument.
 	Bundle args = new Bundle();
 	args.putSerializable("action", action);
+	args.putBoolean("friendAdded", isfriendAdded);
 	f.setArguments(args);
 	f.action = action;
+	if (isfriendAdded == true)
+	{
+	    f.isfriendAdded = isfriendAdded; // true
+	    f.priviousAddedFriend = priviousAddedFriend;
+	}
 	return f;//
     }
 
@@ -205,9 +213,18 @@ public class ChooseFriendsFragment extends DialogFragment
 	for (CampusInUser friend : friensList)
 	{
 	    CampusInUserChecked u = new CampusInUserChecked(friend);
-	    u.setChecked(false);
+	    
+	    if (priviousAddedFriend.contains(friend))
+	    {
+		u.setChecked(true);
+	    }
+	    else
+	    {
+		u.setChecked(false);
+	    }
 	    toReturn.add(u);
 	}
+
 	return toReturn;
     }
 
@@ -232,7 +249,7 @@ public class ChooseFriendsFragment extends DialogFragment
 			    Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 			    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
 			    friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
-			   // progressDialog.dismiss();
+			    // progressDialog.dismiss();
 			}
 		    });
 		}
@@ -267,15 +284,17 @@ public class ChooseFriendsFragment extends DialogFragment
     {
 	ADD, REMOVE
     }
-    
+
     @Override
     public void onStart()
     {
 	super.onStart();
 	this.getDialog().setCanceledOnTouchOutside(false);
-	/*if (action == ChooseFriendAction.ADD)
-	    progressDialog = ProgressDialog.show(getActivity(), "Loading Friends", "Loading FRiends from cloud");*/
+	/*
+	 * if (action == ChooseFriendAction.ADD) progressDialog =
+	 * ProgressDialog.show(getActivity(), "Loading Friends",
+	 * "Loading FRiends from cloud");
+	 */
     }
-
 
 }

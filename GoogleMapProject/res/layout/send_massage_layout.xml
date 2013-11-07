@@ -46,7 +46,9 @@
         <EditText 
             android:id="@+id/massage_content"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"/>
+        <requestFocus /> 
     </LinearLayout>
 
 </LinearLayout>
