@@ -32,5 +32,9 @@ public interface ICampusInController
 	void addNotificationToEvent(CampusInEvent event);
 	Boolean isMyFriend(CampusInUser user);
 	Boolean isMyFriendToSchool(CampusInUser user);
+	void startAutoViewModelUpdatingService();
+	void stopAutoViewModelUpdatingService();
+	void pauseAutoViewModelUpdatingService();
+	void resumeAutoViewModelUpdatingService();
 	
 }

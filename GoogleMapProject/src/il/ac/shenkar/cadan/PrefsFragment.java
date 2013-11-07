@@ -183,4 +183,5 @@ public class PrefsFragment extends PreferenceFragment {
 		return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(
 				localBitmap, paramInt1, paramInt2, true));
 	}
+	
 }

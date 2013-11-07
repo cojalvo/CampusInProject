@@ -124,6 +124,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	super.onCreate(savedInstanceState);
 	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
+	Log.i("Main","onCreate was called");
 	calcMyScreen();
 	vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	// inflate the drawerLayour
@@ -190,7 +191,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	if (savedInstanceState == null || !savedInstanceState.getBoolean("locationServiceStart"))
 	{
 	    startLocationReportServise();
-	    startAutoViewModelUpdatingService();
+	    controller.startAutoViewModelUpdatingService();
 	}
 	updateView();
 	registerViewModelReciever();
@@ -211,26 +212,27 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     @Override
     protected void onPause()
     {
-	// TODO Auto-generated method stub
-	Toast.makeText(this, "onPause was called", 150).show();
-	stopAutoViewModelUpdatingService();
-	if (!inExitProcess)
-	    setPendingIntent();
-	super.onPause();
+    Log.i("Main","onPause was called");
+    Toast.makeText(this, "onPause was called", 150).show();
+    if(!isFinishing())
+    {
+                setPendingIntent();
+                controller.pauseAutoViewModelUpdatingService();
+    }
+            
+        super.onPause();
     }
 
     @Override
     protected void onResume()
     {
-	// TODO Auto-generated method stub
-	Toast.makeText(this, "onResume was called", 150).show();
-	if (!viewModelServiceRunning && !inExitProcess)
-	{
-	    Toast.makeText(this, "vieModel service wasnt run- start it again", 150).show();
-	    startAutoViewModelUpdatingService();
-	}
-	super.onResume();
+        // TODO Auto-generated method stub
+            Toast.makeText(this, "onResume was called", 150).show();
+            Log.i("Main","onResume was called");
+            controller.resumeAutoViewModelUpdatingService();
+            super.onResume();
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState)
@@ -256,7 +258,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     {
 	mapManager = MapManager.getInstance(((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
 
-	mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089568, 34.802128), new LatLng(32.090501, 34.803617), (float) 0.1);
+	mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089518, 34.802128), new LatLng(32.090501, 34.803617), (float) 0.1);
 	mapManager.moveCameraToLocation(new LatLng(32.089028, 34.80304), 18);
 	mapManager.setOnMapLongClickListener(this);
 	mapManager.setOnMarkerClickListener(this);
@@ -488,6 +490,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		doExit();
 	    }
 	}
+	else if(keyCode==KeyEvent.KEYCODE_HOME)
+	{
+	}
 	return super.onKeyDown(keyCode, event);
     }
 
@@ -506,7 +511,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    public void onClick(DialogInterface dialog, int which)
 	    {
 		Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
-		stopAutoViewModelUpdatingService();
+		controller.stopAutoViewModelUpdatingService();
 		inExitProcess = true;
 		finish();
 	    }
@@ -914,7 +919,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	super.onDestroy();
 	// stop the report location service
 	Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
-	stopAutoViewModelUpdatingService();
+	controller.stopAutoViewModelUpdatingService();
 	unRegisterViewModelReciever();
 	MapManager.resetInstance();
     }
@@ -961,6 +966,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	}
     }
 
+    @SuppressLint("NewApi")
     @Override
     public void onMassageCreated(CampusInMessage sentMassage)
     {
@@ -968,6 +974,31 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	{
 	    Toast.makeText(getApplicationContext(), "New Massage creted: '" + sentMassage.getContent() + "'", 4000).show();
 	}
+		try
+		{
+			Intent intent = new Intent(this, Main.class);
+			PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);	
+			
+			// build notification
+			// the addAction re-use the same intent to keep the example short
+			Notification n  = new Notification.Builder(this)
+			        .setContentTitle("CampusIn")
+			        .setContentText("חזור ל CampusIn")
+			        .setSmallIcon(R.drawable.ic_launcher)
+			        .setContentIntent(pIntent)
+			        .setAutoCancel(true).build();
+			    
+			  
+			NotificationManager notificationManager = 
+			  (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+			
+			notificationManager.notify(0, n); 
+		}
+		catch(Exception e)
+		{
+			Log.e("MainMap", e.getMessage());
+		}
     }
 
 }

@@ -20,6 +20,7 @@ import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
+import il.ac.shenkar.cadan.Main;
 import il.ac.shenkar.cadan.MapManager;
 import il.ac.shenkar.cadan.MessageHalper;
 import il.ac.shenkar.cadan.R;
@@ -33,6 +34,7 @@ import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.IDataAccesObject;
 import il.ac.shenkar.in.dal.Model;
+import il.ac.shenkar.in.services.ModelUpdateService;
 
 /**
  * the Controller Object is a singleton object which responsible to keep the
@@ -54,6 +56,7 @@ public class Controller implements ICampusInController
     private MapManager mapManager;
     private Boolean updatingViewModel = false;
     private Boolean updateAgainViewModel = false;
+    private Boolean viewModelServiceRunning=false;
     /**
      * this List will hold all of the Events we want to save to the cloud only
      * if the save is successful the event object will be thrown from the list
@@ -390,6 +393,38 @@ public class Controller implements ICampusInController
 	public Boolean isMyFriendToSchool(CampusInUser user) {
 			if(user.getTrend().equals(currentUser.getTrend()) && user.getYear().equals(currentUser.getYear())) return true;
 		return false;
+	}
+
+	@Override
+    public void startAutoViewModelUpdatingService()
+    {
+		if(ModelUpdateService.isRuning()) return;
+    	Toast.makeText(context, "vieModel service is not running- start it", 150).show();
+    	Intent i = new Intent(context, ModelUpdateService.class);
+    	context.startService(i);
+    }
+
+	@Override
+    public  void stopAutoViewModelUpdatingService()
+    {
+    	context.stopService(new Intent(context, ModelUpdateService.class));
+    }
+
+	@Override
+	public void pauseAutoViewModelUpdatingService() {
+		Intent inti = new Intent();
+		inti.setAction(ModelUpdateService.STOP_COMMAND);
+		if (context != null)
+		    context.sendBroadcast(inti);
+		
+	}
+
+	@Override
+	public void resumeAutoViewModelUpdatingService() {
+		Intent inti = new Intent();
+		inti.setAction(ModelUpdateService.START_COMMAND);
+		if (context != null)
+		    context.sendBroadcast(inti);
 	}
 
 }
