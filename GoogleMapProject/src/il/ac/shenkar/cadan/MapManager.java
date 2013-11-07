@@ -93,15 +93,15 @@ public class MapManager
     	//if the user didnt put ground overlay
     	if(campusOverlay==null)
     	{
-    		map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+    		map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     		return;
     	}
     	if(myDistanceFromCampus<lowDist && myDistanceFromCampus >0)
     	{
-    		map.setMapType(GoogleMap.MAP_TYPE_NONE);
+    		map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     		return;
     	}	
-    		map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+    		map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
 
     public LatLng getLastLongClicked()

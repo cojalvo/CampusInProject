@@ -410,4 +410,21 @@ public class Controller implements ICampusInController
     	context.stopService(new Intent(context, ModelUpdateService.class));
     }
 
+	@Override
+	public void pauseAutoViewModelUpdatingService() {
+		Intent inti = new Intent();
+		inti.setAction(ModelUpdateService.STOP_COMMAND);
+		if (context != null)
+		    context.sendBroadcast(inti);
+		
+	}
+
+	@Override
+	public void resumeAutoViewModelUpdatingService() {
+		Intent inti = new Intent();
+		inti.setAction(ModelUpdateService.START_COMMAND);
+		if (context != null)
+		    context.sendBroadcast(inti);
+	}
+
 }

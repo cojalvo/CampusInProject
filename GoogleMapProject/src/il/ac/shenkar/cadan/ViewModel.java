@@ -201,7 +201,7 @@ public class ViewModel
 		    {
 			try
 			{
-			    wait(10);
+			    wait(50);
 			} catch (InterruptedException e)
 			{
 			    // TODO Auto-generated catch block

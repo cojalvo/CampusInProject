@@ -34,5 +34,7 @@ public interface ICampusInController
 	Boolean isMyFriendToSchool(CampusInUser user);
 	void startAutoViewModelUpdatingService();
 	void stopAutoViewModelUpdatingService();
+	void pauseAutoViewModelUpdatingService();
+	void resumeAutoViewModelUpdatingService();
 	
 }

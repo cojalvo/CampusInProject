@@ -210,10 +210,12 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     {
     Log.i("Main","onPause was called");
     Toast.makeText(this, "onPause was called", 150).show();
-    if(ModelUpdateService.isRuning())
-    	controller.stopAutoViewModelUpdatingService();
-	if(!inExitProcess)
+    if(!isFinishing())
+    {
 		setPendingIntent();
+		controller.pauseAutoViewModelUpdatingService();
+    }
+    	
 	super.onPause();
     }
 
@@ -223,10 +225,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	// TODO Auto-generated method stub
     	Toast.makeText(this, "onResume was called", 150).show();
     	Log.i("Main","onResume was called");
-    	if(!inExitProcess)
-    	{
-    		controller.startAutoViewModelUpdatingService();
-    	}
+    	controller.resumeAutoViewModelUpdatingService();
     	super.onResume();
     }
 
@@ -254,7 +253,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     {
 	mapManager = MapManager.getInstance(((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
 
-	mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089568, 34.802128), new LatLng(32.090501, 34.803617), (float) 0.1);
+	mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089518, 34.802128), new LatLng(32.090501, 34.803617), (float) 0.1);
 	mapManager.moveCameraToLocation(new LatLng(32.089028, 34.80304), 18);
 	mapManager.setOnMapLongClickListener(this);
 	mapManager.setOnMarkerClickListener(this);
@@ -485,6 +484,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    {
 		doExit();
 	    }
+	}
+	else if(keyCode==KeyEvent.KEYCODE_HOME)
+	{
 	}
 	return super.onKeyDown(keyCode, event);
     }
@@ -930,13 +932,13 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		{
 			Intent intent = new Intent(this, Main.class);
 			PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);	
 			
 			// build notification
 			// the addAction re-use the same intent to keep the example short
 			Notification n  = new Notification.Builder(this)
 			        .setContentTitle("CampusIn")
-			        .setContentText("האפליקציה מדווחת על מיקומך ברקע")
+			        .setContentText("חזור ל CampusIn")
 			        .setSmallIcon(R.drawable.ic_launcher)
 			        .setContentIntent(pIntent)
 			        .setAutoCancel(true).build();
