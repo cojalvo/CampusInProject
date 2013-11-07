@@ -58,6 +58,7 @@ public class AddNewEventFragment extends DialogFragment
     protected Calendar cal;
     protected CampusInUser currentUser;
     onNewEventAdded mCallBack;
+    protected boolean isfriendsAdded = false;
 
     @Override
     public void onAttach(Activity activity)
@@ -101,6 +102,7 @@ public class AddNewEventFragment extends DialogFragment
 	// after the friend list was added i will change the text on the button
 	Button b = (Button) view.findViewById(R.id.event_add_friends_button);
 	b.setText(R.string.success_adding_friends_to_event);
+	isfriendsAdded = true;
     }
 
     static AddNewEventFragment newInstance(Bundle args)
@@ -239,7 +241,7 @@ public class AddNewEventFragment extends DialogFragment
 	    public void onClick(View v)
 	    {
 		// show add Friends fragment
-		ChooseFriendsFragment newFragment = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD);
+		ChooseFriendsFragment newFragment = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD,isfriendsAdded,addedFriends);
 		newFragment.setTargetFragment(AddNewEventFragment.this, 0);
 		newFragment.show(getFragmentManager(), "addFriendsPicher");
 	    }

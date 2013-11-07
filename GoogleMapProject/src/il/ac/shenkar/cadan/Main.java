@@ -125,7 +125,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	super.onCreate(savedInstanceState);
 	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
-	Log.i("Main","onCreate was called");
+	Log.i("Main", "onCreate was called");
 	calcMyScreen();
 	vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	// inflate the drawerLayour
@@ -213,27 +213,26 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     @Override
     protected void onPause()
     {
-    Log.i("Main","onPause was called");
-    Toast.makeText(this, "onPause was called", 150).show();
-    if(!isFinishing())
-    {
-                setPendingIntent();
-                controller.pauseAutoViewModelUpdatingService();
-    }
-            
-        super.onPause();
+	Log.i("Main", "onPause was called");
+	Toast.makeText(this, "onPause was called", 150).show();
+	if (!isFinishing())
+	{
+	    setPendingIntent();
+	    controller.pauseAutoViewModelUpdatingService();
+	}
+
+	super.onPause();
     }
 
     @Override
     protected void onResume()
     {
-        // TODO Auto-generated method stub
-            Toast.makeText(this, "onResume was called", 150).show();
-            Log.i("Main","onResume was called");
-            controller.resumeAutoViewModelUpdatingService();
-            super.onResume();
+	// TODO Auto-generated method stub
+	Toast.makeText(this, "onResume was called", 150).show();
+	Log.i("Main", "onResume was called");
+	controller.resumeAutoViewModelUpdatingService();
+	super.onResume();
     }
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState)
@@ -400,7 +399,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    ft1.addToBackStack(null);
 
 	    // Create and show the dialog.
-	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD);
+	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD,false,new ArrayList<CampusInUser>());
 	    newFragment1.show(ft1, "dialog");
 	case R.id.action_remove_friends:
 	    android.app.FragmentTransaction ft11 = getFragmentManager().beginTransaction();
@@ -412,7 +411,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    ft11.addToBackStack(null);
 
 	    // Create and show the dialog.
-	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE);
+	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE,false,new ArrayList<CampusInUser>());
 	    newFragment11.show(ft11, "dialog");
 	    return true;
 	case R.id.action_add_friends_from_cloud:
@@ -491,7 +490,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		doExit();
 	    }
 	}
-	else if(keyCode==KeyEvent.KEYCODE_HOME)
+	else if (keyCode == KeyEvent.KEYCODE_HOME)
 	{
 	}
 	return super.onKeyDown(keyCode, event);
