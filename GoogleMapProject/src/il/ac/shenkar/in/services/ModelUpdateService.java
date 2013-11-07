@@ -12,11 +12,16 @@ import android.widget.Toast;
 
 public class ModelUpdateService  extends Service
 {
+	private static Boolean isRuning=false;
 	Handler handler=new Handler();
 	private boolean lastUpdateFinish=true;
 	private int interval=7000;
 	ICampusInController controller=Controller.getInstance(getBaseContext());
 	
+	public static Boolean isRuning()
+	{
+		return isRuning;
+	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -27,19 +32,22 @@ public class ModelUpdateService  extends Service
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		isRuning=true;
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		isRuning=false;
 		stop();
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		start();
-		return  START_STICKY;
+		isRuning=true;
+		return  START_NOT_STICKY;
 	}
 	
 	//this runnable is running every interval time.
@@ -62,7 +70,6 @@ public class ModelUpdateService  extends Service
 						if(retObject==1 && e!=null)
 						{
 							Toast.makeText(getBaseContext(), e.getMessage(), 500).show();
-						
 							handler.postDelayed(autoRefresh,(long)( interval*1.2));
 						}
 							

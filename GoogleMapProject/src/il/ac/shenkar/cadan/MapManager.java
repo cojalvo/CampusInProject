@@ -18,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.GroundOverlay;
@@ -36,6 +37,13 @@ public class MapManager
     private HashMap<String, Marker> messageMarkerdictionary;
     private HashMap<Marker, String> markerPersondictiobnary = new HashMap<Marker, String>();
     private HashMap<Marker, String> markerEventDictionary = new HashMap<Marker, String>();
+    private final LatLng shenkarLatLong=new LatLng(32.090049, 34.802807);
+    private GroundOverlayOptions campusOverlay;
+    private float myLastDistance;
+    private final int lowDist=800;
+    private final int mediumDist=2000;
+    
+    
     // the key is the lat+long -as string
     private HashMap<String, HashMap<String, Marker>> positionMarkerDic;
     private LatLng lastlongClicked = null;
@@ -56,6 +64,45 @@ public class MapManager
 	if (listener != null)
 	    this.map.setOnMarkerClickListener(listener);
     }
+    private void setOnMyLocationChangedListener()
+    {
+    	if(map!=null)
+    		map.setOnMyLocationChangeListener(new OnMyLocationChangeListener() {
+				
+				@Override
+				public void onMyLocationChange(Location location) {
+					float currDistance=getDistanceFromMe(shenkarLatLong);
+					if(shouldupdateMapState(currDistance))
+						setMapState(currDistance);	
+					myLastDistance=currDistance;
+				}
+			});
+    }
+    
+    private Boolean shouldupdateMapState(float currentDist)
+    {
+    	if(currentDist==myLastDistance) return false;
+    	if(currentDist<lowDist && myLastDistance<lowDist && myLastDistance>0) return false;
+    	if((currentDist>lowDist && currentDist<mediumDist) && (myLastDistance>lowDist && myLastDistance<mediumDist)) return false;
+    	if(currentDist>mediumDist && myLastDistance>mediumDist) return false;
+    	return true;
+    	
+    }
+    private void setMapState(float myDistanceFromCampus)
+    {
+    	//if the user didnt put ground overlay
+    	if(campusOverlay==null)
+    	{
+    		map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+    		return;
+    	}
+    	if(myDistanceFromCampus<lowDist && myDistanceFromCampus >0)
+    	{
+    		map.setMapType(GoogleMap.MAP_TYPE_NONE);
+    		return;
+    	}	
+    		map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+    }
 
     public LatLng getLastLongClicked()
     {
@@ -71,6 +118,9 @@ public class MapManager
 	personMarkerdictionary = new HashMap<String, Marker>();
 	eventMarkerdictionary = new HashMap<String, Marker>();
 	positionMarkerDic = new HashMap<String, HashMap<String, Marker>>();
+	setOnMyLocationChangedListener();
+	myLastDistance=getDistanceFromMe(shenkarLatLong);
+	setMapState(myLastDistance);
     }
 
     public static void resetInstance()
@@ -93,7 +143,8 @@ public class MapManager
 	LatLngBounds bounds = new LatLngBounds(southWest, northEast); // get a
 								      // bounds
 	// Adds a ground overlay with 10% transparency.
-	map.addGroundOverlay(new GroundOverlayOptions().image(image).positionFromBounds(bounds).transparency(transparency));
+	campusOverlay=new GroundOverlayOptions().image(image).positionFromBounds(bounds).transparency(transparency);
+	map.addGroundOverlay(campusOverlay);
     }
 
     // clear the map
@@ -143,7 +194,7 @@ public class MapManager
 
     public void moveCameraToMessage(String messageId)
     {
-
+    		
     }
 
     public void moveCameraToPerson(String PersonId)
@@ -282,9 +333,14 @@ public class MapManager
     		dest=messageMarkerdictionary.get(id);
     	else
     		return -1;
+    	return getDistanceFromMe(dest.getPosition());
+    }
+    
+    private float getDistanceFromMe(LatLng p)
+    {
     	Location destLocation = new Location("point A");
-    	destLocation.setLatitude(dest.getPosition().latitude);
-    	destLocation.setLongitude(dest.getPosition().longitude);
+    	destLocation.setLatitude(p.latitude);
+    	destLocation.setLongitude(p.longitude);
     	Location myLocation=map.getMyLocation();
     	if(myLocation==null) return -1;
     	return myLocation.distanceTo(destLocation);

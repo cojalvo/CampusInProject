@@ -120,6 +120,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	super.onCreate(savedInstanceState);
 	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
+	Log.i("Main","onCreate was called");
 	calcMyScreen();
 	vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	// inflate the drawerLayour
@@ -186,7 +187,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	if (savedInstanceState == null || !savedInstanceState.getBoolean("locationServiceStart"))
 	{
 	    startLocationReportServise();
-	    startAutoViewModelUpdatingService();
+	    controller.startAutoViewModelUpdatingService();
 	}
 	updateView();
 	registerViewModelReciever();
@@ -207,9 +208,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     @Override
     protected void onPause()
     {
-	// TODO Auto-generated method stub
+    Log.i("Main","onPause was called");
     Toast.makeText(this, "onPause was called", 150).show();
-	stopAutoViewModelUpdatingService();
+    if(ModelUpdateService.isRuning())
+    	controller.stopAutoViewModelUpdatingService();
 	if(!inExitProcess)
 		setPendingIntent();
 	super.onPause();
@@ -220,10 +222,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     {
 	// TODO Auto-generated method stub
     	Toast.makeText(this, "onResume was called", 150).show();
-    	if(!viewModelServiceRunning && !inExitProcess)
+    	Log.i("Main","onResume was called");
+    	if(!inExitProcess)
     	{
-    		Toast.makeText(this, "vieModel service wasnt run- start it again", 150).show();
-    		startAutoViewModelUpdatingService();
+    		controller.startAutoViewModelUpdatingService();
     	}
     	super.onResume();
     }
@@ -502,7 +504,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    public void onClick(DialogInterface dialog, int which)
 	    {
 		Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
-		stopAutoViewModelUpdatingService();
+		controller.stopAutoViewModelUpdatingService();
 		inExitProcess=true;
 		finish();
 	    }
@@ -911,7 +913,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	super.onDestroy();
 	// stop the report location service
 	Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
-	stopAutoViewModelUpdatingService();
+	controller.stopAutoViewModelUpdatingService();
 	unRegisterViewModelReciever();
 	MapManager.resetInstance();
     }
@@ -921,18 +923,6 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	Menu, FriendInfo, EventInfo
     }
 
-    private void startAutoViewModelUpdatingService()
-    {
-    	viewModelServiceRunning=true;
-	Intent i = new Intent(this, ModelUpdateService.class);
-	this.startService(i);
-    }
-
-    private void stopAutoViewModelUpdatingService()
-    {
-    	viewModelServiceRunning=false;
-    	stopService(new Intent(Main.this, ModelUpdateService.class));
-    }
     
     private void setPendingIntent()
     {
