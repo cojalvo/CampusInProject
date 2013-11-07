@@ -955,7 +955,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
 	    // build notification
 	    // the addAction re-use the same intent to keep the example short
-	    Notification n = new Notification.Builder(this).setContentTitle("CampusIn").setContentText("האפליקציה מדווחת על מיקומך ברקע").setSmallIcon(R.drawable.ic_launcher)
+	    Notification n = new Notification.Builder(this).setContentTitle("CampusIn").setContentText("חזור ל CampusIn").setSmallIcon(R.drawable.ic_launcher)
 		    .setContentIntent(pIntent).setAutoCancel(true).build();
 
 	    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
