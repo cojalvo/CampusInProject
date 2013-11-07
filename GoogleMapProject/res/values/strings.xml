@@ -47,4 +47,9 @@
         <string name="my_event_list">רשימת האירועים שלי</string>
         <string name="close">סגור</string>
         <string name="success_adding_friends_to_event">חברים התווספו בהצלחה ויזומנו לאירוע</string>
+        <string name="leave_massage_to_friends">השאר הודעה לחברים</string>
+        <string name="send">שלח</string>
+        <string name="no_friend_added">לא נבחרו חברים</string>
+        <string name="empty_massage_error">לא ניתן לשלוח הודעה ריקה</string>
+        <string name="empty_massage">לא ניתן לשלוח הודעה ריקה</string>
 </resources>

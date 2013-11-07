@@ -12,8 +12,10 @@ import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
 import il.ac.shenkar.cadan.ChooseFriendsFragment.onFriendsAddedListener;
 import il.ac.shenkar.cadan.AddNewEventFragment.onNewEventAdded;
 import il.ac.shenkar.cadan.MapManager.MarkerType;
+import il.ac.shenkar.cadan.SendMassageFragment.onNewMassagecreated;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInLocation;
+import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
 import il.ac.shenkar.common.GuiHelper;
@@ -42,6 +44,7 @@ import android.R.integer;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -85,7 +88,8 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Main extends Activity implements OnPreferenceSelectedListener, OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener, onNewEventAdded
+public class Main extends Activity implements OnPreferenceSelectedListener, OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener, onNewEventAdded,
+	onNewMassagecreated
 {
     CameraPosition lastPos = new CameraPosition(new LatLng(0, 0), 2, 2, 2);
     GoogleMap map = null;
@@ -105,8 +109,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     private int myScreenHeight;
     private float widthMultScreenFactor;
     private Float heightMultScreenFactor;
-    private boolean viewModelServiceRunning=false;
-    private boolean inExitProcess=false;
+    private boolean viewModelServiceRunning = false;
+    private boolean inExitProcess = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -208,10 +212,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     protected void onPause()
     {
 	// TODO Auto-generated method stub
-    Toast.makeText(this, "onPause was called", 150).show();
+	Toast.makeText(this, "onPause was called", 150).show();
 	stopAutoViewModelUpdatingService();
-	if(!inExitProcess)
-		setPendingIntent();
+	if (!inExitProcess)
+	    setPendingIntent();
 	super.onPause();
     }
 
@@ -219,13 +223,13 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     protected void onResume()
     {
 	// TODO Auto-generated method stub
-    	Toast.makeText(this, "onResume was called", 150).show();
-    	if(!viewModelServiceRunning && !inExitProcess)
-    	{
-    		Toast.makeText(this, "vieModel service wasnt run- start it again", 150).show();
-    		startAutoViewModelUpdatingService();
-    	}
-    	super.onResume();
+	Toast.makeText(this, "onResume was called", 150).show();
+	if (!viewModelServiceRunning && !inExitProcess)
+	{
+	    Toast.makeText(this, "vieModel service wasnt run- start it again", 150).show();
+	    startAutoViewModelUpdatingService();
+	}
+	super.onResume();
     }
 
     @Override
@@ -492,7 +496,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     //
     private void doExit()
     {
-    	
+
 	AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
 	alertDialog.setPositiveButton("כן", new OnClickListener()
@@ -503,7 +507,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    {
 		Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
 		stopAutoViewModelUpdatingService();
-		inExitProcess=true;
+		inExitProcess = true;
 		finish();
 	    }
 	});
@@ -587,17 +591,17 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 			.setImageDrawable(controller.getFreindProfilePicture(user.getParseUserId(), (int) (150 * widthMultScreenFactor), (int) (130 * heightMultScreenFactor)));
 		TextView fulName = (TextView) layout.findViewById(R.id.full_name);
 		TextView status = (TextView) layout.findViewById(R.id.face_status);
-		TextView distance=(TextView) layout.findViewById(R.id.distance_from_me);
+		TextView distance = (TextView) layout.findViewById(R.id.distance_from_me);
 		distance.setText(getDistanceStringFromLastClickMarker());
-	
+
 		status.setText(user.getStatus());
 		fulName.setText(user.getFirstName() + " " + user.getLastName());
 		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (350 * heightMultScreenFactor), true);
 		break;
 	    case EventInfo:
 		layout = inflater.inflate(R.layout.event_info_popup, null);
-		LinearLayout l=(LinearLayout) layout.findViewById(R.id.event_pop_layout);
-	
+		LinearLayout l = (LinearLayout) layout.findViewById(R.id.event_pop_layout);
+
 		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (800 * heightMultScreenFactor), true);
 		CampusInEvent event = controller.getEvent(mapManager.getEventIdFromMarker(lastMarkerClicked));
 		TextView title = (TextView) layout.findViewById(R.id.event_title);
@@ -610,7 +614,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		Date d = event.getDate();
 		time.setText("שעה: " + ParsingHelper.fromDateToString(d, "HH:mm:ss"));
 		TextView date = (TextView) layout.findViewById(R.id.date_text);
-		TextView distanceEvent=(TextView) layout.findViewById(R.id.event_distance);
+		TextView distanceEvent = (TextView) layout.findViewById(R.id.event_distance);
 		distanceEvent.setText(getDistanceStringFromLastClickMarker());
 		date.setText("תאריך: " + ParsingHelper.fromDateToString(d, "dd/MM/yyyy"));
 		break;
@@ -633,28 +637,28 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     private String getDistanceStringFromLastClickMarker()
     {
-    	float dist=mapManager.getDistanceFromMe(lastMarkerClicked);
-		if(dist>0)
-		{
-			String unit;
-			String finalDist;
-			if(dist>1000)
-			{
-				unit="ק״מ";
-				
-				finalDist=String.format("%.2f", dist/1000);
-			}
-			else
-			{
-				unit="מטרים";
-				finalDist=String.format("%.0f", dist);
-			}
-			
-			
-			return ("נמצא כ "+finalDist+" "+unit+" " +"ממני");
-		}
-		return "";
+	float dist = mapManager.getDistanceFromMe(lastMarkerClicked);
+	if (dist > 0)
+	{
+	    String unit;
+	    String finalDist;
+	    if (dist > 1000)
+	    {
+		unit = "ק״מ";
+
+		finalDist = String.format("%.2f", dist / 1000);
+	    }
+	    else
+	    {
+		unit = "מטרים";
+		finalDist = String.format("%.0f", dist);
+	    }
+
+	    return ("נמצא כ " + finalDist + " " + unit + " " + "ממני");
+	}
+	return "";
     }
+
     public void addEventClicked(View v)
     {
 	Toast.makeText(this, "add event was clicked on location: lat:" + lastMapLongClick.latitude + " long: " + lastMapLongClick.longitude, 300).show();
@@ -664,19 +668,20 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     public void addMessageClicked(View v)
     {
-	Toast.makeText(this, "add message was clicked", 300).show();
 	pwindo.dismiss();
-	CloudAccessObject.getInstance().getUsersLocationInBackground(new DataAccesObjectCallBack<List<CampusInUserLocation>>()
-	{
-
-	    @Override
-	    public void done(List<CampusInUserLocation> retObject, Exception e)
-	    {
-		Toast.makeText(Main.this, "Number of friends is:" + retObject.size(), 500).show();
-
-	    }
-	});
 	lastMapLongClick = null;
+
+	android.app.FragmentTransaction ft1 = getFragmentManager().beginTransaction();
+	android.app.Fragment prev1 = getFragmentManager().findFragmentByTag("dialog");
+	if (prev1 != null)
+	{
+	    ft1.remove(prev1);
+	}
+	ft1.addToBackStack(null);
+
+	// Create and show the dialog.
+	SendMassageFragment newFragment1 = SendMassageFragment.newInstance(new Bundle());
+	newFragment1.show(ft1, "dialog");
     }
 
     public void addTestClicked(View v)
@@ -710,8 +715,6 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
 	    }
 	});
-	pwindo.dismiss();
-	lastMapLongClick = null;
     }
 
     private void createEventProcess()
@@ -907,7 +910,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     protected void onDestroy()
     {
 	// TODO Auto-generated method stub
-    	Toast.makeText(this, "onDestroy was called", 150).show();
+	Toast.makeText(this, "onDestroy was called", 150).show();
 	super.onDestroy();
 	// stop the report location service
 	Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
@@ -923,44 +926,48 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     private void startAutoViewModelUpdatingService()
     {
-    	viewModelServiceRunning=true;
+	viewModelServiceRunning = true;
 	Intent i = new Intent(this, ModelUpdateService.class);
 	this.startService(i);
     }
 
     private void stopAutoViewModelUpdatingService()
     {
-    	viewModelServiceRunning=false;
-    	stopService(new Intent(Main.this, ModelUpdateService.class));
+	viewModelServiceRunning = false;
+	stopService(new Intent(Main.this, ModelUpdateService.class));
     }
-    
+
+    @SuppressLint("NewApi")
     private void setPendingIntent()
     {
-		try
-		{
-			Intent intent = new Intent(this, Main.class);
-			PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-			
-			// build notification
-			// the addAction re-use the same intent to keep the example short
-			Notification n  = new Notification.Builder(this)
-			        .setContentTitle("CampusIn")
-			        .setContentText("האפליקציה מדווחת על מיקומך ברקע")
-			        .setSmallIcon(R.drawable.ic_launcher)
-			        .setContentIntent(pIntent)
-			        .setAutoCancel(true).build();
-			    
-			  
-			NotificationManager notificationManager = 
-			  (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-			
-			notificationManager.notify(0, n); 
-		}
-		catch(Exception e)
-		{
-			Log.e("MainMap", e.getMessage());
-		}
+	try
+	{
+	    Intent intent = new Intent(this, Main.class);
+	    PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
+	    intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+	    // build notification
+	    // the addAction re-use the same intent to keep the example short
+	    Notification n = new Notification.Builder(this).setContentTitle("CampusIn").setContentText("האפליקציה מדווחת על מיקומך ברקע").setSmallIcon(R.drawable.ic_launcher)
+		    .setContentIntent(pIntent).setAutoCancel(true).build();
+
+	    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+	    notificationManager.notify(0, n);
+	}
+	catch (Exception e)
+	{
+	    Log.e("MainMap", e.getMessage());
+	}
+    }
+
+    @Override
+    public void onMassageCreated(CampusInMessage sentMassage)
+    {
+	if (sentMassage != null)
+	{
+	    Toast.makeText(getApplicationContext(), "New Massage creted: '" + sentMassage.getContent() + "'", 4000).show();
+	}
     }
 
 }
