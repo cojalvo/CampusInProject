@@ -46,4 +46,5 @@
         <string name="remove_friends">הסר חברים</string>
         <string name="my_event_list">רשימת האירועים שלי</string>
         <string name="close">סגור</string>
+        <string name="success_adding_friends_to_event">חברים התווספו בהצלחה ויזומנו לאירוע</string>
 </resources>

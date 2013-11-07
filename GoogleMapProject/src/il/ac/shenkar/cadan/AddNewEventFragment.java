@@ -98,7 +98,7 @@ public class AddNewEventFragment extends DialogFragment
 		this.addedFriends = addedFriends;
 		// after the friend list was added i will change the text on the button
 		Button b = (Button) view.findViewById(R.id.event_add_friends_button);
-		b.setText("׳—׳‘׳¨׳™׳� ׳”׳×׳•׳•׳¡׳₪׳• ׳‘׳”׳¦׳�׳—׳”");
+		b.setText(R.string.success_adding_friends_to_event);
 	}
 
 
