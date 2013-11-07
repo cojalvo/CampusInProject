@@ -1073,7 +1073,7 @@ public class CloudAccessObject implements IDataAccesObject
 	});
     }
     @Override
-	public void getFriendProfilePicture(final String facebookId,
+	public  void getFriendProfilePicture(final String facebookId,
 			final DataAccesObjectCallBack<Drawable> callback) {
 		if(friendsProfilePictures.containsKey(facebookId))
 			if(callback!=null)

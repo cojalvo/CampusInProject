@@ -201,8 +201,14 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 			    @Override
 			    public void done(List<CampusInUser> retObject, Exception e)
 			    {
+			    	friensList=new ArrayList<CampusInUser>();
 				if (retObject != null)
-				    friensList = retObject;
+				{
+					for (CampusInUser campusInUser : retObject) {
+						if(controller.isMyFriend(campusInUser)) continue;
+						friensList.add(campusInUser);
+					}
+				}
 				Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
 				friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
@@ -233,12 +239,11 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 			    {
 				if (retObject != null)
 				{
-					
 				    friensList =  new ArrayList<CampusInUser>();
 				    //	TODO this is not suppose o be here it must be removed to the controller
 				    //  TOTO in addition the controller shouldn't get any callback this data exist locally-change the method in the controller
 				    for (CampusInUser campusInUser : retObject) {
-						if(campusInUser.getTrend().equals(curretntUser.getTrend()) && campusInUser.getYear().equals(curretntUser.getYear())) continue;
+						if(controller.isMyFriendToSchool(campusInUser)) continue;
 						friensList.add(campusInUser);
 					}
 

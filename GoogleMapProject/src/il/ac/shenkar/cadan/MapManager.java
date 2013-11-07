@@ -2,6 +2,7 @@ package il.ac.shenkar.cadan;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import il.ac.shenkar.cadan.R;
 import il.ac.shenkar.common.CampusInEvent;
@@ -127,6 +128,7 @@ public class MapManager
 
     }
 
+    
     public void moveCameraToEvent(String eventId)
     {
 	Marker marker;
@@ -269,5 +271,34 @@ public class MapManager
     {
         return map;
     }
+    public float getDistanceFromMe(String id)
+    {
+    	Marker dest;
+    	if(personMarkerdictionary.containsKey(id))
+    		dest=personMarkerdictionary.get(id);
+    	else if(eventMarkerdictionary.containsKey(id))
+    		dest=eventMarkerdictionary.get(id);
+    	else if(messageMarkerdictionary.containsKey(id))
+    		dest=messageMarkerdictionary.get(id);
+    	else
+    		return -1;
+    	Location destLocation = new Location("point A");
+    	destLocation.setLatitude(dest.getPosition().latitude);
+    	destLocation.setLongitude(dest.getPosition().longitude);
+    	Location myLocation=map.getMyLocation();
+    	if(myLocation==null) return -1;
+    	return myLocation.distanceTo(destLocation);
+    }
     
+    public float getDistanceFromMe(Marker marker)
+    {
+    	String id="";
+    	if(markerEventDictionary.containsKey(marker))
+    		id=markerEventDictionary.get(marker);
+    	else if(markerPersondictiobnary.containsKey(marker))
+    		id=markerPersondictiobnary.get(marker);
+    	else
+    		return -1;
+    	return getDistanceFromMe(id);
+    }
 }
