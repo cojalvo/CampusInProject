@@ -42,6 +42,7 @@ import com.parse.ParseFacebookUtils;
 
 import android.R.integer;
 import android.os.Bundle;
+import android.os.Message;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.annotation.SuppressLint;
@@ -970,35 +971,30 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     @Override
     public void onMassageCreated(CampusInMessage sentMassage)
     {
-	if (sentMassage != null)
-	{
-	    Toast.makeText(getApplicationContext(), "New Massage creted: '" + sentMassage.getContent() + "'", 4000).show();
-	}
-		try
+		if (sentMassage != null)
 		{
-			Intent intent = new Intent(this, Main.class);
-			PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-			intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP |Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);	
-			
-			// build notification
-			// the addAction re-use the same intent to keep the example short
-			Notification n  = new Notification.Builder(this)
-			        .setContentTitle("CampusIn")
-			        .setContentText("חזור ל CampusIn")
-			        .setSmallIcon(R.drawable.ic_launcher)
-			        .setContentIntent(pIntent)
-			        .setAutoCancel(true).build();
-			    
-			  
-			NotificationManager notificationManager = 
-			  (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-			
-			notificationManager.notify(0, n); 
-		}
-		catch(Exception e)
-		{
-			Log.e("MainMap", e.getMessage());
+		    Toast.makeText(getApplicationContext(), "New Massage creted: '" + sentMassage.getContent() + "'", 4000).show();
+		    CampusInLocation loc=new CampusInLocation();
+		    loc.setLocationName("Shenkar");
+		    loc.setMapLocation(lastMapLongClick);
+		    sentMassage.setLocation(loc);
+		    MessageHalper.showProgressDialog("Saving...", this);
+		    controller.sendMessage(sentMassage, new ControllerCallback<Integer>() {
+				
+				@Override
+				public void done(Integer retObject, Exception e) {
+					if(e==null)
+					{
+						MessageHalper.closeProggresDialog();
+						controller.updateViewModel(null);
+					}
+					else
+					{
+						Log.i(ALARM_SERVICE, "Error in saving message: " + e.getMessage());
+					}
+					
+				}
+			});
 		}
     }
-
 }

@@ -20,6 +20,8 @@ public class CampusInMessage extends CampusInElement
     private String content;
     // the parse owner id
     private String ownerId;
+    
+    private int readInRadius;
 
     // the owner id, only a global message can be without receiver,
     private List<String> receiverId = new ArrayList<String>();
@@ -74,5 +76,13 @@ public class CampusInMessage extends CampusInElement
 	    receiverId.add(currUser.getParseUserId());
 	}
     }
+
+	public int getReadInRadius() {
+		return readInRadius;
+	}
+
+	public void setReadInRadius(int readInRadius) {
+		this.readInRadius = readInRadius;
+	}
 
 }

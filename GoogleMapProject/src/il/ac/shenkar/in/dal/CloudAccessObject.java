@@ -84,9 +84,6 @@ public class CloudAccessObject implements IDataAccesObject
 	    {
 		if (e == null)
 		{
-		    ParseQuery<ParseObject> dateQuery = ParseQuery.getQuery("Event");
-		    dateQuery.whereGreaterThanOrEqualTo("date", new Date());
-
 		    ParseQuery<ParseObject> ownerQuery = ParseQuery.getQuery("Event");
 		    ownerQuery.whereEqualTo("ownerParseId", curentCampusInUser.getParseUserId());
 
@@ -132,6 +129,8 @@ public class CloudAccessObject implements IDataAccesObject
 	});
 
     }
+    
+ 
 
     private CampusInEvent createCampusInEventFromParseObj(ParseObject parseObj)
     {
@@ -175,17 +174,123 @@ public class CloudAccessObject implements IDataAccesObject
     }
 
     @Override
-    public void getMessages(DataAccesObjectCallBack<List<CampusInMessage>> callBack)
+    public void getMessages(final DataAccesObjectCallBack<List<CampusInMessage>> callBack)
     {
+    	// load the currentCampusiN user just in case it wasnt loaded yet.
+    	loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
+    	{
 
+    	    @Override
+    	    public void done(CampusInUser retObject, Exception e)
+    	    {
+    		if (e == null)
+    		{
+    		    ParseQuery<ParseObject> ownerQuery = ParseQuery.getQuery("Message");
+    		    ownerQuery.whereEqualTo("ownerParseId", curentCampusInUser.getParseUserId());
+
+    		    ParseQuery<ParseObject> recieverQuery = ParseQuery.getQuery("Message");
+    		    recieverQuery.whereEqualTo("recivers", curentCampusInUser.getParseUserId());
+
+
+    		    List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
+    		    queries.add(recieverQuery);
+    		    queries.add(ownerQuery);
+    		    ParseQuery<ParseObject> orQuery = ParseQuery.or(queries);
+
+    		    // this will set the date as and logic ---> (date &&
+    		    // (ownerId||reciverId||isPublic))
+    		    if(messagesLastUpdate!=null)
+    		    	orQuery.whereGreaterThanOrEqualTo("createdAt", messagesLastUpdate);
+
+    		    orQuery.findInBackground(new FindCallback<ParseObject>()
+    		    {
+
+    			@Override
+    			public void done(List<ParseObject> resList, ParseException e)
+    			{
+    			    List<CampusInMessage> messagesList = new ArrayList<CampusInMessage>();
+    			    if (e == null)
+    			    {
+    				for (ParseObject parseMessage : resList)
+    				{
+
+    					messagesList.add(createCampusInMessageFromParseObj(parseMessage));
+    				}
+    			    }
+    			    if (callBack != null)
+    				callBack.done(messagesList, e);
+    			}
+    		    });
+
+    		}
+
+    	    }
+    	});
+    }
+    
+    private CampusInMessage createCampusInMessageFromParseObj(ParseObject parseObj)
+    {
+    	CampusInMessage message=null;
+    	if(parseObj!=null)
+    	{
+    		message=new CampusInMessage();
+    		message.setParseId(parseObj.getObjectId());
+    		message.setContent(parseObj.getString("content"));
+    		message.setReadInRadius(parseObj.getInt("readInRadius"));
+    		CampusInLocation loc=new CampusInLocation();
+    		loc.setLocationName(parseObj.getString("locationName"));
+    		loc.setMapLocation(new LatLng(parseObj.getDouble("lat"), parseObj.getDouble("long")));
+    		message.setLocation(loc);
+    		message.setOwnerId(parseObj.getString("ownerParseId"));
+    		 ArrayList<Object> reciversId = (ArrayList<Object>) parseObj.getList("recivers");
+    		 message.setReceiverId(new ArrayList<String>());
+    		    if (reciversId != null)
+    		    {
+	    			for (Object reciver : reciversId)
+	    			{
+	    				message.getReceiverId().add(reciver.toString());
+	    			}
+    		    }
+    	}
+    	return message;
     }
 
     @Override
-    public void sendMessage(CampusInMessage message, DataAccesObjectCallBack<Integer> callBack)
+    public void sendMessage(CampusInMessage message, final DataAccesObjectCallBack<Integer> callBack)
     {
+    	if(message!=null)
+    	{
+    		    final ParseObject theMessage = new ParseObject("Message");
+    		    theMessage.put("content", message.getContent());
+    		    theMessage.put("readInRadius", message.getReadInRadius());
+    		    theMessage.put("locationName", message.getLocation().getLocationName());
+    		    theMessage.put("lat", message.getLocation().getMapLocation().latitude);
+    		    theMessage.put("long", message.getLocation().getMapLocation().longitude);
+    		    theMessage.put("ownerParseId", message.getOwnerId());
+    		    if (message.getReceiverId() != null)
+    		    {
+	    			for (String reciverId : message.getReceiverId())
+	    			{
+	    				theMessage.add("recivers", reciverId);
+	    			}
+	    		}
+    		    else
+    		    theMessage.add("recivers", message.getOwnerId());
+    		    theMessage.saveInBackground(new SaveCallback()
+    		    {
 
-    }
-
+    			@Override
+    			public void done(ParseException e)
+    			{
+    			    if (callBack != null)
+    			    {
+    				    Log.i("fmefvce", "the Event ParseId is: " + theMessage.getObjectId());
+    				    	callBack.done(0, e);
+    				}
+    			}
+    		    });
+    		}	
+    	}
     @Override
     public void sendEvent(final CampusInEvent event, final DataAccesObjectCallBack<String> callback)
     {
@@ -240,147 +345,6 @@ public class CloudAccessObject implements IDataAccesObject
 	}
 
     }
-
-    // @Override
-    // public void updateLocation(final CampusInLocation userLoction,
-    // final DataAccesObjectCallBack<Integer> callBack) {
-    // loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
-    //
-    // @Override
-    // public void done(CampusInUser retObject, Exception e) {
-    // // try to load the location object from parse
-    // if (retObject == null) {
-    // callBack.done(1, new Exception(
-    // "Unble to load campusInUser from the cloud"));
-    // return;
-    // }
-    // ParseQuery<ParseObject> query = ParseQuery
-    // .getQuery("UserLocation");
-    // query.whereEqualTo("faceBookUserID",
-    // curentCampusInUser.getFaceBookUserId());
-    // query.findInBackground(new FindCallback<ParseObject>() {
-    // public void done(List<ParseObject> scoreList,
-    // ParseException e) {
-    // if (e == null) {
-    // // if the user exist in the cloud then the size of
-    // // the
-    // // return list will be 1
-    // if (scoreList.size() == 1) {
-    // if (userLoction != null) {
-    // scoreList.get(0).remove("lat");
-    // scoreList
-    // .get(0)
-    // .put("lat",
-    // userLoction
-    // .getMapLocation().latitude);
-    // scoreList.get(0).remove("lon");
-    // scoreList
-    // .get(0)
-    // .put("lon",
-    // userLoction
-    // .getMapLocation().longitude);
-    // scoreList.get(0).remove("locationName");
-    // scoreList.get(0).put("locationName",
-    // userLoction.getLocationName());
-    // }
-    // scoreList.get(0).saveInBackground(
-    // new SaveCallback() {
-    // @Override
-    // public void done(ParseException e) {
-    // if (e != null) {
-    // Log.e("cadan",
-    // "Upadet location was failed");
-    // }
-    // callBack.done(0, e);
-    // return;
-    // }
-    // });
-    // }
-    // // if the user location info doesn't exist in the
-    // // cloud than
-    // // report it.
-    // else {
-    // loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
-    //
-    // @Override
-    // public void done(ParseObject retObject,
-    // Exception e) {
-    // if (retObject == null) {
-    // callBack.done(
-    // 1,
-    // new Exception(
-    // "Unable to load parseCuttentUser"));
-    // return;
-    // }
-    // final ParseObject po = new ParseObject(
-    // "UserLocation");
-    // po.put("parseUserID",
-    // curentCampusInUser
-    // .getParseUserId());
-    // po.put("faceBookUserID",
-    // curentCampusInUser
-    // .getFaceBookUserId());
-    // po.put("lat",
-    // userLoction.getMapLocation().latitude);
-    // po.put("lon",
-    // userLoction.getMapLocation().longitude);
-    // po.put("locationName",
-    // userLoction.getLocationName());
-    // // add the parse current user to the
-    // // relation 1
-    // // to 1 relation
-    // po.saveInBackground(new SaveCallback() {
-    // @Override
-    // public void done(ParseException e2) {
-    // if (e2 != null) {
-    // Log.e("cadan",
-    // "Upadet location was failed");
-    // callBack.done(1, e2);
-    // return;
-    // // add the location object
-    // // to the
-    // // relation of
-    // // current campus in user of
-    // // pars
-    // }
-    // // po.getRelation(
-    // // "userlocationRelation")
-    // // .add(parseCurrentCampusInUser);
-    // po.add("user", value)
-    // po.saveInBackground(new SaveCallback() {
-    //
-    // @Override
-    // public void done(
-    // ParseException e3) {
-    // // TODO Auto-generated
-    // // methode3 stub
-    // if (e3 == null)
-    // callBack.done(0, e3);
-    // else
-    // callBack.done(1, e3);
-    //
-    // }
-    // });
-    //
-    // }
-    // });
-    //
-    // }
-    // });
-    // }
-    //
-    // } else {
-    // // the query was failed, update the observers.
-    // // updateObserves(ActionCode.UserLocation, false);
-    // }
-    // }
-    // });
-    //
-    // }
-    // });
-    //
-    // }
-
     /*
      * get all users location from the cloud
      * 

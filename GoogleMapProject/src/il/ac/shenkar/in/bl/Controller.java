@@ -62,6 +62,7 @@ public class Controller implements ICampusInController
      * if the save is successful the event object will be thrown from the list
      */
     private List<CampusInEvent> saveToCLoudEventQue;
+    private List<CampusInMessage> saveToCloudMessageQue;
 
     private Controller(Context context)
     {
@@ -161,10 +162,32 @@ public class Controller implements ICampusInController
     }
 
     @Override
-    public void sendMessage(CampusInMessage message, ControllerCallback<Integer> callBack)
+    public void sendMessage(CampusInMessage message, final ControllerCallback<Integer> callBack)
     {
-	// TODO Auto-generated method stub
+    	// TODO: to draw the event to the user interface before saving it to the
+    	// cloud
+    	if (message != null)
+    	{
+    	    // add the toAdd Object to the messageQue;
+    	    saveToCloudMessageQue.add(message);
+    	    for (final CampusInMessage m : saveToCloudMessageQue)
+    	    {
+    		cloudAccessObject.sendMessage(m, new DataAccesObjectCallBack<Integer>()
+    		{
 
+    		    @Override
+    		    public void done(Integer retObject, Exception e)
+    		    {
+    			if (retObject != null && e==null)
+    			{
+    			    saveToCloudMessageQue.remove(m);
+    			}
+			    if(callBack!=null)
+			    	callBack.done(retObject, e);
+    		    }
+    		});
+    	    }
+    	}
     }
 
     @Override
@@ -416,7 +439,6 @@ public class Controller implements ICampusInController
 		inti.setAction(ModelUpdateService.STOP_COMMAND);
 		if (context != null)
 		    context.sendBroadcast(inti);
-		
 	}
 
 	@Override
@@ -426,5 +448,6 @@ public class Controller implements ICampusInController
 		if (context != null)
 		    context.sendBroadcast(inti);
 	}
+
 
 }
