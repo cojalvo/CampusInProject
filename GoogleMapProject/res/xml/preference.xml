@@ -43,7 +43,7 @@
             android:title="הוספת חברים" />
         <Preference
             android:icon="@drawable/group_icon"
-            android:key="show_my_friends"
+            android:key="remove_friends"
             android:summary="הסר מרשימת החברים שלי"
             android:title="הסרת חברים" />
     </PreferenceCategory>

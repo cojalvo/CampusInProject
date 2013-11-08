@@ -95,7 +95,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 {
     CameraPosition lastPos = new CameraPosition(new LatLng(0, 0), 2, 2, 2);
     GoogleMap map = null;
-    private DrawerLayout mDrawerLayout;
+    private static DrawerLayout mDrawerLayout;
     private LatLng lastMapLongClick = null;
     private Marker lastMarkerClicked = null;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -156,7 +156,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		// onPrepareOptionsMenu()
 	    }
 	};
-
+	
 	// set listener to the menu
 	mDrawerLayout.setDrawerListener(mDrawerToggle);
 	getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -197,6 +197,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	}
 	updateView();
 	registerViewModelReciever();
+	
     }
 
     private void calcMyScreen()
@@ -328,35 +329,35 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
 		    return v;
 		}
-		else if(markerType==MarkerType.Message)
+		else if (markerType == MarkerType.Message)
 		{
-			 v = getLayoutInflater().inflate(R.layout.info_windows_message_layout, null);
+		    v = getLayoutInflater().inflate(R.layout.info_windows_message_layout, null);
 
-			    // get the marker (which is a person) information
-			    id = mapManager.getMessageIdFromMarker(marker);
-			    CampusInMessage currMessage = controller.getMessage(id);
+		    // get the marker (which is a person) information
+		    id = mapManager.getMessageIdFromMarker(marker);
+		    CampusInMessage currMessage = controller.getMessage(id);
 
-			    // set the image view
-			    /*
-			     * ImageView imageView = (ImageView)
-			     * v.findViewById(R.id.info_window_event_imageView);
-			     * imageView.setImageDrawable();
-			     */
-			    // set the image view
-			    ImageView imageView = (ImageView) v.findViewById(R.id.info_window_message_friend_profile_picture);
-			    imageView.setImageDrawable(controller.getFreindProfilePicture(currMessage.getOwnerId(), 40, 40));
-			    // set the Name
-			    TextView name = (TextView) v.findViewById(R.id.info_window_messge_friend_name);
-			    name.setText(currMessage.getSenderFullName());
+		    // set the image view
+		    /*
+		     * ImageView imageView = (ImageView)
+		     * v.findViewById(R.id.info_window_event_imageView);
+		     * imageView.setImageDrawable();
+		     */
+		    // set the image view
+		    ImageView imageView = (ImageView) v.findViewById(R.id.info_window_message_friend_profile_picture);
+		    imageView.setImageDrawable(controller.getFreindProfilePicture(currMessage.getOwnerId(), 40, 40));
+		    // set the Name
+		    TextView name = (TextView) v.findViewById(R.id.info_window_messge_friend_name);
+		    name.setText(currMessage.getSenderFullName());
 
-			    // set the status
-			    TextView contennt = (TextView) v.findViewById(R.id.info_window_message_content);
-			    contennt.setText(currMessage.getContent());;
-			    
-			    TextView distance=(TextView) v.findViewById(R.id.info_window_message_distance);
-			    distance.setText(getDistanceStringFromMarker(marker));
+		    // set the status
+		    TextView contennt = (TextView) v.findViewById(R.id.info_window_message_content);
+		    contennt.setText(currMessage.getContent());;
 
-			    return v;
+		    TextView distance = (TextView) v.findViewById(R.id.info_window_message_distance);
+		    distance.setText(getDistanceStringFromMarker(marker));
+
+		    return v;
 		}
 		return null;
 	    }
@@ -409,7 +410,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	     */
 
 	    // try to move it to Fragment
-	    android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+	   /* android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
 	    Fragment fragment = getFragmentManager().findFragmentByTag("dialog");
 	    if (fragment != null)
 	    {
@@ -417,7 +418,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    }
 	    transaction.addToBackStack(null);
 	    DiaplayEventListFragment newDiaplayEventListFragment = new DiaplayEventListFragment();
-	    newDiaplayEventListFragment.show(transaction, "dialog");
+	    newDiaplayEventListFragment.show(transaction, "dialog");*/
 	    return true;
 
 	case R.id.action_add_friends:
@@ -430,7 +431,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    ft1.addToBackStack(null);
 
 	    // Create and show the dialog.
-	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD,false,new ArrayList<CampusInUser>());
+	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD, false, new ArrayList<CampusInUser>());
 	    newFragment1.show(ft1, "dialog");
 	case R.id.action_remove_friends:
 	    android.app.FragmentTransaction ft11 = getFragmentManager().beginTransaction();
@@ -442,11 +443,12 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    ft11.addToBackStack(null);
 
 	    // Create and show the dialog.
-	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE,false,new ArrayList<CampusInUser>());
+	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE, false, new ArrayList<CampusInUser>());
 	    newFragment11.show(ft11, "dialog");
 	    return true;
 	case R.id.action_add_friends_from_cloud:
-	    android.app.FragmentTransaction ft111 = getFragmentManager().beginTransaction();
+	//TODO: to remove, added to prefs fragment 
+	    /*    android.app.FragmentTransaction ft111 = getFragmentManager().beginTransaction();
 	    android.app.Fragment prev111 = getFragmentManager().findFragmentByTag("dialog");
 	    if (prev111 != null)
 	    {
@@ -456,10 +458,11 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
 	    // Create and show the dialog.
 	    AddOrRemoveFriendsFromCloudFragment newFragment111 = AddOrRemoveFriendsFromCloudFragment.newInstance(ChooseFriendAction.ADD);
-	    newFragment111.show(ft111, "dialog");
+	    newFragment111.show(ft111, "dialog");*/
 	    return true;
 	case R.id.action_remove_friends_from_cloud:
-	    android.app.FragmentTransaction ft1111 = getFragmentManager().beginTransaction();
+	  //TODO: to remove, added to prefs fragment 
+	    /*android.app.FragmentTransaction ft1111 = getFragmentManager().beginTransaction();
 	    android.app.Fragment prev1111 = getFragmentManager().findFragmentByTag("dialog");
 	    if (prev1111 != null)
 	    {
@@ -469,7 +472,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
 	    // Create and show the dialog.
 	    AddOrRemoveFriendsFromCloudFragment newFragment1111 = AddOrRemoveFriendsFromCloudFragment.newInstance(ChooseFriendAction.REMOVE);
-	    newFragment1111.show(ft1111, "dialog");
+	    newFragment1111.show(ft1111, "dialog");*/
 	    return true;
 	default:
 	    return super.onOptionsItemSelected(item);
@@ -673,31 +676,32 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     private String getDistanceStringFromMarker(Marker marker)
     {
-    	float dist = mapManager.getDistanceFromMe(marker);
-    	if (dist > 0)
-    	{
-    	    String unit;
-    	    String finalDist;
-    	    if (dist > 1000)
-    	    {
-    		unit = "ק״מ";
+	float dist = mapManager.getDistanceFromMe(marker);
+	if (dist > 0)
+	{
+	    String unit;
+	    String finalDist;
+	    if (dist > 1000)
+	    {
+		unit = "ק״מ";
 
-    		finalDist = String.format("%.2f", dist / 1000);
-    	    }
-    	    else
-    	    {
-    		unit = "מטרים";
-    		finalDist = String.format("%.0f", dist);
-    	    }
+		finalDist = String.format("%.2f", dist / 1000);
+	    }
+	    else
+	    {
+		unit = "מטרים";
+		finalDist = String.format("%.0f", dist);
+	    }
 
-    	    return ("נמצא כ " + finalDist + " " + unit + " " + "ממני");
-    	}
-    	return "מרחק לא ידוע.";
-    	
+	    return ("נמצא כ " + finalDist + " " + unit + " " + "ממני");
+	}
+	return "מרחק לא ידוע.";
+
     }
+
     private String getDistanceStringFromLastClickMarker()
     {
-    	return getDistanceStringFromMarker(lastMarkerClicked);
+	return getDistanceStringFromMarker(lastMarkerClicked);
     }
 
     public void addEventClicked(View v)
@@ -943,9 +947,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		}
 	    }
 	});
-		List<CampusInMessage> allMessages=controller.getAllMessages();
-		for (CampusInMessage campusInMessage : allMessages) {
-			mapManager.addOrUpdateMessageMarker(campusInMessage);
+	List<CampusInMessage> allMessages = controller.getAllMessages();
+	for (CampusInMessage campusInMessage : allMessages)
+	{
+	    mapManager.addOrUpdateMessageMarker(campusInMessage);
 	}
     }
 
@@ -1008,35 +1013,42 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     @Override
     public void onMassageCreated(CampusInMessage sentMassage)
     {
-		if (sentMassage != null)
+	if (sentMassage != null)
+	{
+	    Toast.makeText(getApplicationContext(), "New Massage creted: '" + sentMassage.getContent() + "'", 4000).show();
+	    CampusInLocation loc = new CampusInLocation();
+	    loc.setLocationName("Shenkar");
+	    loc.setMapLocation(lastMapLongClick);
+	    sentMassage.setLocation(loc);
+	    MessageHalper.showProgressDialog("Saving...", this);
+	    controller.sendMessage(sentMassage, new ControllerCallback<Integer>()
+	    {
+
+		@Override
+		public void done(Integer retObject, Exception e)
 		{
-		    Toast.makeText(getApplicationContext(), "New Massage creted: '" + sentMassage.getContent() + "'", 4000).show();
-		    CampusInLocation loc=new CampusInLocation();
-		    loc.setLocationName("Shenkar");
-		    loc.setMapLocation(lastMapLongClick);
-		    sentMassage.setLocation(loc);
-		    MessageHalper.showProgressDialog("Saving...", this);
-		    controller.sendMessage(sentMassage, new ControllerCallback<Integer>() {
-				
-				@Override
-				public void done(Integer retObject, Exception e) {
-					if(e==null)
-					{
-						MessageHalper.closeProggresDialog();
-						controller.updateViewModel(null);
-					}
-					else
-					{
-						Log.i(ALARM_SERVICE, "Error in saving message: " + e.getMessage());
-					}
-					
-				}
-			});
+		    if (e == null)
+		    {
+			MessageHalper.closeProggresDialog();
+			controller.updateViewModel(null);
+		    }
+		    else
+		    {
+			Log.i(ALARM_SERVICE, "Error in saving message: " + e.getMessage());
+		    }
+
 		}
-    }
-    public void deleteMessage() 
-    {
-    	Toast.makeText(this, "delete message was clicked", 100);
-		
+	    });
 	}
+    }
+
+    public void deleteMessage()
+    {
+	Toast.makeText(this, "delete message was clicked", 100);
+
+    }
+    public static void closeDrawerLayout ()
+    {
+	mDrawerLayout.closeDrawers();
+    }
 }
