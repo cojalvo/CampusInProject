@@ -34,7 +34,7 @@ public class MapManager
     private GoogleMap map = null;
     private HashMap<String, Marker> personMarkerdictionary;
     private HashMap<String, Marker> eventMarkerdictionary;
-    private HashMap<String, Marker> messageMarkerdictionary=new HashMap<String, Marker>();
+    private HashMap<String, Marker> messageMarkerdictionary;
     private HashMap<Marker, String> markerMessageDictiobnary = new HashMap<Marker, String>();
     private HashMap<Marker, String> markerPersondictiobnary = new HashMap<Marker, String>();
     private HashMap<Marker, String> markerEventDictionary = new HashMap<Marker, String>();
@@ -119,6 +119,7 @@ public class MapManager
 	personMarkerdictionary = new HashMap<String, Marker>();
 	eventMarkerdictionary = new HashMap<String, Marker>();
 	positionMarkerDic = new HashMap<String, HashMap<String, Marker>>();
+	messageMarkerdictionary=new HashMap<String, Marker>();
 	setOnMyLocationChangedListener();
 	myLastDistance=getDistanceFromMe(shenkarLatLong);
 	setMapState(myLastDistance);
@@ -148,25 +149,25 @@ public class MapManager
 	map.addGroundOverlay(campusOverlay);
     }
 
-    // clear the map
-    public void clearMap()
-    {
-	for (Marker toRemove : eventMarkerdictionary.values())
-	{
-	    toRemove.remove();
-	}
-	for (Marker toRemove : personMarkerdictionary.values())
-	{
-	    toRemove.remove();
-
-	}
-	personMarkerdictionary.clear();
-	messageMarkerdictionary.clear();
-	markerMessageDictiobnary.clear();
-	markerPersondictiobnary.clear();
-	eventMarkerdictionary.clear();
-	markerEventDictionary.clear();
-    }
+//    // clear the map
+//    public void clearMap()
+//    {
+//	for (Marker toRemove : eventMarkerdictionary.values())
+//	{
+//	    toRemove.remove();
+//	}
+//	for (Marker toRemove : personMarkerdictionary.values())
+//	{
+//	    toRemove.remove();
+//
+//	}
+////	personMarkerdictionary.clear();
+////	messageMarkerdictionary.clear();
+////	markerMessageDictiobnary.clear();
+////	markerPersondictiobnary.clear();
+////	eventMarkerdictionary.clear();
+////	markerEventDictionary.clear();
+//    }
     public void disableMap()
     {
     	if(map!=null)
@@ -365,15 +366,7 @@ public class MapManager
     
     public float getDistanceFromMe(Marker marker)
     {
-    	String id="";
-    	if(markerEventDictionary.containsKey(marker))
-    		id=markerEventDictionary.get(marker);
-    	else if(markerPersondictiobnary.containsKey(marker))
-    		id=markerPersondictiobnary.get(marker);
-    	else if(markerMessageDictiobnary.containsKey(marker))
-    		id=markerMessageDictiobnary.get(marker);
-    	else
-    		return -1;
-    	return getDistanceFromMe(id);
+    	if(marker==null) return -1;
+    	return getDistanceFromMe(marker.getPosition());
     }
 }

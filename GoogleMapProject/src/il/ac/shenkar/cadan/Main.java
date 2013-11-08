@@ -147,7 +147,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	{
 	    public void onDrawerClosed(View view)
 	    {
-		invalidateOptionsMenu(); // creates call to
+	    	invalidateOptionsMenu(); // creates call to
+	    	
 	    }
 
 	    public void onDrawerOpened(View drawerView)
@@ -220,7 +221,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	if (!isFinishing())
 	{
 	    setPendingIntent();
-	    controller.pauseAutoViewModelUpdatingService();
+	   // controller.pauseAutoViewModelUpdatingService();
 	}
 
 	super.onPause();
@@ -232,7 +233,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	// TODO Auto-generated method stub
 	Toast.makeText(this, "onResume was called", 150).show();
 	Log.i("Main", "onResume was called");
-	controller.resumeAutoViewModelUpdatingService();
+	//controller.resumeAutoViewModelUpdatingService();
 	super.onResume();
     }
 
@@ -284,6 +285,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
 		if (markerType == MarkerType.Person)
 		{
+			
 		    // inflate the view
 		    v = getLayoutInflater().inflate(R.layout.info_window_person_content_layout, null);
 
@@ -336,6 +338,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		    // get the marker (which is a person) information
 		    id = mapManager.getMessageIdFromMarker(marker);
 		    CampusInMessage currMessage = controller.getMessage(id);
+		    LinearLayout contentLayout=(LinearLayout) v.findViewById(R.id.info_window_message_content_layout);
 
 		    // set the image view
 		    /*
@@ -352,7 +355,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
 		    // set the status
 		    TextView contennt = (TextView) v.findViewById(R.id.info_window_message_content);
-		    contennt.setText(currMessage.getContent());;
+		    contennt.setText(currMessage.getContent());
 
 		    TextView distance = (TextView) v.findViewById(R.id.info_window_message_distance);
 		    distance.setText(getDistanceStringFromMarker(marker));
@@ -922,7 +925,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     private void updateView()
     {
-	mapManager.clearMap();
+	//mapManager.clearMap();
 	controller.getCurrentUserAllEvents(new ControllerCallback<List<CampusInEvent>>()
 	{
 

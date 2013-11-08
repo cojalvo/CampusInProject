@@ -101,14 +101,12 @@ public class ModelUpdateService  extends Service
 
 	public void start()
 	{
-		if(isRuning) return;
 		autoRefresh.run();
 		isRuning=true;
 	}
 
 	public void stop()
 	{
-		if(!isRuning) return;
 		handler.removeCallbacks(autoRefresh);
 		isRuning=false;
 	}
