@@ -370,6 +370,8 @@ public class MapManager
     		id=markerEventDictionary.get(marker);
     	else if(markerPersondictiobnary.containsKey(marker))
     		id=markerPersondictiobnary.get(marker);
+    	else if(markerMessageDictiobnary.containsKey(marker))
+    		id=markerMessageDictiobnary.get(marker);
     	else
     		return -1;
     	return getDistanceFromMe(id);

@@ -354,7 +354,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 			    contennt.setText(currMessage.getContent());;
 			    
 			    TextView distance=(TextView) v.findViewById(R.id.info_window_message_distance);
-			    distance.setText(getDistanceStringFromLastClickMarker());
+			    distance.setText(getDistanceStringFromMarker(marker));
 
 			    return v;
 		}
@@ -570,8 +570,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	// we are in a middle of updating process
 	try
 	{
-	    marker.showInfoWindow();
 	    lastMarkerClicked = marker;
+	    marker.showInfoWindow();
 	    switch (mapManager.getMarkerType(marker))
 	    {
 	    case Event:
@@ -671,28 +671,33 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	}
     }
 
+    private String getDistanceStringFromMarker(Marker marker)
+    {
+    	float dist = mapManager.getDistanceFromMe(marker);
+    	if (dist > 0)
+    	{
+    	    String unit;
+    	    String finalDist;
+    	    if (dist > 1000)
+    	    {
+    		unit = "ק״מ";
+
+    		finalDist = String.format("%.2f", dist / 1000);
+    	    }
+    	    else
+    	    {
+    		unit = "מטרים";
+    		finalDist = String.format("%.0f", dist);
+    	    }
+
+    	    return ("נמצא כ " + finalDist + " " + unit + " " + "ממני");
+    	}
+    	return "מרחק לא ידוע.";
+    	
+    }
     private String getDistanceStringFromLastClickMarker()
     {
-	float dist = mapManager.getDistanceFromMe(lastMarkerClicked);
-	if (dist > 0)
-	{
-	    String unit;
-	    String finalDist;
-	    if (dist > 1000)
-	    {
-		unit = "ק״מ";
-
-		finalDist = String.format("%.2f", dist / 1000);
-	    }
-	    else
-	    {
-		unit = "מטרים";
-		finalDist = String.format("%.0f", dist);
-	    }
-
-	    return ("נמצא כ " + finalDist + " " + unit + " " + "ממני");
-	}
-	return "מרחק לא ידוע.";
+    	return getDistanceStringFromMarker(lastMarkerClicked);
     }
 
     public void addEventClicked(View v)
