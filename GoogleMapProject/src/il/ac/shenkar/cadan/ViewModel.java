@@ -353,5 +353,12 @@ public class ViewModel
 			return friendsHash.get(parseId);
 		return null;
 	}
+	public CampusInMessage getMessageById(String id)
+	{
+		if(messages.containsKey(id))
+			return messages.get(id);
+		return null;
+	}
+	
 
 }

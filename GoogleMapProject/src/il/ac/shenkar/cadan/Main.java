@@ -80,6 +80,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AnalogClock;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -326,6 +327,36 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		    status.setText(ParsingHelper.fromDateToString(currEvent.getDate(), "dd/MM/yyyy"));
 
 		    return v;
+		}
+		else if(markerType==MarkerType.Message)
+		{
+			 v = getLayoutInflater().inflate(R.layout.info_windows_message_layout, null);
+
+			    // get the marker (which is a person) information
+			    id = mapManager.getMessageIdFromMarker(marker);
+			    CampusInMessage currMessage = controller.getMessage(id);
+
+			    // set the image view
+			    /*
+			     * ImageView imageView = (ImageView)
+			     * v.findViewById(R.id.info_window_event_imageView);
+			     * imageView.setImageDrawable();
+			     */
+			    // set the image view
+			    ImageView imageView = (ImageView) v.findViewById(R.id.info_window_message_friend_profile_picture);
+			    imageView.setImageDrawable(controller.getFreindProfilePicture(currMessage.getOwnerId(), 40, 40));
+			    // set the Name
+			    TextView name = (TextView) v.findViewById(R.id.info_window_messge_friend_name);
+			    name.setText(currMessage.getSenderFullName());
+
+			    // set the status
+			    TextView contennt = (TextView) v.findViewById(R.id.info_window_message_content);
+			    contennt.setText(currMessage.getContent());;
+			    
+			    TextView distance=(TextView) v.findViewById(R.id.info_window_message_distance);
+			    distance.setText(getDistanceStringFromLastClickMarker());
+
+			    return v;
 		}
 		return null;
 	    }
@@ -661,7 +692,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
 	    return ("נמצא כ " + finalDist + " " + unit + " " + "ממני");
 	}
-	return "";
+	return "מרחק לא ידוע.";
     }
 
     public void addEventClicked(View v)

@@ -4,6 +4,7 @@
     <EditTextPreference
         android:icon="@drawable/com_facebook_profile_picture_blank_square"
         android:key="me"
+        android:maxLength="22"
         android:summary="הוסף סטטוס"
         android:textSize="50px"
         android:title="סטטוס" />

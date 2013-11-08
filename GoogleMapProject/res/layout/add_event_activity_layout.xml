@@ -20,6 +20,7 @@
             android:id="@+id/event_name_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLength="20"
             android:hint="הקש כדי להוסיף כותרת"
             android:ems="10" >
 
@@ -58,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.58"
             android:ems="10"
+            android:maxLength="40"
             android:hint="שדה רשות" />
 
         <TextView

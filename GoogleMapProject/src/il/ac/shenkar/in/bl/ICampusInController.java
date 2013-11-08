@@ -36,6 +36,7 @@ public interface ICampusInController
 	void stopAutoViewModelUpdatingService();
 	void pauseAutoViewModelUpdatingService();
 	void resumeAutoViewModelUpdatingService();
+	CampusInMessage getMessage(String messageId);
 	List<CampusInMessage> getAllMessages();
 	
 }

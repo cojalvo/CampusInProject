@@ -328,6 +328,12 @@ public class MapManager
 	    return markerEventDictionary.get(marker);
 	return null;
     }
+    public String getMessageIdFromMarker(Marker marker)
+    {
+	if (markerMessageDictiobnary.containsKey(marker))
+	    return markerMessageDictiobnary.get(marker);
+	return null;
+    }
 
     public GoogleMap getMap()
     {

@@ -455,5 +455,10 @@ public class Controller implements ICampusInController
 		return new ArrayList<CampusInMessage>(viewModel.getAllMessages());
 	}
 
+	@Override
+	public CampusInMessage getMessage(String messageId) {
+		return messageId == null ? null : viewModel.getMessageById(messageId);
+	}
+
 
 }
