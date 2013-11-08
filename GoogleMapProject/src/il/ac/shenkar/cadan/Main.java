@@ -113,6 +113,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     private Float heightMultScreenFactor;
     private boolean viewModelServiceRunning = false;
     private boolean inExitProcess = false;
+    CampusInUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -130,9 +131,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	calcMyScreen();
 	vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	// inflate the drawerLayour
-	this.mDrawerLayout = (DrawerLayout) this.getLayoutInflater().inflate(R.layout.main, null);
 	// set as content view
-	this.setContentView(this.mDrawerLayout);
+	this.setContentView(R.layout.main);
+	this.mDrawerLayout =(DrawerLayout) findViewById(R.id.drawer_layout);
 	controller = Controller.getInstance(this);
 	initMapManager();
 	// controller.setMapManager(mapManager);
@@ -147,12 +148,14 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	{
 	    public void onDrawerClosed(View view)
 	    {
+	    	getActionBar().setTitle("CampusIn");
 	    	invalidateOptionsMenu(); // creates call to
 	    	
 	    }
 
 	    public void onDrawerOpened(View drawerView)
 	    {
+	    	getActionBar().setTitle("CampusIn");
 		invalidateOptionsMenu(); // creates call to
 		// onPrepareOptionsMenu()
 	    }
@@ -196,6 +199,15 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    startLocationReportServise();
 	    controller.startAutoViewModelUpdatingService();
 	}
+	
+	//this is not done in seperate thread its just a mistake that the controller nead to get callback 
+	controller.getCurrentUser(new ControllerCallback<CampusInUser>() {
+		
+		@Override
+		public void done(CampusInUser retObject, Exception e) {
+			currentUser=retObject;
+		}
+	});
 	updateView();
 	registerViewModelReciever();
 	
@@ -485,6 +497,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
+
 	return super.onPrepareOptionsMenu(menu);
     }
 
@@ -577,7 +590,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	try
 	{
 	    lastMarkerClicked = marker;
-	    marker.showInfoWindow();
+
 	    switch (mapManager.getMarkerType(marker))
 	    {
 	    case Event:
@@ -586,9 +599,16 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    case Person:
 		initiatePopupWindow(PopUpKind.FriendInfo);
 		break;
+	    case Message:
+	    	if(!canISeeTheMessageMarker(marker))
+	    		{
+	    			return true;
+	    		}
+	    	break;
 	    default:
 		break;
 	    }
+	    marker.showInfoWindow();
 
 	}
 	catch (Exception e)
@@ -600,7 +620,24 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	return true;
 
     }
-
+    public Boolean canISeeTheMessageMarker(Marker marker)
+    {
+    	if(marker==null) return false;
+    	String id= mapManager.getMessageIdFromMarker(marker);
+    	if(id==null) return false;
+    	CampusInMessage theMessage=controller.getMessage(id);
+    	if(theMessage==null) return false;
+    	if(theMessage.getOwnerId().equals(currentUser.getParseUserId())) return true;
+    	int radius=theMessage.getReadInRadius();
+    	if(radius==-1) return true;
+    	float mydist=mapManager.getDistanceFromMe(marker);
+    	if(mydist>radius) 
+    	{
+    		MessageHalper.showAlertDialog("אינך יכול לצפות בהודעה", " אתה לא מספיק קרוב עליך להדקדם עוד לפחות "+(String.format("%.2f", mydist-radius)) + "  מטר ", this);
+    		return false;
+    	}
+    	return true;
+    }
     public void showPopup(View v)
     {
 	PopupMenu popup = new PopupMenu(this, v);
