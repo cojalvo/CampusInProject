@@ -20,15 +20,13 @@ public class MessageHalper
 		 }
 		 if(ac!=null && !ac.isFinishing())
 		 {
-			pb = new ProgressDialog(context);
-			pb.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-			pb.setMessage(message);
-			pb.show();
+			pb = ProgressDialog.show(context, "In Progress",message);
+			pb.setCanceledOnTouchOutside(false);
 		 }
 	 }
 	 public static void closeProggresDialog(){
 		 if(pb!=null)
-			 pb.cancel();
+			 pb.dismiss();
 	 }
 
 }
