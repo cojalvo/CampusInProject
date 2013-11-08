@@ -52,8 +52,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/common_signin_btn_text_light"
-            android:text="distance" />
+            android:text="distance"
+            android:textColor="@color/common_signin_btn_text_light" />
     </LinearLayout>
+        <View
+        android:layout_width="fill_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray" />
+
 
 </LinearLayout>

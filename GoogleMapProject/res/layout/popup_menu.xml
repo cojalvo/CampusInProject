@@ -9,6 +9,7 @@
     <LinearLayout
         android:gravity="right"
         android:layout_width="wrap_content"
+        android:background="@drawable/onclick_selector"
         android:onClick="addEventClicked"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
@@ -38,6 +39,7 @@
     <LinearLayout
         android:gravity="right"
         android:layout_width="wrap_content"
+        android:background="@drawable/onclick_selector"
         android:layout_height="wrap_content"
         android:onClick="addMessageClicked"
         android:orientation="horizontal" >

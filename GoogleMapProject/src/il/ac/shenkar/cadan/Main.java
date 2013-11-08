@@ -1034,4 +1034,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 			});
 		}
     }
+    public void deleteMessage() 
+    {
+    	Toast.makeText(this, "delete message was clicked", 100);
+		
+	}
 }
