@@ -334,13 +334,24 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		     * imageView.setImageDrawable();
 		     */
 		    // set the Name
-		    TextView name = (TextView) v.findViewById(R.id.info_window_location_name);
-		    name.setText(currEvent.getHeadLine() + " - " + currEvent.getLocation().getLocationName());
+		    TextView name = (TextView) v.findViewById(R.id.info_window_event_name);
+		    name.setText(currEvent.getHeadLine() + " - " + currEvent.getDescription());
 
-		    // set the status
-		    TextView status = (TextView) v.findViewById(R.id.info_window_time);
-		    status.setText(ParsingHelper.fromDateToString(currEvent.getDate(), "dd/MM/yyyy"));
+		    // set the Date
+		    TextView status = (TextView) v.findViewById(R.id.info_window_date);
+		    status.setText("תאריך - " + ParsingHelper.fromDateToString(currEvent.getDate(), "dd/MM/yyyy"));
+		    
+		    //set the time 
+		    TextView time  = (TextView) v.findViewById(R.id.info_window_event_time);
+		    time.setText("שעה - " + ParsingHelper.fromDateToString(currEvent.getDate(), "hh:mm:ss"));
 
+		    //set the Location
+		    TextView location = (TextView) v.findViewById(R.id.info_window_location_name);
+		    location.setText("מיקום - " + currEvent.getLocation().getLocationName());
+		    
+		    //set the dictance
+		    TextView dis = (TextView) v.findViewById(R.id.info_window_distance);
+		    dis.setText(getDistanceStringFromLastClickMarker());
 		    return v;
 		}
 		else if (markerType == MarkerType.Message)
@@ -408,34 +419,6 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	Intent intent;
 	switch (item.getItemId())
 	{
-	case R.id.action_add_event:
-	    createEventProcess();
-	    /*
-	     * startActivity(intent);
-	     * overridePendingTransition(R.anim.slide_in_left,
-	     * R.anim.slide_out_left);
-	     */
-	    return true;
-	case R.id.action_show_all_events:
-	    /*
-	     * intent = new Intent(this, JacobEventActivity.class);
-	     * startActivity(intent);
-	     * overridePendingTransition(R.anim.slide_in_left,
-	     * R.anim.slide_out_left);
-	     */
-
-	    // try to move it to Fragment
-	   /* android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
-	    Fragment fragment = getFragmentManager().findFragmentByTag("dialog");
-	    if (fragment != null)
-	    {
-		transaction.remove(fragment);
-	    }
-	    transaction.addToBackStack(null);
-	    DiaplayEventListFragment newDiaplayEventListFragment = new DiaplayEventListFragment();
-	    newDiaplayEventListFragment.show(transaction, "dialog");*/
-	    return true;
-
 	case R.id.action_add_friends:
 	    android.app.FragmentTransaction ft1 = getFragmentManager().beginTransaction();
 	    android.app.Fragment prev1 = getFragmentManager().findFragmentByTag("dialog");
@@ -460,34 +443,6 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    // Create and show the dialog.
 	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE, false, new ArrayList<CampusInUser>());
 	    newFragment11.show(ft11, "dialog");
-	    return true;
-	case R.id.action_add_friends_from_cloud:
-	//TODO: to remove, added to prefs fragment 
-	    /*    android.app.FragmentTransaction ft111 = getFragmentManager().beginTransaction();
-	    android.app.Fragment prev111 = getFragmentManager().findFragmentByTag("dialog");
-	    if (prev111 != null)
-	    {
-		ft111.remove(prev111);
-	    }
-	    ft111.addToBackStack(null);
-
-	    // Create and show the dialog.
-	    AddOrRemoveFriendsFromCloudFragment newFragment111 = AddOrRemoveFriendsFromCloudFragment.newInstance(ChooseFriendAction.ADD);
-	    newFragment111.show(ft111, "dialog");*/
-	    return true;
-	case R.id.action_remove_friends_from_cloud:
-	  //TODO: to remove, added to prefs fragment 
-	    /*android.app.FragmentTransaction ft1111 = getFragmentManager().beginTransaction();
-	    android.app.Fragment prev1111 = getFragmentManager().findFragmentByTag("dialog");
-	    if (prev1111 != null)
-	    {
-		ft1111.remove(prev1111);
-	    }
-	    ft1111.addToBackStack(null);
-
-	    // Create and show the dialog.
-	    AddOrRemoveFriendsFromCloudFragment newFragment1111 = AddOrRemoveFriendsFromCloudFragment.newInstance(ChooseFriendAction.REMOVE);
-	    newFragment1111.show(ft1111, "dialog");*/
 	    return true;
 	default:
 	    return super.onOptionsItemSelected(item);
@@ -594,10 +549,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    switch (mapManager.getMarkerType(marker))
 	    {
 	    case Event:
-		initiatePopupWindow(PopUpKind.EventInfo);
+		//initiatePopupWindow(PopUpKind.EventInfo);
 		break;
 	    case Person:
-		initiatePopupWindow(PopUpKind.FriendInfo);
+		//initiatePopupWindow(PopUpKind.FriendInfo);
 		break;
 	    case Message:
 	    	if(!canISeeTheMessageMarker(marker))
@@ -1091,8 +1046,9 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	Toast.makeText(this, "delete message was clicked", 100);
 
     }
-    public static void closeDrawerLayout ()
+    public static void closeDrawerLayout()
     {
-	mDrawerLayout.closeDrawers();
+	if (mDrawerLayout != null)
+	    mDrawerLayout.closeDrawers();
     }
 }

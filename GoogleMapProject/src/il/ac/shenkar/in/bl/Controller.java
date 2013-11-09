@@ -460,5 +460,11 @@ public class Controller implements ICampusInController
 		return messageId == null ? null : viewModel.getMessageById(messageId);
 	}
 
+	@Override
+	public void closePreferanceView()
+	{
+	   Main.closeDrawerLayout();    
+	}
+
 
 }

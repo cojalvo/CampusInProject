@@ -159,7 +159,6 @@ public class PrefsFragment extends PreferenceFragment
 	    @Override
 	    public boolean onPreferenceClick(Preference preference)
 	    {
-		((Main)getActivity()).closeDrawerLayout();
 		android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		Fragment fragment = getFragmentManager().findFragmentByTag("dialog");
 		if (fragment != null)
@@ -173,7 +172,7 @@ public class PrefsFragment extends PreferenceFragment
 
 	    }
 	});
-
+	
 	updateMeDetails(savedInstanceState);
     }
 

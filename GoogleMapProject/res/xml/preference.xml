@@ -55,22 +55,10 @@
             android:key="show_campus_events"
             android:summary="הצג את האירועים בקמפוס"
             android:title="אירועים בקמפוס" />
-        <Preference
-            android:icon="@drawable/group_icon"
-            android:key="show_campus_events"
-            android:summary="צור אירוע חדש "
-            android:title="יצירת אירוע" />
-        <Preference>
-        </Preference>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="my_aea"
         android:title="הודעות" >
-        <Preference
-            android:icon="@drawable/group_icon"
-            android:key="send_message"
-            android:summary="השאר הודעה לחברים בקמפוס"
-            android:title="השארת הודעה " />
         <Preference
             android:icon="@drawable/group_icon"
             android:key="show_my_messages"
@@ -89,9 +77,9 @@
             android:title="תזכורות לאירועים" />
         <ListPreference
             android:defaultValue="30"
-            android:entries="@array/event_reminder"
-            android:entryValues="@array/messages_radius_display"
-            android:key="event_reminder"
+            android:entries="@array/messages_radius_display"
+            android:entryValues="@array/messages_radius_display_values"
+            android:key="message_radius_display"
             android:summary="הצג הודעות ברדיוס של"
             android:title="הצגת הודעות" />
     </PreferenceCategory>

@@ -38,5 +38,6 @@ public interface ICampusInController
 	void resumeAutoViewModelUpdatingService();
 	CampusInMessage getMessage(String messageId);
 	List<CampusInMessage> getAllMessages();
+	void closePreferanceView();
 	
 }

@@ -102,7 +102,9 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 		Integer position = (Integer) v.getTag();
 		CampusInEvent navigateTo = filteredEventArrayList.get(position);
 		dialog.dismiss();
-		Controller.getInstance(null).navigateToEvent(navigateTo);
+		Controller controller = Controller.getInstance(null);
+		controller.closePreferanceView();
+		controller.navigateToEvent(navigateTo);
 
 	    }
 	});
