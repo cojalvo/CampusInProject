@@ -602,8 +602,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    case Message:
 	    	if(!canISeeTheMessageMarker(marker))
 	    		{
-	    			return true;
-	    		}
+	    			marker.hideInfoWindow();
+	    			return true;	    		}
 	    	break;
 	    default:
 		break;
@@ -962,13 +962,14 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     private void updateView()
     {
-	//mapManager.clearMap();
 	controller.getCurrentUserAllEvents(new ControllerCallback<List<CampusInEvent>>()
 	{
 
 	    @Override
 	    public void done(List<CampusInEvent> retObject, Exception e)
 	    {
+	    	if(e!=null) return;
+	    	mapManager.clearEvents();
 		for (CampusInEvent campusInEvent : retObject)
 		{
 		    mapManager.addOrUpdateEventMarker(campusInEvent);
@@ -981,6 +982,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    @Override
 	    public void done(List<CampusInUserLocation> retObject, Exception e)
 	    {
+	    	if(e!=null) return;
+	    	mapManager.clearPersons();
 		for (CampusInUserLocation campusInUserLocation : retObject)
 		{
 		    mapManager.addOrUpdatePersonMarker(campusInUserLocation);
@@ -988,6 +991,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    }
 	});
 	List<CampusInMessage> allMessages = controller.getAllMessages();
+	mapManager.clearMessages();
 	for (CampusInMessage campusInMessage : allMessages)
 	{
 	    mapManager.addOrUpdateMessageMarker(campusInMessage);

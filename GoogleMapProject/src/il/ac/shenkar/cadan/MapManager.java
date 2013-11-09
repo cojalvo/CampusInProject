@@ -11,6 +11,7 @@ import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
 
 import android.location.Location;
+import android.provider.CalendarContract.EventsEntity;
 import android.provider.ContactsContract.CommonDataKinds.Event;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -35,9 +36,9 @@ public class MapManager
     private HashMap<String, Marker> personMarkerdictionary;
     private HashMap<String, Marker> eventMarkerdictionary;
     private HashMap<String, Marker> messageMarkerdictionary;
-    private HashMap<Marker, String> markerMessageDictiobnary = new HashMap<Marker, String>();
-    private HashMap<Marker, String> markerPersondictiobnary = new HashMap<Marker, String>();
-    private HashMap<Marker, String> markerEventDictionary = new HashMap<Marker, String>();
+    private HashMap<Marker, String> markerMessageDictiobnary;
+    private HashMap<Marker, String> markerPersondictiobnary;
+    private HashMap<Marker, String> markerEventDictionary;
     private final LatLng shenkarLatLong=new LatLng(32.090049, 34.802807);
     private GroundOverlayOptions campusOverlay;
     private float myLastDistance;
@@ -120,6 +121,9 @@ public class MapManager
 	eventMarkerdictionary = new HashMap<String, Marker>();
 	positionMarkerDic = new HashMap<String, HashMap<String, Marker>>();
 	messageMarkerdictionary=new HashMap<String, Marker>();
+	markerMessageDictiobnary = new HashMap<Marker, String>();
+    markerPersondictiobnary = new HashMap<Marker, String>();
+    markerEventDictionary = new HashMap<Marker, String>();
 	setOnMyLocationChangedListener();
 	myLastDistance=getDistanceFromMe(shenkarLatLong);
 	setMapState(myLastDistance);
@@ -148,26 +152,33 @@ public class MapManager
 	campusOverlay=new GroundOverlayOptions().image(image).positionFromBounds(bounds).transparency(transparency);
 	map.addGroundOverlay(campusOverlay);
     }
-
-//    // clear the map
-//    public void clearMap()
-//    {
-//	for (Marker toRemove : eventMarkerdictionary.values())
-//	{
-//	    toRemove.remove();
-//	}
-//	for (Marker toRemove : personMarkerdictionary.values())
-//	{
-//	    toRemove.remove();
-//
-//	}
-////	personMarkerdictionary.clear();
-////	messageMarkerdictionary.clear();
-////	markerMessageDictiobnary.clear();
-////	markerPersondictiobnary.clear();
-////	eventMarkerdictionary.clear();
-////	markerEventDictionary.clear();
-//    }
+    public void clearEvents()
+    {
+    	for (Marker eventMarker : eventMarkerdictionary.values()) {
+			eventMarker.remove();
+		}
+    	eventMarkerdictionary.clear();
+    	markerEventDictionary.clear();
+    }
+    
+    public void clearPersons()
+    {
+    	for (Marker personMarker : personMarkerdictionary.values()) {
+    		personMarker.remove();
+		}
+    	markerPersondictiobnary.clear();
+    	personMarkerdictionary.clear();
+    }
+    public void clearMessages()
+    {
+      	for (Marker messageMarker : messageMarkerdictionary.values()) {
+      		messageMarker.remove();
+      		
+		}
+		messageMarkerdictionary.clear();
+		markerMessageDictiobnary.clear();
+    }
+    
     public void disableMap()
     {
     	if(map!=null)
@@ -219,25 +230,6 @@ public class MapManager
     public void addOrUpdatePersonMarker(CampusInUserLocation user)
     {
 	Marker marker;
-	if (personMarkerdictionary.containsKey(user.getUser().getParseUserId()))
-	{
-	    marker = personMarkerdictionary.get(user.getUser().getParseUserId());
-	    // we lost the location of the user than we remove him
-	    if (user.getUser() == null || user.getLocation() == null)
-	    {
-		marker.remove();
-		personMarkerdictionary.remove(user.getUser().getParseUserId());
-		return;
-	    }
-
-	    marker.setTitle(user.getUser().getFirstName() + " " + user.getUser().getLastName());
-	    marker.setPosition(user.getLocation().getMapLocation());
-	}
-
-	else
-	{
-	    // if we dont know the location it will ne null than don't show his
-	    // marker
 	    if (user == null || user.getLocation() == null)
 	    {
 		return;
@@ -246,7 +238,6 @@ public class MapManager
 		    .icon(BitmapDescriptorFactory.fromResource(R.drawable.student_marker)));
 	    this.personMarkerdictionary.put(user.getUser().getParseUserId(), marker);
 	    markerPersondictiobnary.put(marker, user.getUser().getParseUserId());
-	}
     }
 
     public void addOrUpdateEventMarker(CampusInEvent event)
