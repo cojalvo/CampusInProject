@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Stack;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -56,7 +57,7 @@ public class Controller implements ICampusInController
     private MapManager mapManager;
     private Boolean updatingViewModel = false;
     private Boolean updateAgainViewModel = false;
-    private Boolean viewModelServiceRunning=false;
+    private Boolean viewModelServiceRunning = false;
     /**
      * this List will hold all of the Events we want to save to the cloud only
      * if the save is successful the event object will be thrown from the list
@@ -71,7 +72,7 @@ public class Controller implements ICampusInController
 	cloudAccessObject = CloudAccessObject.getInstance();
 	viewModel = new ViewModel(context);
 	saveToCLoudEventQue = new ArrayList<CampusInEvent>();
-	saveToCloudMessageQue=new ArrayList<CampusInMessage>();
+	saveToCloudMessageQue = new ArrayList<CampusInMessage>();
 	// get the current logged in user
 
 	cloudAccessObject.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
@@ -165,30 +166,30 @@ public class Controller implements ICampusInController
     @Override
     public void sendMessage(CampusInMessage message, final ControllerCallback<Integer> callBack)
     {
-    	// TODO: to draw the event to the user interface before saving it to the
-    	// cloud
-    	if (message != null)
-    	{
-    	    // add the toAdd Object to the messageQue;
-    	    saveToCloudMessageQue.add(message);
-    	    for (final CampusInMessage m : saveToCloudMessageQue)
-    	    {
-    		cloudAccessObject.sendMessage(m, new DataAccesObjectCallBack<Integer>()
-    		{
+	// TODO: to draw the event to the user interface before saving it to the
+	// cloud
+	if (message != null)
+	{
+	    // add the toAdd Object to the messageQue;
+	    saveToCloudMessageQue.add(message);
+	    for (final CampusInMessage m : saveToCloudMessageQue)
+	    {
+		cloudAccessObject.sendMessage(m, new DataAccesObjectCallBack<Integer>()
+		{
 
-    		    @Override
-    		    public void done(Integer retObject, Exception e)
-    		    {
-    			if (retObject != null && e==null)
-    			{
-    			    saveToCloudMessageQue.remove(m);
-    			}
-			    if(callBack!=null)
-			    	callBack.done(retObject, e);
-    		    }
-    		});
-    	    }
-    	}
+		    @Override
+		    public void done(Integer retObject, Exception e)
+		    {
+			if (retObject != null && e == null)
+			{
+			    saveToCloudMessageQue.remove(m);
+			}
+			if (callBack != null)
+			    callBack.done(retObject, e);
+		    }
+		});
+	    }
+	}
     }
 
     @Override
@@ -241,7 +242,7 @@ public class Controller implements ICampusInController
 		public void done(Integer retObject, Exception e)
 		{
 		    if (callBack != null)
-		    	callBack.done(retObject, e);
+			callBack.done(retObject, e);
 		    if (notificationManager == null)
 			notificationManager = new NotificationManager(currentUser.getParseUserId(), context);
 		    notificationManager.updateNotificationsToAllEvents(viewModel.getAllEvents());
@@ -254,8 +255,8 @@ public class Controller implements ICampusInController
 	}
 	else
 	{
-		if(callBack!=null)
-			callBack.done(1, new Exception("View model is in a middle of updating process, try in the nex loop"));
+	    if (callBack != null)
+		callBack.done(1, new Exception("View model is in a middle of updating process, try in the nex loop"));
 	}
     }
 
@@ -297,59 +298,47 @@ public class Controller implements ICampusInController
 
     public void addEventToLocalMap(CampusInEvent toAdd)
     {
-    	viewModel.addEvent(toAdd);
+	viewModel.addEvent(toAdd);
     }
 
     @Override
     public void getAllCumpusInUsers(final ControllerCallback<List<CampusInUser>> callback)
     {
 
-        if (callback != null)
-        {
-            cloudAccessObject.getAllCumpusInUsers(new DataAccesObjectCallBack<List<CampusInUser>>()
-            {
-                @Override
-                public void done(List<CampusInUser> retObject, Exception e)
-                {
-                        List<CampusInUser> retList=retObject;
-                        //remove all the friends to school -by default they are my friends and can't be removed
-                        if(retList==null) retList=new ArrayList<CampusInUser>();
-                        if(callback!=null)
-                                callback.done(retList, e);
-                }
-            });
-        }
-        else
-            return;
+	if (callback != null)
+	{
+	    cloudAccessObject.getAllCumpusInUsers(new DataAccesObjectCallBack<List<CampusInUser>>()
+	    {
+		@Override
+		public void done(List<CampusInUser> retObject, Exception e)
+		{
+		    List<CampusInUser> retList = retObject;
+		    // remove all the friends to school -by default they are my
+		    // friends and can't be removed
+		    if (retList == null)
+			retList = new ArrayList<CampusInUser>();
+		    if (callback != null)
+			callback.done(retList, e);
+		}
+	    });
+	}
+	else
+	    return;
     }
 
- 
     @Override
     public void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd)
     {
 	// for now i add it one by one
 	// Cadan need to implement a method to save bulk of friends all at one
-	if (friendsTOAdd != null && friendsTOAdd.size()>0)
+	if (friendsTOAdd != null && friendsTOAdd.size() > 0)
 	{
 	    for (CampusInUser user : friendsTOAdd)
 	    {
-	    	cloudAccessObject.addFriendToFriendList(user, null);
+		cloudAccessObject.addFriendToFriendList(user, null);
 	    }
 	    updateViewModel(null);
-	    
-	}
-    }
 
-    @Override
-    public void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove)
-    {
-	if (friendsToRemove != null && friendsToRemove.size()>0)
-	{
-	    for (CampusInUser user : friendsToRemove)
-	    {
-	    	cloudAccessObject.removeFriendFromFriendList(user, null);
-	    }
-	    updateViewModel(null);
 	}
     }
 
@@ -399,72 +388,104 @@ public class Controller implements ICampusInController
     public void addNotificationToEvent(CampusInEvent event)
     {
 	if (notificationManager == null)
-	    notificationManager = new NotificationManager(currentUser.getParseUserId(),context);
+	    notificationManager = new NotificationManager(currentUser.getParseUserId(), context);
 	notificationManager.updateNotification(event);
     }
 
-	@Override
-	public Boolean isMyFriend(CampusInUser user) {
-		if(isMyFriendToSchool(user)) return true;
-		List< CampusInUser> friends=new ArrayList<CampusInUser>(viewModel.getAllFriends());
-		for (CampusInUser campusInUser : friends) {
-			if(campusInUser.getParseUserId().equals(user.getParseUserId())) return true;
-		}
-		return false;
+    @Override
+    public Boolean isMyFriend(CampusInUser user)
+    {
+	if (isMyFriendToSchool(user))
+	    return true;
+	List<CampusInUser> friends = new ArrayList<CampusInUser>(viewModel.getAllFriends());
+	for (CampusInUser campusInUser : friends)
+	{
+	    if (campusInUser.getParseUserId().equals(user.getParseUserId()))
+		return true;
 	}
+	return false;
+    }
 
-	@Override
-	public Boolean isMyFriendToSchool(CampusInUser user) {
-			if(user.getTrend().equals(currentUser.getTrend()) && user.getYear().equals(currentUser.getYear())) return true;
-		return false;
-	}
+    @Override
+    public Boolean isMyFriendToSchool(CampusInUser user)
+    {
+	if (user.getTrend().equals(currentUser.getTrend()) && user.getYear().equals(currentUser.getYear()))
+	    return true;
+	return false;
+    }
 
-	@Override
+    @Override
     public void startAutoViewModelUpdatingService()
     {
-		if(ModelUpdateService.isRuning()) return;
-    	Toast.makeText(context, "vieModel service is not running- start it", 150).show();
-    	Intent i = new Intent(context, ModelUpdateService.class);
-    	context.startService(i);
+	if (ModelUpdateService.isRuning())
+	    return;
+	Toast.makeText(context, "vieModel service is not running- start it", 150).show();
+	Intent i = new Intent(context, ModelUpdateService.class);
+	context.startService(i);
     }
 
-	@Override
-    public  void stopAutoViewModelUpdatingService()
+    @Override
+    public void stopAutoViewModelUpdatingService()
     {
-    	context.stopService(new Intent(context, ModelUpdateService.class));
+	context.stopService(new Intent(context, ModelUpdateService.class));
     }
 
-	@Override
-	public void pauseAutoViewModelUpdatingService() {
-		Intent inti = new Intent();
-		inti.setAction(ModelUpdateService.STOP_COMMAND);
-		if (context != null)
-		    context.sendBroadcast(inti);
-	}
+    @Override
+    public void pauseAutoViewModelUpdatingService()
+    {
+	Intent inti = new Intent();
+	inti.setAction(ModelUpdateService.STOP_COMMAND);
+	if (context != null)
+	    context.sendBroadcast(inti);
+    }
 
-	@Override
-	public void resumeAutoViewModelUpdatingService() {
-		Intent inti = new Intent();
-		inti.setAction(ModelUpdateService.START_COMMAND);
-		if (context != null)
-		    context.sendBroadcast(inti);
-	}
+    @Override
+    public void resumeAutoViewModelUpdatingService()
+    {
+	Intent inti = new Intent();
+	inti.setAction(ModelUpdateService.START_COMMAND);
+	if (context != null)
+	    context.sendBroadcast(inti);
+    }
 
-	@Override
-	public List<CampusInMessage> getAllMessages() {
-		return new ArrayList<CampusInMessage>(viewModel.getAllMessages());
-	}
+    @Override
+    public List<CampusInMessage> getAllMessages()
+    {
+	return new ArrayList<CampusInMessage>(viewModel.getAllMessages());
+    }
 
-	@Override
-	public CampusInMessage getMessage(String messageId) {
-		return messageId == null ? null : viewModel.getMessageById(messageId);
-	}
+    @Override
+    public CampusInMessage getMessage(String messageId)
+    {
+	return messageId == null ? null : viewModel.getMessageById(messageId);
+    }
 
-	@Override
-	public void closePreferanceView()
+    @Override
+    public void closePreferanceView()
+    {
+	Main.closeDrawerLayout();
+    }
+
+    @Override
+    public void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove, final ControllerCallback<String> callback)
+    {
+	if (friendsToRemove != null && friendsToRemove.size() > 0)
 	{
-	   Main.closeDrawerLayout();    
+	    for (CampusInUser user : friendsToRemove)
+	    {
+		cloudAccessObject.removeFriendFromFriendList(user, new DataAccesObjectCallBack<Integer>()
+		{
+
+		    @Override
+		    public void done(Integer retObject, Exception e)
+		    {
+			callback.done(retObject.toString(), e);
+		    }
+		});
+	    }
+	    updateViewModel(null);
 	}
 
+    }
 
 }

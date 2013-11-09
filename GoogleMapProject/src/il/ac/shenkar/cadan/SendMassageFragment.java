@@ -44,7 +44,7 @@ public class SendMassageFragment extends AddNewEventFragment
     private onNewMassagecreated callBack;
     private SeekBar sb;
     private CheckBox cb;
-    
+
     static SendMassageFragment newInstance(Bundle args)
     {
 	SendMassageFragment f = new SendMassageFragment();
@@ -56,6 +56,7 @@ public class SendMassageFragment extends AddNewEventFragment
 
 	return f;
     }
+
     @Override
     public void onAttach(Activity activity)
     {
@@ -76,7 +77,7 @@ public class SendMassageFragment extends AddNewEventFragment
     {
 	Controller.getInstance(null).getCurrentUser(new ControllerCallback<CampusInUser>()
 	{
-	    
+
 	    @Override
 	    public void done(CampusInUser retObject, Exception e)
 	    {
@@ -84,20 +85,19 @@ public class SendMassageFragment extends AddNewEventFragment
 	    }
 	});
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	builder.setTitle("שלח הודעה");
-	builder.setPositiveButton("שלח", new DialogInterface.OnClickListener()
+	builder.setTitle("׳©׳�׳— ׳”׳•׳“׳¢׳”");
+	builder.setPositiveButton("׳©׳�׳—", new DialogInterface.OnClickListener()
 	{
-	    
+
 	    @Override
 	    public void onClick(DialogInterface dialog, int which)
 	    {
-		
-		
+
 	    }
 	});
 	builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 	{
-	    
+
 	    @Override
 	    public void onClick(DialogInterface dialog, int which)
 	    {
@@ -106,38 +106,43 @@ public class SendMassageFragment extends AddNewEventFragment
 	});
 	view = getActivity().getLayoutInflater().inflate(R.layout.send_massage_layout, null);
 	Button addFriendsButton = (Button) view.findViewById(R.id.massage_add_friends_button);
-	cb=(CheckBox) view.findViewById(R.id.distance_check);
-	sb=(SeekBar) view.findViewById(R.id.seekBar1);
+	cb = (CheckBox) view.findViewById(R.id.distance_check);
+	sb = (SeekBar) view.findViewById(R.id.seekBar1);
 	sb.setEnabled(false);
-	cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		
-		@Override
-		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+	cb.setOnCheckedChangeListener(new OnCheckedChangeListener()
+	{
+
+	    @Override
+	    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+	    {
 		sb.setEnabled(isChecked);
-			
-		}
+
+	    }
 	});
-	final TextView tv=(TextView) view.findViewById(R.id.distance_text);
-	sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-		
-		@Override
-		public void onStopTrackingTouch(SeekBar seekBar) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void onStartTrackingTouch(SeekBar seekBar) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void onProgressChanged(SeekBar seekBar, int progress,
-				boolean fromUser) {
-			tv.setText(" ניתנת לקריאה ברדיוס של "+ progress +" מטרים ");
-			
-		}
+	final TextView tv = (TextView) view.findViewById(R.id.distance_text);
+	sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+	{
+
+	    @Override
+	    public void onStopTrackingTouch(SeekBar seekBar)
+	    {
+		// TODO Auto-generated method stub
+
+	    }
+
+	    @Override
+	    public void onStartTrackingTouch(SeekBar seekBar)
+	    {
+		// TODO Auto-generated method stub
+
+	    }
+
+	    @Override
+	    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+	    {
+		tv.setText(" ׳ ׳™׳×׳ ׳× ׳�׳§׳¨׳™׳�׳” ׳‘׳¨׳“׳™׳•׳¡ ׳©׳� " + progress + " ׳�׳˜׳¨׳™׳� ");
+
+	    }
 	});
 	addFriendsButton.setOnClickListener(new OnClickListener()
 	{
@@ -146,18 +151,19 @@ public class SendMassageFragment extends AddNewEventFragment
 	    public void onClick(View v)
 	    {
 		// show add Friends fragment
-		ChooseFriendsFragment newFragment = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD,isfriendsAdded,addedFriends);
+		ChooseFriendsFragment newFragment = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD, isfriendsAdded, addedFriends);
 		newFragment.setTargetFragment(SendMassageFragment.this, 0);
 		newFragment.show(getFragmentManager(), "addFriendsPicher");
 	    }
 	});
-	
+
 	EditText messageContent = (EditText) view.findViewById(R.id.massage_content);
 	messageContent.requestFocus();
-	
+
+	builder.setIcon(R.drawable.campus_in_ico);
 	builder.setView(view);
 	Dialog dialog = builder.create();
-	dialog.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE | LayoutParams.SOFT_INPUT_ADJUST_PAN );
+	dialog.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE | LayoutParams.SOFT_INPUT_ADJUST_PAN);
 	return dialog;
     }
 
@@ -171,10 +177,10 @@ public class SendMassageFragment extends AddNewEventFragment
 	    if (!addedFriends.isEmpty())
 	    {
 		CampusInUser user = addedFriends.get(0);
-		recivers.setText(user.getFirstName() +" " + user.getLastName() + ", ...");
+		recivers.setText(user.getFirstName() + " " + user.getLastName() + ", ...");
 		Button editFriends = (Button) view.findViewById(R.id.massage_add_friends_button);
 		editFriends.setText(R.string.edit_friends);
-		isfriendsAdded =true;
+		isfriendsAdded = true;
 	    }
 	    else
 	    {
@@ -183,7 +189,7 @@ public class SendMassageFragment extends AddNewEventFragment
 	    }
 	}
     }
-    
+
     // this override is preventing the Dialog from closing before the data is
     // being validate;
     @Override
@@ -213,7 +219,7 @@ public class SendMassageFragment extends AddNewEventFragment
 	    });
 	}
     }
-    
+
     public interface onNewMassagecreated
     {
 	public void onMassageCreated(CampusInMessage sentMassage);
@@ -223,25 +229,25 @@ public class SendMassageFragment extends AddNewEventFragment
     public CampusInElement validate()
     {
 	CampusInMessage toReturn = new CampusInMessage();
-	toReturn.setSenderFullName(currentUser.getFirstName()+ " "+currentUser.getLastName());
-	if (this.addedFriends  == null || this.addedFriends.isEmpty())
+	toReturn.setSenderFullName(currentUser.getFirstName() + " " + currentUser.getLastName());
+	if (this.addedFriends == null || this.addedFriends.isEmpty())
 	{
-	    Toast.makeText(getActivity(), "please choose friends to send the massage to",3000).show();
+	    Toast.makeText(getActivity(), "please choose friends to send the massage to", 3000).show();
 	    return null;
 	}
 	else
 	{
-	  toReturn.setReciversList(addedFriends);
+	    toReturn.setReciversList(addedFriends);
 	}
 	EditText massageContent = (EditText) view.findViewById(R.id.massage_content);
-	if(cb.isChecked())
+	if (cb.isChecked())
 	{
-		toReturn.setReadInRadius(sb.getProgress());
+	    toReturn.setReadInRadius(sb.getProgress());
 	}
 	else
 	{
-		//-1 mean that there is no limitation
-		toReturn.setReadInRadius(-1);
+	    // -1 mean that there is no limitation
+	    toReturn.setReadInRadius(-1);
 	}
 	if (massageContent.getText().toString().isEmpty())
 	{
@@ -251,12 +257,11 @@ public class SendMassageFragment extends AddNewEventFragment
 	}
 	else
 	{
-	   toReturn.setContent(massageContent.getText().toString());
+	    toReturn.setContent(massageContent.getText().toString());
 	}
 	toReturn.setOwnerId(currentUser.getParseUserId());
-	
+
 	return toReturn;
     }
-  
 
 }

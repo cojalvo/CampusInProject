@@ -983,7 +983,8 @@ public class CloudAccessObject implements IDataAccesObject
 		    // user in the same trend and year are friends by default
 		    if (retObject.getTrend().equals(userToRemove.getTrend()) && retObject.getYear().equals(userToRemove.getYear()))
 		    {
-			callBack.done(1, new Exception("User from the same class can't be removed"));
+			if (callBack != null)
+			    callBack.done(1, new Exception("User from the same class can't be removed"));
 			return;
 		    }
 		}

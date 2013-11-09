@@ -789,7 +789,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     }
 
     @Override
-    public void onFriendsWereChoosen(ArrayList<CampusInUser> friensList, Fragment targetedFragment, ChooseFriendAction action)
+    public void onFriendsWereChoosen(final ArrayList<CampusInUser> friensList, Fragment targetedFragment, ChooseFriendAction action)
     {
 	if (action == ChooseFriendAction.ADD)
 	{
@@ -820,7 +820,18 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    if (friensList != null)
 	    {
 		Toast.makeText(getApplication(), "Removed friendList Size: " + friensList.size(), 3000).show();
-		controller.removeFriendsFromCurrentUserFriendList(friensList);
+		controller.removeFriendsFromCurrentUserFriendList(friensList,new ControllerCallback<String>()
+		{
+		    
+		    @Override
+		    public void done(String retObject, Exception e)
+		    {
+			if (e != null)
+			    MessageHalper.showAlertDialog("שגיאת מחיקה", e.getMessage(), Main.this);
+			else
+			    MessageHalper.showAlertDialog("מחיקה הושלמה", friensList.size() +" חברים הוסרו מרשימת החברים שלך" , Main.this);
+		    }
+		});
 	    }
 	    else
 		Toast.makeText(getApplication(), "Removed friendList Size: " + 0, 3000).show();
@@ -1051,4 +1062,5 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	if (mDrawerLayout != null)
 	    mDrawerLayout.closeDrawers();
     }
+   
 }

@@ -157,14 +157,14 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 	    }
 
 	});
-
+	builder.setIcon(R.drawable.campus_in_ico);
 	builder.setView(view);
 	return builder.create();
     }
 
     @Override
     public void onAttach(Activity activity)
-    {	
+    {
 	super.onAttach(activity);
 	// This makes sure that the container activity has implemented
 	// the callback interface. If not, it throws an exception
@@ -184,7 +184,8 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
      */
     private void initFriendList()
     {
-	//progressDialog = ProgressDialog.show(getActivity(), "Loading Friends", "Loading FRiends from cloud");
+	// progressDialog = ProgressDialog.show(getActivity(),
+	// "Loading Friends", "Loading FRiends from cloud");
 	if (action == ChooseFriendAction.ADD)
 	{
 	    // the user want to add friends to his friend list
@@ -201,13 +202,15 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 			    @Override
 			    public void done(List<CampusInUser> retObject, Exception e)
 			    {
-			    	friensList=new ArrayList<CampusInUser>();
+				friensList = new ArrayList<CampusInUser>();
 				if (retObject != null)
 				{
-					for (CampusInUser campusInUser : retObject) {
-						if(controller.isMyFriend(campusInUser)) continue;
-						friensList.add(campusInUser);
-					}
+				    for (CampusInUser campusInUser : retObject)
+				    {
+					if (controller.isMyFriend(campusInUser))
+					    continue;
+					friensList.add(campusInUser);
+				    }
 				}
 				Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
@@ -239,13 +242,18 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 			    {
 				if (retObject != null)
 				{
-				    friensList =  new ArrayList<CampusInUser>();
-				    //	TODO this is not suppose o be here it must be removed to the controller
-				    //  TOTO in addition the controller shouldn't get any callback this data exist locally-change the method in the controller
-				    for (CampusInUser campusInUser : retObject) {
-						if(controller.isMyFriendToSchool(campusInUser)) continue;
-						friensList.add(campusInUser);
-					}
+				    friensList = new ArrayList<CampusInUser>();
+				    // TODO this is not suppose o be here it
+				    // must be removed to the controller
+				    // TOTO in addition the controller shouldn't
+				    // get any callback this data exist
+				    // locally-change the method in the
+				    // controller
+				    for (CampusInUser campusInUser : retObject)
+				    {
+					if (controller.isMyFriendToSchool(campusInUser))
+					    friensList.add(campusInUser);
+				    }
 
 				    Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 				    if (view == null)

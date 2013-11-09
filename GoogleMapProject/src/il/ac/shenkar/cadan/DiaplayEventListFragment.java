@@ -105,6 +105,7 @@ public class DiaplayEventListFragment extends DialogFragment
 
 	});
 
+	builder.setIcon(R.drawable.campus_in_ico);
 	builder.setView(view);
 	return builder.create();
 
