@@ -50,7 +50,6 @@ public class CloudAccessObject implements IDataAccesObject
     private Date messagesLastUpdate;
     private ParseObject parseCurrentCampusInUser = null;
     private Drawable profilePic = null;
-    private Date allUsersLastUpdate;
     private Date userFriendsToClassLastUpdate;
     private Date userFriendsToClassLocationLastUpdate;
     private Date usersLocationLastUpdate;
@@ -751,10 +750,6 @@ public class CloudAccessObject implements IDataAccesObject
 	ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
 	//dont return me, and my friends to school since by default they are my friend and i cannot remove them
     query.whereNotEqualTo("parseUserId", curentCampusInUser.getParseUserId());
-	if (allUsersLastUpdate != null)
-	{
-	    query.whereGreaterThanOrEqualTo("createdAt", allUsersLastUpdate);
-	}
 	query.findInBackground(new FindCallback<ParseObject>()
 	{
 
@@ -763,7 +758,6 @@ public class CloudAccessObject implements IDataAccesObject
 	    {
 		if (e == null && retList != null)
 		{
-		    allUsersLastUpdate = new Date();
 		    for (ParseObject parseObject : retList)
 		    {
 			CampusInUser u = fromParseObjToCampusInUser(parseObject);
