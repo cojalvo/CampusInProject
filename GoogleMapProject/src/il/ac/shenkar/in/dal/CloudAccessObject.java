@@ -20,6 +20,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import android.R.bool;
 import android.animation.ArgbEvaluator;
@@ -56,8 +57,7 @@ public class CloudAccessObject implements IDataAccesObject
     private Boolean isLoading = false;
     private HashMap<String, CampusInUser> userTotalFriendsList = new HashMap<String, CampusInUser>();
     private HashMap<String, CampusInUserLocation> usersLocationList = new HashMap<String, CampusInUserLocation>();
-    private HashMap<String, CampusInUser> allUsersList = new HashMap<String, CampusInUser>();
-    private HashMap<String, Drawable> friendsProfilePictures=new HashMap<String, Drawable>();
+    private ConcurrentHashMap<String, Drawable> friendsProfilePictures=new ConcurrentHashMap<String, Drawable>();
 
     private CloudAccessObject()
     {
@@ -748,7 +748,7 @@ public class CloudAccessObject implements IDataAccesObject
     {
 	// first load
 	ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
-	//dont return me, and my friends to school since by default they are my friend and i cannot remove them
+	//dont return me
     query.whereNotEqualTo("parseUserId", curentCampusInUser.getParseUserId());
 	query.findInBackground(new FindCallback<ParseObject>()
 	{
@@ -758,14 +758,15 @@ public class CloudAccessObject implements IDataAccesObject
 	    {
 		if (e == null && retList != null)
 		{
+			List<CampusInUser> allUser=new ArrayList<CampusInUser>();
 		    for (ParseObject parseObject : retList)
 		    {
 			CampusInUser u = fromParseObjToCampusInUser(parseObject);
-			allUsersList.put(u.getParseUserId(), u);
+			allUser.add(u);
 		    }
 		    if (callBack != null)
 		    {
-			callBack.done(new ArrayList<CampusInUser>(allUsersList.values()), e);
+			callBack.done(allUser, e);
 		    }
 		}
 

@@ -37,7 +37,7 @@ public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
 	if (view == null)
 	    view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	builder.setTitle("øùéîú çáøéí").setPositiveButton(R.string.close, new DialogInterface.OnClickListener()
+	builder.setTitle("×”×—×‘×¨×™× ×©×œ×™").setPositiveButton(R.string.close, new DialogInterface.OnClickListener()
 	{
 
 	    @Override
@@ -85,7 +85,6 @@ public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
 				// controller
 				for (CampusInUser campusInUser : retObject)
 				{
-				  //  if (controller.isMyFriendToSchool(campusInUser))
 					friensList.add(campusInUser);
 				}
 

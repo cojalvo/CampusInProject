@@ -1,6 +1,7 @@
 package il.ac.shenkar.in.dal;
 
 import il.ac.shenkar.cadan.PrefsFragment;
+import il.ac.shenkar.common.KeyValue;
 
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -32,6 +33,7 @@ public class FacebookServices {
 	private static InputStream inputStream = null;
 	private static Drawable picture = null;
 
+
 	public static List<GraphUser> getFriendsList() {
 		final List<GraphUser> returnList = new LinkedList<GraphUser>();
 		Session session = ParseFacebookUtils.getSession();
@@ -57,13 +59,8 @@ public class FacebookServices {
 	 * 
 	 * @param userID
 	 */
-	public static void getPictureForFacebookId(final String userId,
+	public synchronized static void getPictureForFacebookId(final String userId,
 			final DataAccesObjectCallBack<Drawable> callBack) {
-		if (picture != null) {
-			callBack.done(picture, null);
-			return;
-		}
-
 		new AsyncTask<String, Integer, String>() {
 
 			@Override

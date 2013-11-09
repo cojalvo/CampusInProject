@@ -1,20 +1,20 @@
 package il.ac.shenkar.common;
 
 //TODO Not in use  remove in the end.
-public class KeyValue 
+public class KeyValue <K,V>
 {
-	private String key;
-	private Object value;
-	public String getKey() {
+	private K key;
+	private V value;
+	public K getKey() {
 		return key;
 	}
-	public void setKey(String key) {
+	public void setKey(K key) {
 		this.key = key;
 	}
-	public Object getValue() {
+	public V getValue() {
 		return value;
 	}
-	public void setValue(Object value) {
+	public void setValue(V value) {
 		this.value = value;
 	}
 

@@ -23,7 +23,7 @@ public class MessageHalper
 	}
 	if (ac != null && !ac.isFinishing())
 	{
-	    pb = ProgressDialog.show(context, "׳˜׳•׳¢׳�...", message);
+	    pb = ProgressDialog.show(context, "טוען...", message);
 	    pb.setCanceledOnTouchOutside(false);
 	}
     }
