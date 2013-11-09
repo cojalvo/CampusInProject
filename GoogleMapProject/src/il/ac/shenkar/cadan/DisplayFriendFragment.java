@@ -76,7 +76,20 @@ public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
 			{
 			    if (retObject != null)
 			    {
-				friensList = retObject;
+				friensList = new ArrayList<CampusInUser>();
+				// TODO this is not suppose o be here it
+				// must be removed to the controller
+				// TOTO in addition the controller shouldn't
+				// get any callback this data exist
+				// locally-change the method in the
+				// controller
+				for (CampusInUser campusInUser : retObject)
+				{
+				    if (controller.isMyFriendToSchool(campusInUser))
+					friensList.add(campusInUser);
+				}
+
+				Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 				if (view == null)
 				    view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
