@@ -3,6 +3,7 @@ package il.ac.shenkar.cadan;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import il.ac.shenkar.cadan.R;
 import il.ac.shenkar.common.CampusInEvent;
@@ -36,7 +37,7 @@ public class MapManager
     private HashMap<String, Marker> personMarkerdictionary;
     private HashMap<String, Marker> eventMarkerdictionary;
     private HashMap<String, Marker> messageMarkerdictionary;
-    private HashMap<Marker, String> markerMessageDictiobnary;
+    private static HashMap<Marker, String> markerMessageDictiobnary;
     private HashMap<Marker, String> markerPersondictiobnary;
     private HashMap<Marker, String> markerEventDictionary;
     private final LatLng shenkarLatLong=new LatLng(32.090049, 34.802807);
@@ -49,6 +50,7 @@ public class MapManager
     // the key is the lat+long -as string
     private HashMap<String, HashMap<String, Marker>> positionMarkerDic;
     private LatLng lastlongClicked = null;
+
 
     public void resetLastLongClicked()
     {
@@ -362,5 +364,16 @@ public class MapManager
     {
     	if(marker==null) return -1;
     	return getDistanceFromMe(marker.getPosition());
+    }
+    public static Marker getMarkerKeyFromStringValue(String markerID)
+    {
+	for (Entry<Marker, String> entry : markerMessageDictiobnary.entrySet()) 
+	{
+	    if (entry.getValue().equals(markerID)) 
+	    {
+		return entry.getKey();
+	    }
+	}
+	return null;
     }
 }

@@ -41,7 +41,7 @@
         <string name="add_event_positiv_button">הוסף אירוע</string>
         <string name="cancel">בטל</string>
         <string name="add_friends">בחר חברים</string>
-        <string name="add">הוסף</string>
+        <string name="add">"מוסיף "</string>
         <string name="remove">הסר</string>
         <string name="remove_friends">הסר חברים</string>
         <string name="my_event_list">רשימת האירועים שלי</string>
@@ -54,4 +54,8 @@
         <string name="empty_massage">לא ניתן לשלוח הודעה ריקה</string>
         <string name="edit_friends">ערוך רשימת חברים</string>
         <string name="friend_list">רשימת חברים</string>
+        <string name="friends_to_your_friend_liat">" חברים לרשימת החברים שלך"</string>
+        <string name="my_friends">החברים שלי</string>
+        <string name="my_messages">ההודעות שלי</string>
+        <string name="come_closer_to_message">אינך נמצא קרוב מספיק להודעה</string>
 </resources>

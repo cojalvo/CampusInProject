@@ -57,7 +57,7 @@ public class CloudAccessObject implements IDataAccesObject
     private Boolean isLoading = false;
     private HashMap<String, CampusInUser> userTotalFriendsList = new HashMap<String, CampusInUser>();
     private HashMap<String, CampusInUserLocation> usersLocationList = new HashMap<String, CampusInUserLocation>();
-    private ConcurrentHashMap<String, Drawable> friendsProfilePictures=new ConcurrentHashMap<String, Drawable>();
+    private ConcurrentHashMap<String, Drawable> friendsProfilePictures = new ConcurrentHashMap<String, Drawable>();
 
     private CloudAccessObject()
     {
@@ -128,8 +128,6 @@ public class CloudAccessObject implements IDataAccesObject
 	});
 
     }
-    
- 
 
     private CampusInEvent createCampusInEventFromParseObj(ParseObject parseObj)
     {
@@ -175,123 +173,123 @@ public class CloudAccessObject implements IDataAccesObject
     @Override
     public void getMessages(final DataAccesObjectCallBack<List<CampusInMessage>> callBack)
     {
-    	// load the currentCampusiN user just in case it wasnt loaded yet.
-    	loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
-    	{
+	// load the currentCampusiN user just in case it wasnt loaded yet.
+	loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
+	{
 
-    	    @Override
-    	    public void done(CampusInUser retObject, Exception e)
-    	    {
-    		if (e == null)
-    		{
-    		    ParseQuery<ParseObject> ownerQuery = ParseQuery.getQuery("Message");
-    		    ownerQuery.whereEqualTo("ownerParseId", curentCampusInUser.getParseUserId());
+	    @Override
+	    public void done(CampusInUser retObject, Exception e)
+	    {
+		if (e == null)
+		{
+		    ParseQuery<ParseObject> ownerQuery = ParseQuery.getQuery("Message");
+		    ownerQuery.whereEqualTo("ownerParseId", curentCampusInUser.getParseUserId());
 
-    		    ParseQuery<ParseObject> recieverQuery = ParseQuery.getQuery("Message");
-    		    recieverQuery.whereEqualTo("recivers", curentCampusInUser.getParseUserId());
+		    ParseQuery<ParseObject> recieverQuery = ParseQuery.getQuery("Message");
+		    recieverQuery.whereEqualTo("recivers", curentCampusInUser.getParseUserId());
 
+		    List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
+		    queries.add(recieverQuery);
+		    queries.add(ownerQuery);
+		    ParseQuery<ParseObject> orQuery = ParseQuery.or(queries);
 
-    		    List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
-    		    queries.add(recieverQuery);
-    		    queries.add(ownerQuery);
-    		    ParseQuery<ParseObject> orQuery = ParseQuery.or(queries);
+		    // this will set the date as and logic ---> (date &&
+		    // (ownerId||reciverId||isPublic))
+		    if (messagesLastUpdate != null)
+			orQuery.whereGreaterThanOrEqualTo("createdAt", messagesLastUpdate);
 
-    		    // this will set the date as and logic ---> (date &&
-    		    // (ownerId||reciverId||isPublic))
-    		    if(messagesLastUpdate!=null)
-    		    	orQuery.whereGreaterThanOrEqualTo("createdAt", messagesLastUpdate);
+		    orQuery.findInBackground(new FindCallback<ParseObject>()
+		    {
 
-    		    orQuery.findInBackground(new FindCallback<ParseObject>()
-    		    {
+			@Override
+			public void done(List<ParseObject> resList, ParseException e)
+			{
+			    List<CampusInMessage> messagesList = new ArrayList<CampusInMessage>();
+			    if (e == null)
+			    {
+				for (ParseObject parseMessage : resList)
+				{
 
-    			@Override
-    			public void done(List<ParseObject> resList, ParseException e)
-    			{
-    			    List<CampusInMessage> messagesList = new ArrayList<CampusInMessage>();
-    			    if (e == null)
-    			    {
-    				for (ParseObject parseMessage : resList)
-    				{
+				    messagesList.add(createCampusInMessageFromParseObj(parseMessage));
+				}
+			    }
+			    if (callBack != null)
+				callBack.done(messagesList, e);
+			}
+		    });
 
-    					messagesList.add(createCampusInMessageFromParseObj(parseMessage));
-    				}
-    			    }
-    			    if (callBack != null)
-    				callBack.done(messagesList, e);
-    			}
-    		    });
+		}
 
-    		}
-
-    	    }
-    	});
+	    }
+	});
     }
-    
+
     private CampusInMessage createCampusInMessageFromParseObj(ParseObject parseObj)
     {
-    	CampusInMessage message=null;
-    	if(parseObj!=null)
-    	{
-    		message=new CampusInMessage();
-    		message.setParseId(parseObj.getObjectId());
-    		message.setContent(parseObj.getString("content"));
-    		message.setReadInRadius(parseObj.getInt("readInRadius"));
-    		message.setSenderFullName(parseObj.getString("senderName"));
-    		CampusInLocation loc=new CampusInLocation();
-    		loc.setLocationName(parseObj.getString("locationName"));
-    		loc.setMapLocation(new LatLng(parseObj.getDouble("lat"), parseObj.getDouble("long")));
-    		message.setLocation(loc);
-    		message.setOwnerId(parseObj.getString("ownerParseId"));
-    		 ArrayList<Object> reciversId = (ArrayList<Object>) parseObj.getList("recivers");
-    		 message.setReceiverId(new ArrayList<String>());
-    		    if (reciversId != null)
-    		    {
-	    			for (Object reciver : reciversId)
-	    			{
-	    				message.getReceiverId().add(reciver.toString());
-	    			}
-    		    }
-    	}
-    	return message;
+	CampusInMessage message = null;
+	if (parseObj != null)
+	{
+	    message = new CampusInMessage();
+	    message.setParseId(parseObj.getObjectId());
+	    message.setContent(parseObj.getString("content"));
+	    message.setReadInRadius(parseObj.getInt("readInRadius"));
+	    message.setSenderFullName(parseObj.getString("senderName"));
+	    CampusInLocation loc = new CampusInLocation();
+	    loc.setLocationName(parseObj.getString("locationName"));
+	    loc.setMapLocation(new LatLng(parseObj.getDouble("lat"), parseObj.getDouble("long")));
+	    message.setLocation(loc);
+	    message.setOwnerId(parseObj.getString("ownerParseId"));
+	    ArrayList<Object> reciversId = (ArrayList<Object>) parseObj.getList("recivers");
+	    message.setReceiverId(new ArrayList<String>());
+	    if (reciversId != null)
+	    {
+		for (Object reciver : reciversId)
+		{
+		    message.getReceiverId().add(reciver.toString());
+		}
+	    }
+	}
+	return message;
     }
 
     @Override
     public void sendMessage(CampusInMessage message, final DataAccesObjectCallBack<Integer> callBack)
     {
-    	if(message!=null)
-    	{
-    		    final ParseObject theMessage = new ParseObject("Message");
-    		    theMessage.put("content", message.getContent());
-    		    theMessage.put("senderName", message.getSenderFullName());
-    		    theMessage.put("readInRadius", message.getReadInRadius());
-    		    theMessage.put("locationName", message.getLocation().getLocationName());
-    		    theMessage.put("lat", message.getLocation().getMapLocation().latitude);
-    		    theMessage.put("long", message.getLocation().getMapLocation().longitude);
-    		    theMessage.put("ownerParseId", message.getOwnerId());
-    		    if (message.getReceiverId() != null)
-    		    {
-	    			for (String reciverId : message.getReceiverId())
-	    			{
-	    				theMessage.add("recivers", reciverId);
-	    			}
-	    		}
-    		    else
-    		    theMessage.add("recivers", message.getOwnerId());
-    		    theMessage.saveInBackground(new SaveCallback()
-    		    {
+	if (message != null)
+	{
+	    final ParseObject theMessage = new ParseObject("Message");
+	    theMessage.put("content", message.getContent());
+	    theMessage.put("senderName", message.getSenderFullName());
+	    theMessage.put("readInRadius", message.getReadInRadius());
+	    theMessage.put("locationName", message.getLocation().getLocationName());
+	    theMessage.put("lat", message.getLocation().getMapLocation().latitude);
+	    theMessage.put("long", message.getLocation().getMapLocation().longitude);
+	    theMessage.put("ownerParseId", message.getOwnerId());
+	    if (message.getReceiverId() != null)
+	    {
+		for (String reciverId : message.getReceiverId())
+		{
+		    theMessage.add("recivers", reciverId);
+		}
+	    }
+	    else
+		theMessage.add("recivers", message.getOwnerId());
+	    theMessage.saveInBackground(new SaveCallback()
+	    {
 
-    			@Override
-    			public void done(ParseException e)
-    			{
-    			    if (callBack != null)
-    			    {
-    				    Log.i("fmefvce", "the Event ParseId is: " + theMessage.getObjectId());
-    				    	callBack.done(0, e);
-    				}
-    			}
-    		    });
-    		}	
-    	}
+		@Override
+		public void done(ParseException e)
+		{
+		    if (callBack != null)
+		    {
+			Log.i("fmefvce", "the Event ParseId is: " + theMessage.getObjectId());
+			callBack.done(0, e);
+		    }
+		}
+	    });
+	}
+    }
+
     @Override
     public void sendEvent(final CampusInEvent event, final DataAccesObjectCallBack<String> callback)
     {
@@ -346,6 +344,7 @@ public class CloudAccessObject implements IDataAccesObject
 	}
 
     }
+
     /*
      * get all users location from the cloud
      * 
@@ -748,8 +747,8 @@ public class CloudAccessObject implements IDataAccesObject
     {
 	// first load
 	ParseQuery<ParseObject> query = ParseQuery.getQuery("CampusInUser");
-	//dont return me
-    query.whereNotEqualTo("parseUserId", curentCampusInUser.getParseUserId());
+	// dont return me
+	query.whereNotEqualTo("parseUserId", curentCampusInUser.getParseUserId());
 	query.findInBackground(new FindCallback<ParseObject>()
 	{
 
@@ -758,7 +757,7 @@ public class CloudAccessObject implements IDataAccesObject
 	    {
 		if (e == null && retList != null)
 		{
-			List<CampusInUser> allUser=new ArrayList<CampusInUser>();
+		    List<CampusInUser> allUser = new ArrayList<CampusInUser>();
 		    for (ParseObject parseObject : retList)
 		    {
 			CampusInUser u = fromParseObjToCampusInUser(parseObject);
@@ -1034,51 +1033,53 @@ public class CloudAccessObject implements IDataAccesObject
 	    }
 	});
     }
+
     @Override
-	public  void getFriendProfilePicture(final String facebookId,
-			final DataAccesObjectCallBack<Drawable> callback) {
-		if(friendsProfilePictures.containsKey(facebookId))
-			if(callback!=null)
-			{
-				callback.done(friendsProfilePictures.get(facebookId), null);
-				return;
-			}
-		FacebookServices.getPictureForFacebookId(
-				facebookId,
-				new DataAccesObjectCallBack<Drawable>() {
-					@Override
-					public void done(Drawable retPic, Exception e) {
-						if (e == null && retPic!=null) {
-							CloudAccessObject.this.friendsProfilePictures.put(facebookId, retPic);
-							callback.done(retPic, e);
-							return;
-						}
-					}
-				});
-		
-		
-	}
+    public void getFriendProfilePicture(final String facebookId, final DataAccesObjectCallBack<Drawable> callback)
+    {
+	if (friendsProfilePictures.containsKey(facebookId))
+	    if (callback != null)
+	    {
+		callback.done(friendsProfilePictures.get(facebookId), null);
+		return;
+	    }
+	FacebookServices.getPictureForFacebookId(facebookId, new DataAccesObjectCallBack<Drawable>()
+	{
+	    @Override
+	    public void done(Drawable retPic, Exception e)
+	    {
+		if (e == null && retPic != null)
+		{
+		    CloudAccessObject.this.friendsProfilePictures.put(facebookId, retPic);
+		    callback.done(retPic, e);
+		    return;
+		}
+	    }
+	});
 
-	@Override
-	public void updateCurrentUserStatus(
-			DataAccesObjectCallBack<Integer> callback, final String status) {
-		loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
-			
-			@Override
-			public void done(ParseObject retObject, Exception e) {
-				if(retObject!=null && e==null)
-				{
-					if(status!=null)
-					{
-					retObject.remove("status");
-					retObject.put("status", status);
-					retObject.saveInBackground();
-					}
-				}
-				
-			}
-		});
-		
-	}
+    }
+
+    @Override
+    public void updateCurrentUserStatus(DataAccesObjectCallBack<Integer> callback, final String status)
+    {
+	loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>()
+	{
+
+	    @Override
+	    public void done(ParseObject retObject, Exception e)
+	    {
+		if (retObject != null && e == null)
+		{
+		    if (status != null)
+		    {
+			retObject.remove("status");
+			retObject.put("status", status);
+			retObject.saveInBackground();
+		    }
+		}
+
+	    }
+	});
+
+    }
 }
-

@@ -38,7 +38,7 @@ public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
 	if (view == null)
 	    view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	builder.setTitle("׳”׳—׳‘׳¨׳™׳� ׳©׳�׳™").setPositiveButton(R.string.close, new DialogInterface.OnClickListener()
+	builder.setTitle(R.string.my_friends).setPositiveButton(R.string.close, new DialogInterface.OnClickListener()
 	{
 
 	    @Override

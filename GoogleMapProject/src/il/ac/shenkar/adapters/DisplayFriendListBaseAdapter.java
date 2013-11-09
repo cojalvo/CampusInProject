@@ -46,6 +46,7 @@ public class DisplayFriendListBaseAdapter extends ChooseFriendListBaseAdapter
 	    holder.txt_itemFullName = (TextView) convertView.findViewById(R.id.display_friend_name);
 	    holder.imageView2 = (ImageView) convertView.findViewById(R.id.display_friend_navigate_button);
 	    holder.imageView = (ImageView) convertView.findViewById(R.id.display_friend_profile_picture_imageView);
+	    holder.status = (TextView) convertView.findViewById(R.id.display_friend_status);
 	    convertView.setTag(holder);
 	}
 	else
@@ -73,13 +74,17 @@ public class DisplayFriendListBaseAdapter extends ChooseFriendListBaseAdapter
 	// setting the facebook profile picture
 	currProfilePicture = (ImageView) convertView.findViewById(R.id.display_friend_profile_picture_imageView);
 	currProfilePicture.setImageDrawable(filteredFriendsArrayList.get(position).getProfilePicture());
+	holder.status.setText(filteredFriendsArrayList.get(position).getUser().getStatus());
 	holder.txt_itemFullName.setText(filteredFriendsArrayList.get(position).getUser().getFirstName() + " " + filteredFriendsArrayList.get(position).getUser().getLastName());
+	
+	
 	return convertView;
     }
 
     static class ViewHolder
     {
 	TextView txt_itemFullName;
+	TextView status;
 	ImageView imageView2;
 	ImageView imageView;
     }

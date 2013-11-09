@@ -327,22 +327,6 @@ public class Controller implements ICampusInController
     }
 
     @Override
-    public void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd)
-    {
-	// for now i add it one by one
-	// Cadan need to implement a method to save bulk of friends all at one
-	if (friendsTOAdd != null && friendsTOAdd.size() > 0)
-	{
-	    for (CampusInUser user : friendsTOAdd)
-	    {
-		cloudAccessObject.addFriendToFriendList(user, null);
-	    }
-	    updateViewModel(null);
-
-	}
-    }
-
-    @Override
     public Drawable getFreindProfilePicture(String parseId, int width, int height)
     {
 	Drawable retPic = viewModel.getUserProfilePicture(parseId);
@@ -371,7 +355,6 @@ public class Controller implements ICampusInController
 	return viewModel.getCampusInUser(parseId);
     }
 
-    
     @Override
     public void navigateToUser(CampusInUser user)
     {
@@ -380,7 +363,7 @@ public class Controller implements ICampusInController
 	    mapManager = MapManager.getInstance(null, 0);
 	    mapManager.moveCameraToPerson(user.getParseUserId());
 	}
-	
+
     }
 
     @Override
@@ -496,6 +479,32 @@ public class Controller implements ICampusInController
 		});
 	    }
 	    updateViewModel(null);
+	}
+
+    }
+
+    @Override
+    public void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd, final ControllerCallback<List<Exception>> callback)
+    {
+	final List<Exception> toReturn = new ArrayList<Exception>();
+	// for now i add it one by one
+	// Cadan need to implement a method to save bulk of friends all at one
+	if (friendsTOAdd != null && friendsTOAdd.size() > 0)
+	{
+	    for (CampusInUser user : friendsTOAdd)
+	    {
+		cloudAccessObject.addFriendToFriendList(user, new DataAccesObjectCallBack<Integer>()
+		{
+
+		    @Override
+		    public void done(Integer retObject, Exception e)
+		    {
+			callback.done(toReturn, e);
+		    }
+		});
+	    }
+	    updateViewModel(null);
+
 	}
 
     }

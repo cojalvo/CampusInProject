@@ -1,5 +1,7 @@
 package il.ac.shenkar.cadan;
 
+import java.util.List;
+
 import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Request.GraphUserCallback;
@@ -9,6 +11,7 @@ import com.parse.ParseFacebookUtils;
 
 import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
 import il.ac.shenkar.common.CampusInConstant;
+import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
@@ -189,6 +192,27 @@ public class PrefsFragment extends PreferenceFragment
 
 		// Create and show the dialog.
 		DisplayFriendFragment newFragment1111 = (DisplayFriendFragment) DisplayFriendFragment.newInstance(null);
+		newFragment1111.show(ft1111, "dialog");
+		return true;
+	    }
+	});
+	Preference showMyMesseges = findPreference("show_my_messages");
+	showMyMesseges.setOnPreferenceClickListener(new OnPreferenceClickListener()
+	{
+	    
+	    @Override
+	    public boolean onPreferenceClick(Preference preference)
+	    {
+		android.app.FragmentTransaction ft1111 = getFragmentManager().beginTransaction();
+		android.app.Fragment prev1111 = getFragmentManager().findFragmentByTag("dialog");
+		if (prev1111 != null)
+		{
+		    ft1111.remove(prev1111);
+		}
+		ft1111.addToBackStack(null);
+
+		// Create and show the dialog.
+		DisplayMyMessagesFragment newFragment1111 =  DisplayMyMessagesFragment.newInstance();
 		newFragment1111.show(ft1111, "dialog");
 		return true;
 	    }

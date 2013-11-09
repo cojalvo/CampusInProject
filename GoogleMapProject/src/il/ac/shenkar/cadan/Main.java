@@ -804,11 +804,26 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		// the finished fragment was
 		// "AddOrRemoveFriendsFromCloudFragment"
 		// we need to do something with the choose friends
-		// TODO: yaki - add the friend list to the user friendList
 		if (friensList != null)
 		{
-		    Toast.makeText(getApplicationContext(), "the user Added: " + friensList.size() + " friends", 3000).show();
-		    controller.addFriendsToCurrentUserFriendList(friensList);
+		    MessageHalper.showProgressDialog("מוסיף " + friensList.size() + " חברים לרשימת החברים שלך", Main.this);
+		    controller.addFriendsToCurrentUserFriendList(friensList, new ControllerCallback<List<Exception>>()
+		    {
+		        
+		        @Override
+		        public void done(List<Exception> retObject, Exception e)
+		        {
+		            MessageHalper.closeProggresDialog();
+		            if(e == null)
+		            {
+		        	// no errors :)
+		        	MessageHalper.showAlertDialog("בוצע!", friensList.size() + " חברים התווספו לרשימת החברים שלך", Main.this);
+		            }
+		            else
+		        	MessageHalper.showAlertDialog("שגיאה!", friensList.size() + " חברים לא התווספו לרשימת החברים שלך", Main.this);
+		    	
+		        }
+		    });
 		}
 		else
 		    Toast.makeText(getApplicationContext(), "the user Added: " + 0 + " friends", 3000).show();
@@ -819,13 +834,14 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    // Remove friends from friend list
 	    if (friensList != null)
 	    {
-		Toast.makeText(getApplication(), "Removed friendList Size: " + friensList.size(), 3000).show();
+		MessageHalper.showProgressDialog("מסיר " + friensList.size() + " חברים מרשימת החברים שלך", Main.this);
 		controller.removeFriendsFromCurrentUserFriendList(friensList,new ControllerCallback<String>()
 		{
 		    
 		    @Override
 		    public void done(String retObject, Exception e)
 		    {
+			MessageHalper.closeProggresDialog();
 			if (e != null)
 			    MessageHalper.showAlertDialog("שגיאת מחיקה", e.getMessage(), Main.this);
 			else
