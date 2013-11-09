@@ -1,5 +1,9 @@
-package il.ac.shenkar.cadan;
+package il.ac.shenkar.adapters;
 
+import il.ac.shenkar.cadan.DiaplayEventListFragment;
+import il.ac.shenkar.cadan.R;
+import il.ac.shenkar.cadan.R.id;
+import il.ac.shenkar.cadan.R.layout;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.in.bl.Controller;
 

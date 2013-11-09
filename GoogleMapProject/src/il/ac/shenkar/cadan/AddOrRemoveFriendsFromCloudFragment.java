@@ -1,5 +1,6 @@
 package il.ac.shenkar.cadan;
 
+import il.ac.shenkar.adapters.ChooseFriendListBaseAdapter;
 import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
 import il.ac.shenkar.cadan.ChooseFriendsFragment.onFriendsAddedListener;
 import il.ac.shenkar.common.CampusInUser;

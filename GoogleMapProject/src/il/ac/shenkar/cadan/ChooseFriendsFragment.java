@@ -3,6 +3,7 @@ package il.ac.shenkar.cadan;
 import java.util.ArrayList;
 import java.util.List;
 
+import il.ac.shenkar.adapters.ChooseFriendListBaseAdapter;
 import il.ac.shenkar.cadan.AddNewEventFragment.DatePickerFragment;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInUser;

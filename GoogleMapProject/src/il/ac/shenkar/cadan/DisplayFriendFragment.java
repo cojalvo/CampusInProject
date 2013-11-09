@@ -3,6 +3,7 @@ package il.ac.shenkar.cadan;
 import java.util.ArrayList;
 import java.util.List;
 
+import il.ac.shenkar.adapters.DisplayFriendListBaseAdapter;
 import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.in.bl.Controller;
@@ -37,7 +38,7 @@ public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
 	if (view == null)
 	    view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	builder.setTitle("החברים שלי").setPositiveButton(R.string.close, new DialogInterface.OnClickListener()
+	builder.setTitle("׳”׳—׳‘׳¨׳™׳� ׳©׳�׳™").setPositiveButton(R.string.close, new DialogInterface.OnClickListener()
 	{
 
 	    @Override
@@ -81,7 +82,7 @@ public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
 				if (view == null)
 				    view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-				friendListView.setAdapter(new DiaplayFriendListBaseAdaptor(getActivity(), getFriends(), curretntUser, DisplayFriendFragment.this));
+				friendListView.setAdapter(new DisplayFriendListBaseAdapter(getActivity(), getFriends(), curretntUser, DisplayFriendFragment.this));
 				if (progressDialog != null)
 				    progressDialog.dismiss();
 			    }

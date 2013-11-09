@@ -1,5 +1,6 @@
 package il.ac.shenkar.cadan;
 
+import il.ac.shenkar.adapters.EventListBaseAdapter;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.in.bl.Controller;

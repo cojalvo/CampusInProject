@@ -1,6 +1,8 @@
-package il.ac.shenkar.cadan;
+package il.ac.shenkar.adapters;
 
-import il.ac.shenkar.cadan.ChooseFriendListBaseAdapter.ViewHolder;
+import il.ac.shenkar.adapters.ChooseFriendListBaseAdapter;
+import il.ac.shenkar.cadan.DisplayFriendFragment;
+import il.ac.shenkar.cadan.R;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserChecked;
@@ -19,11 +21,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DiaplayFriendListBaseAdaptor extends ChooseFriendListBaseAdapter
+public class DisplayFriendListBaseAdapter extends ChooseFriendListBaseAdapter
 {
     private DisplayFriendFragment dialog;
 
-    public DiaplayFriendListBaseAdaptor(Context contect, ArrayList<CampusInUserChecked> list, CampusInUser currentUser, DisplayFriendFragment dialog)
+    public DisplayFriendListBaseAdapter(Context contect, ArrayList<CampusInUserChecked> list, CampusInUser currentUser, DisplayFriendFragment dialog)
     {
 	super(contect, list, currentUser);
 	this.dialog = dialog;
