@@ -85,7 +85,7 @@ public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
 				// controller
 				for (CampusInUser campusInUser : retObject)
 				{
-				    if (controller.isMyFriendToSchool(campusInUser))
+				  //  if (controller.isMyFriendToSchool(campusInUser))
 					friensList.add(campusInUser);
 				}
 
