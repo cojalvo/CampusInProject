@@ -172,7 +172,27 @@ public class PrefsFragment extends PreferenceFragment
 
 	    }
 	});
-	
+	Preference showMyFriends = findPreference("show_my_friends");
+	showMyFriends.setOnPreferenceClickListener(new OnPreferenceClickListener()
+	{
+	    
+	    @Override
+	    public boolean onPreferenceClick(Preference preference)
+	    {
+		android.app.FragmentTransaction ft1111 = getFragmentManager().beginTransaction();
+		android.app.Fragment prev1111 = getFragmentManager().findFragmentByTag("dialog");
+		if (prev1111 != null)
+		{
+		    ft1111.remove(prev1111);
+		}
+		ft1111.addToBackStack(null);
+
+		// Create and show the dialog.
+		DisplayFriendFragment newFragment1111 = (DisplayFriendFragment) DisplayFriendFragment.newInstance(null);
+		newFragment1111.show(ft1111, "dialog");
+		return true;
+	    }
+	});
 	updateMeDetails(savedInstanceState);
     }
 

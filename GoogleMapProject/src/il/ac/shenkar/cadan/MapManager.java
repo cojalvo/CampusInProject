@@ -214,11 +214,14 @@ public class MapManager
 
     public void moveCameraToPerson(String PersonId)
     {
-	Marker m = this.personMarkerdictionary.get(PersonId);
-	if (m != null)
-	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(m.getPosition(), 15));
-	// Zoom in, animating the camera.
-	map.animateCamera(CameraUpdateFactory.zoomTo(2), 2000, null);
+	Marker marker;
+	marker= personMarkerdictionary.get(PersonId);
+	if (marker != null)
+	{ 
+	    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 40); 
+	    map.animateCamera(cameraUpdate);
+	    marker.showInfoWindow();
+	}
     }
 
     public void moveCameraToLocation(LatLng location, int zoom)

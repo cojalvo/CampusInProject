@@ -29,6 +29,7 @@ public interface ICampusInController
 	void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove,ControllerCallback<String> callback);
 	CampusInEvent getEvent(String eventId);
 	void navigateToEvent(CampusInEvent event);
+	void navigateToUser(CampusInUser user);
 	void addNotificationToEvent(CampusInEvent event);
 	Boolean isMyFriend(CampusInUser user);
 	Boolean isMyFriendToSchool(CampusInUser user);

@@ -371,6 +371,18 @@ public class Controller implements ICampusInController
 	return viewModel.getCampusInUser(parseId);
     }
 
+    
+    @Override
+    public void navigateToUser(CampusInUser user)
+    {
+	if (user != null)
+	{
+	    mapManager = MapManager.getInstance(null, 0);
+	    mapManager.moveCameraToPerson(user.getParseUserId());
+	}
+	
+    }
+
     @Override
     public void navigateToEvent(CampusInEvent event)
     {

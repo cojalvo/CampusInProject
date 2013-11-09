@@ -24,15 +24,15 @@ import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Toast;
 
-public class FriendListBaseAdapter extends BaseAdapter implements Filterable
+public class ChooseFriendListBaseAdapter extends BaseAdapter implements Filterable
 {
 
-    private static ArrayList<CampusInUserChecked> friendsArrayList;
-    private static ArrayList<CampusInUserChecked> filteredFriendsArrayList;
-    private LayoutInflater l_Inflater;
-    private CampusInUser currentUser;
+    protected static ArrayList<CampusInUserChecked> friendsArrayList;
+    protected static ArrayList<CampusInUserChecked> filteredFriendsArrayList;
+    protected LayoutInflater l_Inflater;
+    protected CampusInUser currentUser;
 
-    public FriendListBaseAdapter(Context contect, ArrayList<CampusInUserChecked> list, CampusInUser currentUser)
+    public ChooseFriendListBaseAdapter(Context contect, ArrayList<CampusInUserChecked> list, CampusInUser currentUser)
     {
 	this.friendsArrayList = list;
 	this.filteredFriendsArrayList = list;

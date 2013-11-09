@@ -83,7 +83,7 @@ public class ChooseFriendsFragment extends DialogFragment
 		public void onClick(DialogInterface dialog, int which)
 		{
 		    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-		    FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
+		    ChooseFriendListBaseAdapter adapter = (ChooseFriendListBaseAdapter) friendListView.getAdapter();
 
 		    ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
 		    CampusInUserChecked currUserChecked;
@@ -120,7 +120,7 @@ public class ChooseFriendsFragment extends DialogFragment
 		public void onClick(DialogInterface dialog, int which)
 		{
 		    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-		    FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
+		    ChooseFriendListBaseAdapter adapter = (ChooseFriendListBaseAdapter) friendListView.getAdapter();
 
 		    ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
 		    CampusInUserChecked currUserChecked;
@@ -159,7 +159,7 @@ public class ChooseFriendsFragment extends DialogFragment
 	    {
 		// When user changed the Text
 		ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-		FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
+		ChooseFriendListBaseAdapter adapter = (ChooseFriendListBaseAdapter) friendListView.getAdapter();
 		adapter.getFilter().filter(cs);
 	    }
 
@@ -249,7 +249,7 @@ public class ChooseFriendsFragment extends DialogFragment
 				friensList = retObject;
 			    Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 			    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-			    friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
+			    friendListView.setAdapter(new ChooseFriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
 			    // progressDialog.dismiss();
 			}
 		    });

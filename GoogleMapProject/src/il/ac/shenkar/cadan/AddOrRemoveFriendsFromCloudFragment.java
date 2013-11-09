@@ -28,10 +28,10 @@ import android.widget.Toast;
 public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 {
     onFriendsAddedListener mCallback;
-    private View view;
-    private List<CampusInUser> friensList;
-    private ChooseFriendAction action;
-    private ICampusInController controller = null;
+    protected View view;
+    protected List<CampusInUser> friensList;
+    protected ChooseFriendAction action;
+    protected ICampusInController controller = null;
     ProgressDialog progressDialog;
 
     static AddOrRemoveFriendsFromCloudFragment newInstance(ChooseFriendAction action)
@@ -63,7 +63,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 		public void onClick(DialogInterface dialog, int which)
 		{
 		    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-		    FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
+		    ChooseFriendListBaseAdapter adapter = (ChooseFriendListBaseAdapter) friendListView.getAdapter();
 
 		    ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
 		    CampusInUserChecked currUserChecked;
@@ -99,7 +99,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 		public void onClick(DialogInterface dialog, int which)
 		{
 		    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-		    FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
+		    ChooseFriendListBaseAdapter adapter = (ChooseFriendListBaseAdapter) friendListView.getAdapter();
 
 		    ArrayList<CampusInUser> toReturn = new ArrayList<CampusInUser>();
 		    CampusInUserChecked currUserChecked;
@@ -130,6 +130,15 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 
 	// this part is for filtering the list of friends
 	EditText inputSearch = (EditText) view.findViewById(R.id.inputSearch);
+	setFilterListener(inputSearch);
+	
+	builder.setIcon(R.drawable.campus_in_ico);
+	builder.setView(view);
+	return builder.create();
+    }
+
+    public void setFilterListener(EditText inputSearch)
+    {
 	inputSearch.addTextChangedListener(new TextWatcher()
 	{
 
@@ -138,7 +147,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 	    {
 		// When user changed the Text
 		ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-		FriendListBaseAdapter adapter = (FriendListBaseAdapter) friendListView.getAdapter();
+		ChooseFriendListBaseAdapter adapter = (ChooseFriendListBaseAdapter) friendListView.getAdapter();
 		adapter.getFilter().filter(cs);
 	    }
 
@@ -157,9 +166,6 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 	    }
 
 	});
-	builder.setIcon(R.drawable.campus_in_ico);
-	builder.setView(view);
-	return builder.create();
     }
 
     @Override
@@ -182,7 +188,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
      * this method is ment to bring all of the friends from cloud right on the
      * fragment is beeing started
      */
-    private void initFriendList()
+    protected void initFriendList()
     {
 	// progressDialog = ProgressDialog.show(getActivity(),
 	// "Loading Friends", "Loading FRiends from cloud");
@@ -214,7 +220,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 				}
 				Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-				friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
+				friendListView.setAdapter(new ChooseFriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
 				progressDialog.dismiss();
 			    }
 			});
@@ -259,7 +265,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 				    if (view == null)
 					view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 				    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
-				    friendListView.setAdapter(new FriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
+				    friendListView.setAdapter(new ChooseFriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
 				    if (progressDialog != null)
 					progressDialog.dismiss();
 				}
@@ -281,7 +287,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 	    progressDialog = ProgressDialog.show(getActivity(), "Loading Friends", "Loading FRiends from cloud");
     }
 
-    private ArrayList<CampusInUserChecked> getFriends()
+    protected ArrayList<CampusInUserChecked> getFriends()
     {
 
 	ArrayList<CampusInUserChecked> toReturn = new ArrayList<CampusInUserChecked>();

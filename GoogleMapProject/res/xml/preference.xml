@@ -20,7 +20,7 @@
         <Preference
             android:icon="@drawable/calendar_icon"
             android:key="my_calendar"
-            android:summary="הצכ את מערכת השעות"
+            android:summary="הצג את מערכת השעות"
             android:title="מערכת השעות שלי" />
         <Preference
             android:icon="@drawable/test_icon"
@@ -34,7 +34,7 @@
         <Preference
             android:icon="@drawable/group_icon"
             android:key="show_my_friends"
-            android:summary="הצג את החברים שליי"
+            android:summary="הצג את החברים שלי"
             android:title="החברים שלי" />
         <Preference
             android:icon="@drawable/group_icon"

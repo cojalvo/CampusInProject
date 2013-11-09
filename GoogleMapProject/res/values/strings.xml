@@ -53,4 +53,5 @@
         <string name="empty_massage_error">לא ניתן לשלוח הודעה ריקה</string>
         <string name="empty_massage">לא ניתן לשלוח הודעה ריקה</string>
         <string name="edit_friends">ערוך רשימת חברים</string>
+        <string name="friend_list">רשימת חברים</string>
 </resources>
