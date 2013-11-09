@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import android.R.integer;
 import android.content.Context;
@@ -47,7 +48,7 @@ public class ViewModel
     private HashMap<String, CampusInUserLocation> friendsLocation = new HashMap<String, CampusInUserLocation>();
     private HashMap<String, CampusInUser> friendsHash = new HashMap<String, CampusInUser>();
     private HashMap<String, CampusInEvent> allEvents = new HashMap<String, CampusInEvent>();
-	private HashMap<String,Drawable> friendsProfilePictures=new HashMap<String, Drawable>();
+	private ConcurrentHashMap<String,Drawable> friendsProfilePictures=new ConcurrentHashMap<String, Drawable>();
 
     /*
      * this method update the view model, this method is synchronized in order
