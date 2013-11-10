@@ -9,5 +9,6 @@ public interface ILocationHelper
 	CampusInLocation getLocationFromMapCord(LatLng mapCord);
 	CampusInLocation getLocationFromSound(double soundCode);
 	CampusInLocation getLocationFromGpsCord(LatLng gpsCord);
+	CampusInLocation getLocationFromQRCode(String qrCode) throws Exception;
 
 }

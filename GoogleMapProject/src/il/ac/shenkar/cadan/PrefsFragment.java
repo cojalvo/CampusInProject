@@ -6,6 +6,7 @@ import com.facebook.Response;
 import com.facebook.Session;
 import com.facebook.Request.GraphUserCallback;
 import com.facebook.model.GraphUser;
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 
@@ -242,6 +243,22 @@ public class PrefsFragment extends PreferenceFragment
 		DisplayMyMessagesFragment newFragment1111 =  DisplayMyMessagesFragment.newInstance();
 		newFragment1111.show(ft1111, "dialog");
 		return true;
+	    }
+	});
+	
+	Preference reportLocationManualy = findPreference("report_location");
+	reportLocationManualy.setOnPreferenceClickListener(new OnPreferenceClickListener()
+	{
+	    
+	    @Override
+	    public boolean onPreferenceClick(Preference preference)
+	    {
+		// first to turn of the show me pref;
+		if (showMe.isChecked())
+		    showMe.setChecked(false);
+		IntentIntegrator integrator = new IntentIntegrator(getActivity());
+		integrator.initiateScan();
+		return false;
 	    }
 	});
 	updateMeDetails(savedInstanceState);

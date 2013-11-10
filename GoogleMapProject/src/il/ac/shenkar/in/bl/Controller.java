@@ -18,6 +18,7 @@ import il.ac.shenkar.cadan.R;
 import il.ac.shenkar.cadan.ViewModel;
 import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInEvent;
+import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
@@ -40,6 +41,7 @@ public class Controller implements ICampusInController
     private Boolean viewModelIsUpdating = false;
     private Context context;
     private IDataAccesObject cloudAccessObject;
+    private ILocationHelper locationHelper;
     private NotificationManager notificationManager;
     private ViewModel viewModel;
     private CampusInUser currentUser;
@@ -64,7 +66,7 @@ public class Controller implements ICampusInController
 	viewModel = new ViewModel(context);
 	saveToCLoudEventQue = new ArrayList<CampusInEvent>();
 	saveToCloudMessageQue = new ArrayList<CampusInMessage>();
-	
+	locationHelper = new LocationHelper(context);
 	// get the current logged in user
 
 	cloudAccessObject.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
@@ -527,6 +529,10 @@ public class Controller implements ICampusInController
 					wachedItems=retObject;	
 			}
 		});
+		
+	public CampusInLocation getLocationFromQRCode(String qrCode) throws Exception
+	{
+	    return locationHelper.getLocationFromQRCode(qrCode);
 	}
 
 }

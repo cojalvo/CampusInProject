@@ -17,6 +17,11 @@
             android:key="display_me"
             android:summary="@string/show_hidw_mee"
             android:title="@string/show_hide_me_title" />
+         <Preference
+            android:icon="@drawable/marker_icon"
+            android:key="report_location"
+            android:summary="דווח מיקום"
+            android:title="דווח מיקום ידנית" />
         <Preference
             android:icon="@drawable/calendar_icon"
             android:key="my_calendar"

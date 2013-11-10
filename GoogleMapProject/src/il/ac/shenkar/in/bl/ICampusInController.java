@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 
 import il.ac.shenkar.cadan.MapManager;
 import il.ac.shenkar.common.CampusInEvent;
+import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
@@ -46,5 +47,6 @@ public interface ICampusInController
 	void deleteMeFromEvent(String eventId);
 	void deleteMeFromMessage(String messageId);
 	void addToWatchList(String id);
+	CampusInLocation getLocationFromQRCode(String qrCode) throws Exception;
 	
 }
