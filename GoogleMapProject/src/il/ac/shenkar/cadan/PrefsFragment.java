@@ -13,6 +13,8 @@ import il.ac.shenkar.cadan.ChooseFriendsFragment.ChooseFriendAction;
 import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
+import il.ac.shenkar.in.bl.Controller;
+import il.ac.shenkar.in.bl.ICampusInController;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.FacebookServices;
@@ -49,6 +51,7 @@ public class PrefsFragment extends PreferenceFragment
     public static final String ACTION_INTENT = "il.ac.shenkar.CHANGE";
     OnPreferenceSelectedListener mCallback;
     private Context context;
+    ICampusInController controller;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -58,6 +61,7 @@ public class PrefsFragment extends PreferenceFragment
 	Parse.initialize(getActivity(), "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
 	context = getActivity().getBaseContext();
+	controller=Controller.getInstance(null);
 	// update the full name and the profile picture of current user
 	// Load the preferences from an XML resource
 	addPreferencesFromResource(R.xml.preference);
@@ -252,50 +256,10 @@ public class PrefsFragment extends PreferenceFragment
     {
 	// use FacebookService object to get the user profile object
 	final Preference me = (Preference) findPreference("me");
-	final IDataAccesObject dao = CloudAccessObject.getInstance();
-	dao.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
-	{
-
-	    @Override
-	    public void done(CampusInUser retObject, Exception e)
-	    {
-		if (e == null)
-		{
-		    userName = retObject.getFirstName() + " " + retObject.getLastName();
-		    me.setTitle(userName);
-		    dao.getProfilePicture(new DataAccesObjectCallBack<Drawable>()
-		    {
-
-			@Override
-			public void done(Drawable retObject, Exception e)
-			{
-			    if (e == null && retObject != null)
-			    {
-				profilePic = retObject;
-
-				try
-				{
-				    profilePic = resizePic(profilePic, 150, 130);
-				}
-				catch (Exception e1)
-				{
-
-				    Toast.makeText(getActivity(), e1.getMessage(), 500);
-				}
-				Toast.makeText(context, "Picture was loaded from facebook", 500).show();
-				if (me != null)
-				{
-				    me.setIcon(profilePic);
-				}
-			    }
-
-			}
-		    });
-		}
-
-	    }
-	});
-
+	CampusInUser currentUser=controller.getCurrentUser();
+	userName = currentUser.getFirstName() + " " + currentUser.getLastName();
+	me.setTitle(userName);
+	me.setIcon((Controller.getInstance(null).getFreindProfilePicture(currentUser.getParseUserId(), 150, 150)));
     }
 
     @Override
@@ -304,11 +268,4 @@ public class PrefsFragment extends PreferenceFragment
 	outState.putString("userName", userName);
 	super.onSaveInstanceState(outState);
     }
-
-    private Drawable resizePic(Drawable paramDrawable, int paramInt1, int paramInt2) throws Exception
-    {
-	Bitmap localBitmap = ((BitmapDrawable) paramDrawable).getBitmap();
-	return new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(localBitmap, paramInt1, paramInt2, true));
-    }
-
 }

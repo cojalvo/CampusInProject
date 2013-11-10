@@ -57,7 +57,7 @@ public class CloudAccessObject implements IDataAccesObject
     private Boolean isLoading = false;
     private HashMap<String, CampusInUser> userTotalFriendsList = new HashMap<String, CampusInUser>();
     private HashMap<String, CampusInUserLocation> usersLocationList = new HashMap<String, CampusInUserLocation>();
-    private ConcurrentHashMap<String, Drawable> friendsProfilePictures = new ConcurrentHashMap<String, Drawable>();
+    private HashMap<String, Drawable> friendsProfilePictures = new HashMap<String, Drawable>();
 
     private CloudAccessObject()
     {
@@ -677,7 +677,7 @@ public class CloudAccessObject implements IDataAccesObject
 	    callBack.done(this.profilePic, null);
 	    return;
 	}
-	FacebookServices.getPictureForFacebookId(this.curentCampusInUser.getFaceBookUserId(), new DataAccesObjectCallBack<Drawable>()
+	FacebookServices.getPictureForFacebookId(this.curentCampusInUser.getFaceBookUserId(),"type=square", new DataAccesObjectCallBack<Drawable>()
 	{
 	    @Override
 	    public void done(Drawable retPic, Exception e)
@@ -920,6 +920,8 @@ public class CloudAccessObject implements IDataAccesObject
 		if (e == null && retObjectList != null && retObjectList.size() == 1)
 		{
 		    ParseObject retObject = retObjectList.get(0);
+		    //TODO its a bug i shouldnt load the parseUser att all i have it in the memeory this is will save the state update
+		    parseCurrentCampusInUser=retObject;
 		    ParseObject loc = retObject.getParseObject("location");
 		    // location is not exist- need to create it
 		    if (loc == null)
@@ -1043,7 +1045,7 @@ public class CloudAccessObject implements IDataAccesObject
 		callback.done(friendsProfilePictures.get(facebookId), null);
 		return;
 	    }
-	FacebookServices.getPictureForFacebookId(facebookId, new DataAccesObjectCallBack<Drawable>()
+	FacebookServices.getPictureForFacebookId(facebookId,"type=large", new DataAccesObjectCallBack<Drawable>()
 	{
 	    @Override
 	    public void done(Drawable retPic, Exception e)
@@ -1082,4 +1084,23 @@ public class CloudAccessObject implements IDataAccesObject
 	});
 
     }
+
+	@Override
+	public void hideMe() {
+		if(parseCurrentCampusInUser!=null)
+		{
+			parseCurrentCampusInUser.remove("location");
+			parseCurrentCampusInUser.saveInBackground(new SaveCallback() {
+				
+				@Override
+				public void done(ParseException e) {
+					if(e!=null)
+						Log.e("DAO", e.getMessage());
+					
+				}
+			});
+			
+		}
+		
+	}
 }

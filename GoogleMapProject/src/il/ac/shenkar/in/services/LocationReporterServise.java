@@ -5,6 +5,7 @@ import com.parse.ParseFacebookUtils;
 
 import il.ac.shenkar.cadan.PrefsFragment;
 import il.ac.shenkar.common.CampusInConstant;
+import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.location.ILocationReporter;
 import il.ac.shenkar.location.LocationoReporter;
 import android.app.Service;
@@ -84,6 +85,7 @@ public class LocationReporterServise extends Service {
 						if (sharedPreferences.getBoolean(CampusInConstant.DISPLAY_ME, false)) {
 							locationReporter.start();
 						} else {
+							Controller.getInstance(null).HideMe();
 							locationReporter.stop();
 						}
 				}

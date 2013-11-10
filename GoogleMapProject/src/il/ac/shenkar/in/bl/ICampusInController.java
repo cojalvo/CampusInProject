@@ -41,5 +41,7 @@ public interface ICampusInController
 	float getMyDistanceFrom(String parseObjId);
 	public void setMapManager(MapManager mapManager);
 	public void navigateTo(String objId);
+	void HideMe();
+	Boolean CanISeeTheFriend(String userParseId);
 	
 }

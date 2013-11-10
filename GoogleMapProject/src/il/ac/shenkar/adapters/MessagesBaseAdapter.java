@@ -113,6 +113,7 @@ public class MessagesBaseAdapter extends BaseAdapter
 	{
 		holder.txt_senderName.setText("לא ניתן לצפות בהודעה");
 	    holder.txt_messageContent.setText(R.string.come_closer_to_message);
+	    holder.sender_picture.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
 	}
 	holder.txt_distance.setText(getDistanceString(currMessage.getParseId()));
 	return convertView;

@@ -75,13 +75,6 @@
             android:key="event_reminder"
             android:summary="קבל תזכורות לאירועים"
             android:title="תזכורות לאירועים" />
-        <ListPreference
-            android:defaultValue="30"
-            android:entries="@array/messages_radius_display"
-            android:entryValues="@array/messages_radius_display_values"
-            android:key="message_radius_display"
-            android:summary="הצג הודעות ברדיוס של"
-            android:title="הצגת הודעות" />
     </PreferenceCategory>
 
 </PreferenceScreen>

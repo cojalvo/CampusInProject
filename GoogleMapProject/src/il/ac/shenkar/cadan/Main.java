@@ -526,6 +526,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
 		controller.stopAutoViewModelUpdatingService();
 		inExitProcess = true;
+		controller.HideMe();
 		finish();
 	    }
 	});

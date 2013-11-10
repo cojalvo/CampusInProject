@@ -53,5 +53,7 @@ public interface IDataAccesObject
 
 	void getFriendProfilePicture(String facebookId,
 			DataAccesObjectCallBack<Drawable> callback);
+	
+	void hideMe();
 
 }
