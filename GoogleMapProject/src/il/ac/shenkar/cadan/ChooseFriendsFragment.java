@@ -232,14 +232,7 @@ public class ChooseFriendsFragment extends DialogFragment
 
     private void initFriendList()
     {
-	controller.getCurrentUser(new ControllerCallback<CampusInUser>()
-	{
-
-	    @Override
-	    public void done(final CampusInUser curretntUser, Exception e)
-	    {
-		if (e == null && curretntUser != null)
-		{
+    	final CampusInUser curretntUser=controller.getCurrentUser();
 		    controller.getCurrentUserFriendList(new ControllerCallback<List<CampusInUser>>()
 		    {
 
@@ -254,9 +247,6 @@ public class ChooseFriendsFragment extends DialogFragment
 			    // progressDialog.dismiss();
 			}
 		    });
-		}
-	    }
-	});
     }
 
     public interface friendChoice

@@ -135,6 +135,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	this.setContentView(R.layout.main);
 	this.mDrawerLayout =(DrawerLayout) findViewById(R.id.drawer_layout);
 	controller = Controller.getInstance(this);
+	currentUser=controller.getCurrentUser();
 	initMapManager();
 	controller.setMapManager(mapManager);
 	// controller.setMapManager(mapManager);
@@ -200,15 +201,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    startLocationReportServise();
 	    controller.startAutoViewModelUpdatingService();
 	}
-	
-	//this is not done in seperate thread its just a mistake that the controller nead to get callback 
-	controller.getCurrentUser(new ControllerCallback<CampusInUser>() {
-		
-		@Override
-		public void done(CampusInUser retObject, Exception e) {
-			currentUser=retObject;
-		}
-	});
+
 	updateView();
 	registerViewModelReciever();
 	
@@ -272,7 +265,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     private void initMapManager()
     {
-	mapManager = MapManager.getInstance(((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
+	mapManager = MapManager.getInstance(((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap(),currentUser, GoogleMap.MAP_TYPE_NONE);
 
 	mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089518, 34.802128), new LatLng(32.090501, 34.803617), (float) 0.1);
 	mapManager.moveCameraTo(new LatLng(32.089028, 34.80304), 18);

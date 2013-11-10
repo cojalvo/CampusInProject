@@ -193,17 +193,12 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
     {
 	// progressDialog = ProgressDialog.show(getActivity(),
 	// "Loading Friends", "Loading FRiends from cloud");
+    	final CampusInUser curretntUser=controller.getCurrentUser();
 	if (action == ChooseFriendAction.ADD)
 	{
 	    // the user want to add friends to his friend list
 	    // i need to get all users from the cloud
-	    controller.getCurrentUser(new ControllerCallback<CampusInUser>()
-	    {
-		@Override
-		public void done(final CampusInUser curretntUser, Exception e)
-		{
-		    if (e == null && curretntUser != null)
-		    {
+
 			controller.getAllCumpusInUsers(new ControllerCallback<List<CampusInUser>>()
 			{
 			    @Override
@@ -225,22 +220,12 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 				progressDialog.dismiss();
 			    }
 			});
-		    }
-		}
-	    });
+		    
 	}
 	else
 	{
 	    // the user want to remove friends from his friend list
 	    // i need to get only his friends from the cloud
-	    controller.getCurrentUser(new ControllerCallback<CampusInUser>()
-	    {
-
-		@Override
-		public void done(final CampusInUser curretntUser, Exception e)
-		{
-		    if (e == null && curretntUser != null)
-		    {
 			controller.getCurrentUserFriendList(new ControllerCallback<List<CampusInUser>>()
 			{
 
@@ -273,10 +258,8 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 
 			    }
 			});
-		    }
-		}
-	    });
 	}
+	
     }
 
     @Override

@@ -61,14 +61,7 @@ public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
     {
 	// the user want to remove friends from his friend list
 	// i need to get only his friends from the cloud
-	controller.getCurrentUser(new ControllerCallback<CampusInUser>()
-	{
-
-	    @Override
-	    public void done(final CampusInUser curretntUser, Exception e)
-	    {
-		if (e == null && curretntUser != null)
-		{
+    	final CampusInUser curretntUser=controller.getCurrentUser();
 		    controller.getCurrentUserFriendList(new ControllerCallback<List<CampusInUser>>()
 		    {
 
@@ -86,10 +79,6 @@ public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
 				if (progressDialog != null)
 				    progressDialog.dismiss();
 			    }
-
-			}
-		    });
-		}
 	    }
 	});
     }

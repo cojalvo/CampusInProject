@@ -19,7 +19,7 @@ public interface ICampusInController
 	void getCurrentUserFriendList(ControllerCallback<List<CampusInUser>> callBack);
 	void getCurrentUserFriendsLocationList(ControllerCallback<List<CampusInUserLocation>> callBack);
 	void sendMessage(CampusInMessage message,ControllerCallback<Integer> callBack);
-	void getCurrentUser(ControllerCallback<CampusInUser> callBack);
+	CampusInUser getCurrentUser();
 	void updateViewModel(ControllerCallback<Integer> callBack);
 	Drawable  getFreindProfilePicture(String parseId,int width,int height);
 	void getAllCumpusInUsers(ControllerCallback<List<CampusInUser>> callback);

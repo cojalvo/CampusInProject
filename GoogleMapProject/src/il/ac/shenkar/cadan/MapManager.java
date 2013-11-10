@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapManager
 {
+	private CampusInUser me;
     private static MapManager instance = null;
     private GoogleMap map = null;
     private HashMap<String, Marker> personMarkerdictionary;
@@ -113,12 +114,13 @@ public class MapManager
 	return lastlongClicked;
     }
 
-    private MapManager(GoogleMap map, int mapType)
+    private MapManager(GoogleMap map,CampusInUser currentUser, int mapType)
     {
 	this.map = map;
 	this.map.setMapType(mapType);
 	this.map.getUiSettings().setZoomControlsEnabled(false);
 	this.map.setMyLocationEnabled(true);
+	this.me=currentUser;
 	personMarkerdictionary = new HashMap<String, Marker>();
 	eventMarkerdictionary = new HashMap<String, Marker>();
 	positionMarkerDic = new HashMap<String, HashMap<String, Marker>>();
@@ -136,10 +138,10 @@ public class MapManager
 	instance = null;
     }
 
-    public static MapManager getInstance(GoogleMap map, int mapType)
+    public static MapManager getInstance(GoogleMap map,CampusInUser currentUser, int mapType)
     {
 	if (instance == null)
-	    instance = new MapManager(map, mapType);
+	    instance = new MapManager(map,currentUser, mapType);
 	return instance;
     }
 
@@ -272,7 +274,10 @@ public class MapManager
     	MarkerOptions markerOptions = new MarkerOptions();
     	markerOptions.position(message.getLocation().getMapLocation());
     	markerOptions.title("from: "+message.getSenderFullName());
-    	markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.message_narker_ico));
+    	if(message.getOwnerId().equals(me.getParseUserId()))
+    		markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.message_marker_green));
+    	else
+    		markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.message_marker_blue));
     	markerOptions.snippet(message.getContent());
     	Marker messageMarker = map.addMarker(markerOptions);
     	messageMarkerdictionary.put(message.getParseId(), messageMarker);

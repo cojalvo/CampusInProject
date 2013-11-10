@@ -108,33 +108,9 @@ public class Controller implements ICampusInController
     }
 
     @Override
-    public void getCurrentUser(final ControllerCallback<CampusInUser> callBack)
+    public CampusInUser getCurrentUser()
     {
-	if (currentUser != null)
-	    callBack.done(currentUser, null);
-	else
-	{
-	    cloudAccessObject.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
-	    {
-
-		@Override
-		public void done(CampusInUser retObject, Exception e)
-		{
-		    if (retObject != null && e == null)
-		    {
-			// load is a success -> return the recived
-			// Object
-			callBack.done(retObject, null);
-		    }
-		    else
-		    {
-			// en error occered -> retutn the Exeptiom
-			callBack.done(null, e);
-		    }
-
-		}
-	    });
-	}
+    	return viewModel.getCurrentUser();
     }
 
     @Override
@@ -329,7 +305,11 @@ public class Controller implements ICampusInController
     @Override
     public Drawable getFreindProfilePicture(String parseId, int width, int height)
     {
-	Drawable retPic = viewModel.getUserProfilePicture(parseId);
+    	Drawable retPic;
+    	if(currentUser.getParseUserId().equals(parseId))
+    		retPic= viewModel.getCurrentUserProfilePic();
+    	else
+    		retPic = viewModel.getUserProfilePicture(parseId);
 	if (retPic != null)
 	    try
 	    {

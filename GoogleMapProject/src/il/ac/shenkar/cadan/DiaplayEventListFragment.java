@@ -33,16 +33,7 @@ public class DiaplayEventListFragment extends DialogFragment
 	super.onCreateDialog(savedInstanceState);
 
 	// get the current user
-	Controller.getInstance(getActivity()).getCurrentUser(new ControllerCallback<CampusInUser>()
-	{
-
-	    @Override
-	    public void done(CampusInUser retObject, Exception e)
-	    {
-		currentUser = retObject;
-
-	    }
-	});
+	currentUser=Controller.getInstance(getActivity()).getCurrentUser();
 
 	Controller.getInstance(getActivity()).getCurrentUserAllEvents(new ControllerCallback<List<CampusInEvent>>()
 	{

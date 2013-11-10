@@ -39,15 +39,7 @@ public class DisplayMyMessagesFragment extends DialogFragment
 	super.onCreateDialog(savedInstanceState);
 	controller = Controller.getInstance(getActivity());
 	// get the current campus in user 
-	controller.getCurrentUser(new ControllerCallback<CampusInUser>()
-	{
-	    
-	    @Override
-	    public void done(CampusInUser retObject, Exception e)
-	    {
-		currUser = retObject;		
-	    }
-	});
+	currUser=controller.getCurrentUser();
 	
 	initMyMessages();
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -101,8 +93,7 @@ public class DisplayMyMessagesFragment extends DialogFragment
     	int radius=theMessage.getReadInRadius();
     	if(radius==-1) return true;
     	float mydist;
-    	MapManager manager = MapManager.getInstance(null, 0);
-    	mydist = manager.getDistanceFromMe(messageID);
+    	mydist = controller.getMyDistanceFrom(messageID);
     	if(mydist==-1) return false;
     	if(mydist>radius) 
     	{

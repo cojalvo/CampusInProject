@@ -41,6 +41,7 @@ public class ViewModel
 
     private CampusInUser currentUser = null;
 
+    private Drawable currentUserProfilePic;
     private HashMap<String, CampusInMessage> messages = new HashMap<String, CampusInMessage>();
     private HashMap<String, CampusInEvent> meeting = new HashMap<String, CampusInEvent>();
     private HashMap<String, CampusInEvent> tests = new HashMap<String, CampusInEvent>();
@@ -249,10 +250,22 @@ public class ViewModel
 	    {
 		if (e == null && retObject != null)
 		    currentUser = retObject;
+			FacebookServices.getPictureForFacebookId(currentUser.getFaceBookUserId(),new DataAccesObjectCallBack<Drawable>() {
+				
+				@Override
+				public void done(Drawable retObject, Exception e) {
+					if(retObject!=null && e==null)
+						currentUserProfilePic=retObject;
+					
+				}
+			});
 	    }
 	});
     }
 
+    public Drawable getCurrentUserProfilePic() {
+		return currentUserProfilePic;
+	}
     /*
      * After finish update the view model obj an intent will invoke to update
      * the receivers. (they will update the view with the changes.)
@@ -359,6 +372,10 @@ public class ViewModel
 		if(messages.containsKey(id))
 			return messages.get(id);
 		return null;
+	}
+	public CampusInUser getCurrentUser()
+	{
+		return currentUser;
 	}
 	
 

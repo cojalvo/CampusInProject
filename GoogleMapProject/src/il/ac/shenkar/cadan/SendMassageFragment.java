@@ -75,15 +75,7 @@ public class SendMassageFragment extends AddNewEventFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-	Controller.getInstance(null).getCurrentUser(new ControllerCallback<CampusInUser>()
-	{
-
-	    @Override
-	    public void done(CampusInUser retObject, Exception e)
-	    {
-		currentUser = retObject;
-	    }
-	});
+    	currentUser=Controller.getInstance(null).getCurrentUser();
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	builder.setTitle(Messages.getString("SendMassageFragment.sendMessage")); //$NON-NLS-1$
 	builder.setPositiveButton(Messages.getString("SendMassageFragment.send"), new DialogInterface.OnClickListener() //$NON-NLS-1$

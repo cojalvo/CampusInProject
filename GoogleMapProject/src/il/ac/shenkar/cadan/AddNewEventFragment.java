@@ -129,16 +129,8 @@ public class AddNewEventFragment extends DialogFragment
     {
 	super.onCreateDialog(savedInstanceState);
 
-	Controller.getInstance(getActivity()).getCurrentUser(new ControllerCallback<CampusInUser>()
-	{
+	currentUser=Controller.getInstance(getActivity()).getCurrentUser();
 
-	    @Override
-	    public void done(CampusInUser retObject, Exception e)
-	    {
-		currentUser = retObject;
-
-	    }
-	});
 	Boolean showLocationsSpinner = true;
 	Bundle args = this.getArguments();
 	if (args != null)
