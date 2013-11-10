@@ -43,5 +43,7 @@ public interface ICampusInController
 	public void navigateTo(String objId);
 	void HideMe();
 	Boolean CanISeeTheFriend(String userParseId);
+	void deleteMeFromEvent(String eventId);
+	void deleteMeFromMessage(String messageId);
 	
 }

@@ -469,4 +469,20 @@ public class Controller implements ICampusInController
 		return ul.getLocation()!=null;
 	}
 
+	@Override
+	public void deleteMeFromEvent(String eventId) {
+		CampusInEvent event=viewModel.getEventById(eventId);
+		if(event==null) return;
+		cloudAccessObject.deleteMeFromEvent(event);
+		updateViewModel(null);
+	}
+
+	@Override
+	public void deleteMeFromMessage(String messageId) {
+		CampusInMessage message=viewModel.getMessageById(messageId);
+		if(message==null) return;
+		cloudAccessObject.deleteMeFromMessage(message);
+		updateViewModel(null);
+	}
+
 }

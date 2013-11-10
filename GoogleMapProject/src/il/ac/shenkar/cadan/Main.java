@@ -558,13 +558,13 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    switch (mapManager.getMarkerType(marker))
 	    {
 	    case Event:
-		//initiatePopupWindow(PopUpKind.EventInfo);
+		initiatePopupWindow(PopUpKind.Delete);
 		break;
 	    case Person:
-		//initiatePopupWindow(PopUpKind.FriendInfo);
 		break;
 	    case Message:
 	    	canISeeTheMessageMarker(marker,true);
+	    	initiatePopupWindow(PopUpKind.Delete);
 	    	break;
 	    default:
 		break;
@@ -625,42 +625,10 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		layout = inflater.inflate(R.layout.popup_menu, null);
 		pwindo = new PopupWindow(layout, (int) (600 * widthMultScreenFactor), (int) (400 * heightMultScreenFactor), true);
 		break;
-	    case FriendInfo:
-		layout = inflater.inflate(R.layout.friend_info_popup, null);
-		CampusInUser user = controller.getCampusInUser(mapManager.getCampusInUserIdFromMarker(lastMarkerClicked));
-		ImageView profilePictre = (ImageView) layout.findViewById(R.id.profile_picture);
-		profilePictre
-			.setImageDrawable(controller.getFreindProfilePicture(user.getParseUserId(), (int) (150 * widthMultScreenFactor), (int) (130 * heightMultScreenFactor)));
-		TextView fulName = (TextView) layout.findViewById(R.id.full_name);
-		TextView status = (TextView) layout.findViewById(R.id.face_status);
-		TextView distance = (TextView) layout.findViewById(R.id.distance_from_me);
-		distance.setText(getDistanceStringFromLastClickMarker());
-
-		status.setText(user.getStatus());
-		fulName.setText(user.getFirstName() + " " + user.getLastName());
-		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (350 * heightMultScreenFactor), true);
-		break;
-	    case EventInfo:
-		layout = inflater.inflate(R.layout.event_info_popup, null);
-		LinearLayout l = (LinearLayout) layout.findViewById(R.id.event_pop_layout);
-
-		pwindo = new PopupWindow(layout, (int) (750 * widthMultScreenFactor), (int) (800 * heightMultScreenFactor), true);
-		CampusInEvent event = controller.getEvent(mapManager.getEventIdFromMarker(lastMarkerClicked));
-		TextView title = (TextView) layout.findViewById(R.id.event_title);
-		title.setText(event.getHeadLine());
-		TextView description = (TextView) layout.findViewById(R.id.event_description);
-		description.setText(event.getDescription());
-		TextView location = (TextView) layout.findViewById(R.id.event_location);
-		location.setText("מקום: " + event.getLocation().getLocationName());
-		TextView time = (TextView) layout.findViewById(R.id.time_text);
-		Date d = event.getDate();
-		time.setText("שעה: " + ParsingHelper.fromDateToString(d, "HH:mm:ss"));
-		TextView date = (TextView) layout.findViewById(R.id.date_text);
-		TextView distanceEvent = (TextView) layout.findViewById(R.id.event_distance);
-		distanceEvent.setText(getDistanceStringFromLastClickMarker());
-		date.setText("תאריך: " + ParsingHelper.fromDateToString(d, "dd/MM/yyyy"));
-		break;
-
+	    case Delete:
+			layout = inflater.inflate(R.layout.delete_popup, null);
+			pwindo = new PopupWindow(layout, (int) (600 * widthMultScreenFactor), (int) (200 * heightMultScreenFactor), true);
+	    	break;
 	    default:
 		break;
 	    }
@@ -1003,7 +971,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     public enum PopUpKind
     {
-	Menu, FriendInfo, EventInfo
+	Menu, Delete
     }
 
     private void startAutoViewModelUpdatingService()
@@ -1076,10 +1044,25 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	}
     }
 
-    public void deleteMessage()
+    public void deleteClick(View v)
     {
-	Toast.makeText(this, "delete message was clicked", 100);
+    	MarkerType type=mapManager.getMarkerType(lastMarkerClicked);
+    	switch (type) {
+		case Event:
+				String id=mapManager.getEventIdFromMarker(lastMarkerClicked);
+				controller.deleteMeFromEvent(id);
+			break;
+			
+		case Message:
+			String messageId=mapManager.getMessageIdFromMarker(lastMarkerClicked);
+			controller.deleteMeFromMessage(messageId);
+			break;
 
+		default:
+			break;
+		}
+    	pwindo.dismiss();
+    	lastMarkerClicked.remove();
     }
     public static void closeDrawerLayout()
     {

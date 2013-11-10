@@ -55,5 +55,8 @@ public interface IDataAccesObject
 			DataAccesObjectCallBack<Drawable> callback);
 	
 	void hideMe();
+	
+	void deleteMeFromEvent(CampusInEvent theEvent);
+	void deleteMeFromMessage(CampusInMessage theMessage);
 
 }

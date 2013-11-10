@@ -171,6 +171,7 @@ public class CloudAccessObject implements IDataAccesObject
 
 		    ParseQuery<ParseObject> recieverQuery = ParseQuery.getQuery("Message");
 		    recieverQuery.whereEqualTo("recivers", curentCampusInUser.getParseUserId());
+		    
 
 		    List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
 		    queries.add(recieverQuery);
@@ -181,6 +182,8 @@ public class CloudAccessObject implements IDataAccesObject
 		    // (ownerId||reciverId||isPublic))
 		    if (messagesLastUpdate != null)
 			orQuery.whereGreaterThanOrEqualTo("createdAt", messagesLastUpdate);
+		    
+		    orQuery.whereNotEqualTo("userDelete", curentCampusInUser.getParseUserId());
 
 		    orQuery.findInBackground(new FindCallback<ParseObject>()
 		    {
@@ -1073,7 +1076,12 @@ public class CloudAccessObject implements IDataAccesObject
 	public void hideMe() {
 		if(parseCurrentCampusInUser!=null)
 		{
-			parseCurrentCampusInUser.remove("location");
+			ParseObject loc=parseCurrentCampusInUser.getParseObject("location");
+			if(loc!=null)
+			{
+				loc.deleteInBackground();
+				parseCurrentCampusInUser.remove("location");
+			}
 			parseCurrentCampusInUser.saveInBackground(new SaveCallback() {
 				
 				@Override
@@ -1087,4 +1095,71 @@ public class CloudAccessObject implements IDataAccesObject
 		}
 		
 	}
+
+	@Override
+	public void deleteMeFromEvent(final CampusInEvent theEvent) {
+		loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
+			
+			@Override
+			public void done(final CampusInUser currentUser, Exception e) {
+				if(e==null && currentUser!=null)
+				{
+						ParseQuery<ParseObject> query=ParseQuery.getQuery("Event");
+						query.whereEqualTo("objectId", theEvent.getParseId());
+						query.findInBackground(new FindCallback<ParseObject>() {
+							
+							@Override
+							public void done(List<ParseObject> ret, ParseException e) {
+								if(e==null && ret!=null && ret.size()==1)
+								{
+									//im the owner delete the entire event
+									if(currentUser.getParseUserId().equals(theEvent.getOwnerId()))
+									{
+										ret.get(0).deleteInBackground();	
+									}
+									else
+									{
+										List recivers=ret.get(0).getList("recivers");
+										recivers.remove(currentUser.getParseUserId());
+										ret.get(0).saveInBackground();
+									}
+								}
+								
+							}
+						});
+				}
+				
+			}
+		});
+		
+	}
+
+	@Override
+	public void deleteMeFromMessage(final CampusInMessage theMessage) {
+loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
+			
+			@Override
+			public void done(final CampusInUser currentUser, Exception e) {
+				if(e==null && currentUser!=null)
+				{
+						ParseQuery<ParseObject> query=ParseQuery.getQuery("Message");
+						query.whereEqualTo("objectId", theMessage.getParseId());
+						query.findInBackground(new FindCallback<ParseObject>() {
+							
+							@Override
+							public void done(List<ParseObject> ret, ParseException e) {
+								if(e==null && ret!=null && ret.size()==1)
+								{
+									ret.get(0).add("userDelete",currentUser.getParseUserId());
+									ret.get(0).saveInBackground();
+								}
+								
+								
+							}
+						});
+				}
+				
+			}	
+	});
+}
 }
