@@ -94,7 +94,6 @@ public class MessagesBaseAdapter extends BaseAdapter
 	    @Override
 	    public void onClick(View v)
 	    {
-		Controller controller = Controller.getInstance(null);
 		Integer position = (Integer) v.getTag();
 		String messageId = filteredMessagedsArrayList.get(position).getParseId();
 		controller.closePreferanceView();
@@ -113,6 +112,7 @@ public class MessagesBaseAdapter extends BaseAdapter
 	{
 		holder.txt_senderName.setText("לא ניתן לצפות בהודעה");
 	    holder.txt_messageContent.setText(R.string.come_closer_to_message);
+	    holder.sender_picture.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
 	}
 	holder.txt_distance.setText(getDistanceString(currMessage.getParseId()));
 	return convertView;

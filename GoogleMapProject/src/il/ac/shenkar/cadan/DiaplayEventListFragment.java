@@ -2,6 +2,7 @@ package il.ac.shenkar.cadan;
 
 import il.ac.shenkar.adapters.EventListBaseAdapter;
 import il.ac.shenkar.common.CampusInEvent;
+import il.ac.shenkar.common.CampusInEvent.CampusInEventType;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.in.bl.ControllerCallback;
@@ -26,6 +27,7 @@ public class DiaplayEventListFragment extends DialogFragment
     private View view;
     private ArrayList<CampusInEvent> eventList;
     private CampusInUser currentUser;
+    private Boolean testsOnly=false;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -34,7 +36,11 @@ public class DiaplayEventListFragment extends DialogFragment
 
 	// get the current user
 	currentUser=Controller.getInstance(getActivity()).getCurrentUser();
-
+	Bundle args = this.getArguments();
+	if (args != null)
+	{
+		testsOnly = args.getBoolean("tetsOnly");
+	}
 	Controller.getInstance(getActivity()).getCurrentUserAllEvents(new ControllerCallback<List<CampusInEvent>>()
 	{
 
@@ -45,6 +51,18 @@ public class DiaplayEventListFragment extends DialogFragment
 		// asign the return object to the eventList variable
 		// else agign an empty List
 		eventList = retObject != null && e == null ? (ArrayList<CampusInEvent>) retObject : new ArrayList<CampusInEvent>();
+		for (int i=0; i<retObject.size() ; i++) {
+			if(testsOnly)
+			{
+				if(retObject.get(i).getEventType()==CampusInEventType.MEETING)
+					retObject.remove(i);
+			}
+			else
+			{
+				if(retObject.get(i).getEventType()==CampusInEventType.TEST)
+					retObject.remove(i);
+			}
+		}
 	    }
 	});
 

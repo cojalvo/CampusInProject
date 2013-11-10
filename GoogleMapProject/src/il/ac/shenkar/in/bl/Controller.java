@@ -2,23 +2,12 @@ package il.ac.shenkar.in.bl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Stack;
-
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 import il.ac.shenkar.cadan.Main;
@@ -34,7 +23,6 @@ import il.ac.shenkar.common.CampusInUserLocation;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.dal.IDataAccesObject;
-import il.ac.shenkar.in.dal.Model;
 import il.ac.shenkar.in.services.ModelUpdateService;
 
 /**
@@ -311,15 +299,7 @@ public class Controller implements ICampusInController
     	else
     		retPic = viewModel.getUserProfilePicture(parseId);
 	if (retPic != null)
-	    try
-	    {
-		return retPic;
-	    }
-	    catch (Exception e)
-	    {
-		// TODO Auto-generated catch block
-		return context.getResources().getDrawable(R.drawable.com_facebook_profile_picture_blank_portrait);
-	    }
+	    	return retPic;
 	return context.getResources().getDrawable(R.drawable.com_facebook_profile_picture_blank_portrait);
     }
 
@@ -474,6 +454,35 @@ public class Controller implements ICampusInController
 	public void navigateTo(String objId) {
 		mapManager.moveCameraTo(objId, 30);
 		
+	}
+
+	@Override
+	public void HideMe() {
+		cloudAccessObject.hideMe();
+		
+	}
+
+	@Override
+	public Boolean CanISeeTheFriend(String userParseId) {
+		CampusInUserLocation ul=viewModel.getUserfriendLocation(userParseId);
+		if(ul==null) return false;
+		return ul.getLocation()!=null;
+	}
+
+	@Override
+	public void deleteMeFromEvent(String eventId) {
+		CampusInEvent event=viewModel.getEventById(eventId);
+		if(event==null) return;
+		cloudAccessObject.deleteMeFromEvent(event);
+		updateViewModel(null);
+	}
+
+	@Override
+	public void deleteMeFromMessage(String messageId) {
+		CampusInMessage message=viewModel.getMessageById(messageId);
+		if(message==null) return;
+		cloudAccessObject.deleteMeFromMessage(message);
+		updateViewModel(null);
 	}
 
 }

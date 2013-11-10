@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="right"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <LinearLayout
+        android:gravity="right"
+        android:layout_width="match_parent"
+        android:background="@drawable/onclick_selector"
+        android:onClick="deleteClick"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="5dp"
+            android:paddingTop="15dp"
+            android:text="מחק"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:paddingTop="0dp"
+            android:src="@drawable/delete_ico" />
+    </LinearLayout>
+
+</LinearLayout>

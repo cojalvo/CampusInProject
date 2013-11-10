@@ -389,4 +389,10 @@ public class MapManager
 	}
 	return null;
     }
+    
+    //check if we have marker of this user on the map
+    public Boolean CanISeeThefriend(String friendId)
+    {
+    	return personMarkerdictionary.containsKey(friendId);
+    }
 }

@@ -36,10 +36,10 @@ public class ChooseFriendListBaseAdapter extends BaseAdapter implements Filterab
 
     public ChooseFriendListBaseAdapter(Context contect, ArrayList<CampusInUserChecked> list, CampusInUser currentUser)
     {
-	this.friendsArrayList = list;
-	this.filteredFriendsArrayList = list;
-	this.currentUser = currentUser;
-	this.l_Inflater = LayoutInflater.from(contect);
+    	this.friendsArrayList = list;
+    	this.filteredFriendsArrayList = list;
+    	this.currentUser = currentUser;
+    	this.l_Inflater = LayoutInflater.from(contect);
     }
 
     @Override

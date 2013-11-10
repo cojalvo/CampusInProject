@@ -53,5 +53,10 @@ public interface IDataAccesObject
 
 	void getFriendProfilePicture(String facebookId,
 			DataAccesObjectCallBack<Drawable> callback);
+	
+	void hideMe();
+	
+	void deleteMeFromEvent(CampusInEvent theEvent);
+	void deleteMeFromMessage(CampusInMessage theMessage);
 
 }

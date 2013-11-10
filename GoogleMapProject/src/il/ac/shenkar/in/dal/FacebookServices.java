@@ -59,7 +59,7 @@ public class FacebookServices {
 	 * 
 	 * @param userID
 	 */
-	public synchronized static void getPictureForFacebookId(final String userId,
+	public synchronized static void getPictureForFacebookId(final String userId,final String pictureTypeString,
 			final DataAccesObjectCallBack<Drawable> callBack) {
 		new AsyncTask<String, Integer, String>() {
 
@@ -67,7 +67,7 @@ public class FacebookServices {
 			protected String doInBackground(String... params) {
 				 try
 			        {
-			          FacebookServices.inputStream = new URL("https://graph.facebook.com/" + userId + "/picture?type=large").openStream();
+			          FacebookServices.inputStream = new URL("https://graph.facebook.com/" + userId + "/picture?"+pictureTypeString).openStream();
 			          FacebookServices.picture = Drawable.createFromStream(FacebookServices.inputStream, "facebook-pictures");
 			          return null;
 			        }
@@ -82,6 +82,7 @@ public class FacebookServices {
 			protected void onPostExecute(String result) {
 				if(callBack!=null)
 					callBack.done(picture, null);
+				picture=null;
 			}
 
 		}.execute();

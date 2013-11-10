@@ -1,39 +1,23 @@
 package il.ac.shenkar.in.dal;
 
-import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInEvent;
-import il.ac.shenkar.common.CampusInEvent.CampusInEventType;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
-import il.ac.shenkar.common.ParsingHelper;
-import il.ac.shenkar.common.PersonalSettings;
 import il.ac.shenkar.in.bl.Controller;
 
-import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Currency;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
-import android.R.bool;
-import android.animation.ArgbEvaluator;
 import android.graphics.drawable.Drawable;
-import android.net.rtp.RtpStream;
-import android.text.method.DateTimeKeyListener;
 import android.util.Log;
-import android.widget.Toast;
-
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
-import com.google.android.gms.internal.cm;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -57,7 +41,7 @@ public class CloudAccessObject implements IDataAccesObject
     private Boolean isLoading = false;
     private HashMap<String, CampusInUser> userTotalFriendsList = new HashMap<String, CampusInUser>();
     private HashMap<String, CampusInUserLocation> usersLocationList = new HashMap<String, CampusInUserLocation>();
-    private ConcurrentHashMap<String, Drawable> friendsProfilePictures = new ConcurrentHashMap<String, Drawable>();
+    private HashMap<String, Drawable> friendsProfilePictures = new HashMap<String, Drawable>();
 
     private CloudAccessObject()
     {
@@ -187,6 +171,7 @@ public class CloudAccessObject implements IDataAccesObject
 
 		    ParseQuery<ParseObject> recieverQuery = ParseQuery.getQuery("Message");
 		    recieverQuery.whereEqualTo("recivers", curentCampusInUser.getParseUserId());
+		    
 
 		    List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
 		    queries.add(recieverQuery);
@@ -197,6 +182,8 @@ public class CloudAccessObject implements IDataAccesObject
 		    // (ownerId||reciverId||isPublic))
 		    if (messagesLastUpdate != null)
 			orQuery.whereGreaterThanOrEqualTo("createdAt", messagesLastUpdate);
+		    
+		    orQuery.whereNotEqualTo("userDelete", curentCampusInUser.getParseUserId());
 
 		    orQuery.findInBackground(new FindCallback<ParseObject>()
 		    {
@@ -677,7 +664,7 @@ public class CloudAccessObject implements IDataAccesObject
 	    callBack.done(this.profilePic, null);
 	    return;
 	}
-	FacebookServices.getPictureForFacebookId(this.curentCampusInUser.getFaceBookUserId(), new DataAccesObjectCallBack<Drawable>()
+	FacebookServices.getPictureForFacebookId(this.curentCampusInUser.getFaceBookUserId(),"type=square", new DataAccesObjectCallBack<Drawable>()
 	{
 	    @Override
 	    public void done(Drawable retPic, Exception e)
@@ -920,6 +907,8 @@ public class CloudAccessObject implements IDataAccesObject
 		if (e == null && retObjectList != null && retObjectList.size() == 1)
 		{
 		    ParseObject retObject = retObjectList.get(0);
+		    //TODO its a bug i shouldnt load the parseUser att all i have it in the memeory this is will save the state update
+		    parseCurrentCampusInUser=retObject;
 		    ParseObject loc = retObject.getParseObject("location");
 		    // location is not exist- need to create it
 		    if (loc == null)
@@ -1043,7 +1032,7 @@ public class CloudAccessObject implements IDataAccesObject
 		callback.done(friendsProfilePictures.get(facebookId), null);
 		return;
 	    }
-	FacebookServices.getPictureForFacebookId(facebookId, new DataAccesObjectCallBack<Drawable>()
+	FacebookServices.getPictureForFacebookId(facebookId,"type=small", new DataAccesObjectCallBack<Drawable>()
 	{
 	    @Override
 	    public void done(Drawable retPic, Exception e)
@@ -1082,4 +1071,95 @@ public class CloudAccessObject implements IDataAccesObject
 	});
 
     }
+
+	@Override
+	public void hideMe() {
+		if(parseCurrentCampusInUser!=null)
+		{
+			ParseObject loc=parseCurrentCampusInUser.getParseObject("location");
+			if(loc!=null)
+			{
+				loc.deleteInBackground();
+				parseCurrentCampusInUser.remove("location");
+			}
+			parseCurrentCampusInUser.saveInBackground(new SaveCallback() {
+				
+				@Override
+				public void done(ParseException e) {
+					if(e!=null)
+						Log.e("DAO", e.getMessage());
+					
+				}
+			});
+			
+		}
+		
+	}
+
+	@Override
+	public void deleteMeFromEvent(final CampusInEvent theEvent) {
+		loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
+			
+			@Override
+			public void done(final CampusInUser currentUser, Exception e) {
+				if(e==null && currentUser!=null)
+				{
+						ParseQuery<ParseObject> query=ParseQuery.getQuery("Event");
+						query.whereEqualTo("objectId", theEvent.getParseId());
+						query.findInBackground(new FindCallback<ParseObject>() {
+							
+							@Override
+							public void done(List<ParseObject> ret, ParseException e) {
+								if(e==null && ret!=null && ret.size()==1)
+								{
+									//im the owner delete the entire event
+									if(currentUser.getParseUserId().equals(theEvent.getOwnerId()))
+									{
+										ret.get(0).deleteInBackground();	
+									}
+									else
+									{
+										List recivers=ret.get(0).getList("recivers");
+										recivers.remove(currentUser.getParseUserId());
+										ret.get(0).saveInBackground();
+									}
+								}
+								
+							}
+						});
+				}
+				
+			}
+		});
+		
+	}
+
+	@Override
+	public void deleteMeFromMessage(final CampusInMessage theMessage) {
+loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
+			
+			@Override
+			public void done(final CampusInUser currentUser, Exception e) {
+				if(e==null && currentUser!=null)
+				{
+						ParseQuery<ParseObject> query=ParseQuery.getQuery("Message");
+						query.whereEqualTo("objectId", theMessage.getParseId());
+						query.findInBackground(new FindCallback<ParseObject>() {
+							
+							@Override
+							public void done(List<ParseObject> ret, ParseException e) {
+								if(e==null && ret!=null && ret.size()==1)
+								{
+									ret.get(0).add("userDelete",currentUser.getParseUserId());
+									ret.get(0).saveInBackground();
+								}
+								
+								
+							}
+						});
+				}
+				
+			}	
+	});
+}
 }
