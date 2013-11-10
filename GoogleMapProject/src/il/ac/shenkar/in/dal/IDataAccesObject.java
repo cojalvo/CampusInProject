@@ -58,5 +58,7 @@ public interface IDataAccesObject
 	
 	void deleteMeFromEvent(CampusInEvent theEvent);
 	void deleteMeFromMessage(CampusInMessage theMessage);
+	void loadWatchItems(DataAccesObjectCallBack<List<String>> callBack);
+	void saveWatchList(List<String> watchList);
 
 }

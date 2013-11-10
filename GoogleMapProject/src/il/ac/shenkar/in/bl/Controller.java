@@ -2,6 +2,7 @@ package il.ac.shenkar.in.bl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import android.content.Context;
 import android.content.Intent;
@@ -46,6 +47,7 @@ public class Controller implements ICampusInController
     private Boolean updatingViewModel = false;
     private Boolean updateAgainViewModel = false;
     private Boolean viewModelServiceRunning = false;
+    private  List<String> wachedItems=new ArrayList<String>();
     /**
      * this List will hold all of the Events we want to save to the cloud only
      * if the save is successful the event object will be thrown from the list
@@ -53,6 +55,7 @@ public class Controller implements ICampusInController
     private List<CampusInEvent> saveToCLoudEventQue;
     private List<CampusInMessage> saveToCloudMessageQue;
 
+    
     private Controller(Context context)
     {
 	// private c'tor
@@ -61,6 +64,7 @@ public class Controller implements ICampusInController
 	viewModel = new ViewModel(context);
 	saveToCLoudEventQue = new ArrayList<CampusInEvent>();
 	saveToCloudMessageQue = new ArrayList<CampusInMessage>();
+	
 	// get the current logged in user
 
 	cloudAccessObject.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
@@ -73,6 +77,7 @@ public class Controller implements ICampusInController
 		if (e == null && retObject != null)
 		{
 		    currentUser = retObject;
+		    loadWatchedItems();
 		}
 
 	    }
@@ -228,8 +233,26 @@ public class Controller implements ICampusInController
     {
 	Intent inti = new Intent();
 	inti.setAction(CampusInConstant.VIEW_MODEL_UPDATED);
+	inti.putExtra("newEvents", newEventsNumber());
+	inti.putExtra("newMessages",newMessagesNumber());
 	if (context != null)
 	    context.sendBroadcast(inti);
+    }
+    private int newEventsNumber()
+    {
+    	int counter=0;
+    	for (CampusInEvent event : viewModel.getAllEvents()) {
+			if(!wachedItems.contains(event.getParseId())) counter++;
+		}
+    	return counter;
+    }
+    private int newMessagesNumber()
+    {
+    	int counter=0;
+    	for (CampusInMessage message : viewModel.getAllMessages()) {
+			if(!wachedItems.contains(message.getParseId())) counter++;
+		}
+    	return counter;
     }
 
     @Override
@@ -483,6 +506,27 @@ public class Controller implements ICampusInController
 		if(message==null) return;
 		cloudAccessObject.deleteMeFromMessage(message);
 		updateViewModel(null);
+	}
+
+	@Override
+	public void addToWatchList(String id) {
+		if(id!=null && !wachedItems.contains(id))
+			wachedItems.add(id);
+	}
+	public void saveWatchedList()
+	{
+		cloudAccessObject.saveWatchList(wachedItems);
+	}
+	private void loadWatchedItems()
+	{
+		cloudAccessObject.loadWatchItems(new DataAccesObjectCallBack<List<String>>() {
+			
+			@Override
+			public void done(List<String> retObject, Exception e) {
+				if(e==null && retObject!=null)
+					wachedItems=retObject;	
+			}
+		});
 	}
 
 }

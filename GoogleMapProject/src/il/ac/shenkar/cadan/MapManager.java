@@ -1,5 +1,6 @@
 package il.ac.shenkar.cadan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import android.provider.ContactsContract.CommonDataKinds.Event;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
@@ -41,6 +43,7 @@ public class MapManager
     private static HashMap<Marker, String> markerMessageDictiobnary;
     private HashMap<Marker, String> markerPersondictiobnary;
     private HashMap<Marker, String> markerEventDictionary;
+    private List<String> removedItems=new ArrayList<String>();
     private final LatLng shenkarLatLong=new LatLng(32.090049, 34.802807);
     private GroundOverlayOptions campusOverlay;
     private float myLastDistance;
@@ -62,6 +65,11 @@ public class MapManager
     {
 	if (listener != null)
 	    this.map.setOnMapLongClickListener(listener);
+    }
+    public void setOnMapClickListener(OnMapClickListener listener)
+    {
+	if (listener != null)
+	    this.map.setOnMapClickListener(listener);
     }
 
     public void setOnMarkerClickListener(OnMarkerClickListener listener)
@@ -257,6 +265,7 @@ public class MapManager
 
     public void addOrUpdateEventMarker(CampusInEvent event)
     {
+    	if(removedItems.contains(event.getParseId())) return;
 	// create and config the marker Option
 	MarkerOptions markerOptions = new MarkerOptions();
 	markerOptions.position(event.getLocation().getMapLocation());
@@ -270,6 +279,7 @@ public class MapManager
 
     public void addOrUpdateMessageMarker(CampusInMessage message)
     {
+    	if(removedItems.contains(message.getParseId())) return;
     	// create and config the marker Option
     	MarkerOptions markerOptions = new MarkerOptions();
     	markerOptions.position(message.getLocation().getMapLocation());
@@ -345,6 +355,12 @@ public class MapManager
 	return null;
     }
 
+    public String getPersonIdFromMarker(Marker marker)
+    {
+	if (markerPersondictiobnary.containsKey(marker))
+	    return markerPersondictiobnary.get(marker);
+	return null;
+    }
     public GoogleMap getMap()
     {
         return map;
@@ -394,5 +410,19 @@ public class MapManager
     public Boolean CanISeeThefriend(String friendId)
     {
     	return personMarkerdictionary.containsKey(friendId);
+    }
+    
+    public void showInfoWindowForId(String id)
+    {
+    	if(eventMarkerdictionary.containsKey(id))
+    		eventMarkerdictionary.get(id).showInfoWindow();
+    	else if(personMarkerdictionary.containsKey(id))
+    		personMarkerdictionary.get(id).showInfoWindow();
+    	else if(messageMarkerdictionary.containsKey(id))
+    		messageMarkerdictionary.get(id).showInfoWindow();	
+    }
+    public void saveRemovedItem(String id)
+    {
+    	removedItems.add(id);
     }
 }

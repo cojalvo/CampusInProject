@@ -24,6 +24,7 @@ import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -1162,4 +1163,59 @@ loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
 			}	
 	});
 }
+
+	@Override
+	public void loadWatchItems(final DataAccesObjectCallBack<List<String>> callBack) {
+		loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+			
+			@Override
+			public void done(ParseObject retObject, Exception e) {
+				if(retObject!=null && e==null)
+				{
+					
+					ParseQuery<ParseObject> q=retObject.getRelation("wachItems").getQuery();
+					q.findInBackground(new FindCallback<ParseObject>() {
+						
+						@Override
+						public void done(List<ParseObject> retList, ParseException e) {
+							List<String> wachList=new ArrayList<String>();
+							if(e==null)
+							{
+								for (ParseObject parseObject : retList) 
+								{
+									wachList.add(parseObject.getString("watchId"));
+								}
+							}
+							if(callBack!=null)
+								callBack.done(wachList, e);
+						}
+					});
+				}
+				
+			}
+		});
+		
+	}
+
+	@Override
+	public void saveWatchList(final List<String> watchList) {
+		loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
+			
+			@Override
+			public void done(ParseObject retObject, Exception e) {
+				if(e==null)
+				{
+					ParseRelation<ParseObject> relation=retObject.getRelation("wachItems");
+					for (String id : watchList) {
+						ParseObject watchItem=new ParseObject("watchItem");
+						watchItem.put("watchId", id);
+						relation.add(watchItem);
+					}
+					retObject.saveInBackground();
+				}
+				
+			}
+		});
+		
+	}
 }

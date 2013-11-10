@@ -45,5 +45,6 @@ public interface ICampusInController
 	Boolean CanISeeTheFriend(String userParseId);
 	void deleteMeFromEvent(String eventId);
 	void deleteMeFromMessage(String messageId);
+	void addToWatchList(String id);
 	
 }

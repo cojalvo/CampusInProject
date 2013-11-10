@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
 
 public class MessageHalper
 {
@@ -49,6 +50,18 @@ public class MessageHalper
 	// Set the Icon for the Dialog
 	alertDialog.setIcon(R.drawable.campus_in_ico);
 	alertDialog.show();
+    }
+    public static void showYesNoDialog(String title, String message, Context context,DialogInterface.OnClickListener yesListener,DialogInterface.OnClickListener noListener)
+    {
+    	AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+    	alertDialog.setTitle(title);
+    	alertDialog.setMessage(message);
+    	alertDialog.setButton(alertDialog.BUTTON_POSITIVE, "אישור", yesListener);
+    	alertDialog.setButton(alertDialog.BUTTON_NEGATIVE, "ביטול", noListener);
+
+    	// Set the Icon for the Dialog
+    	alertDialog.setIcon(R.drawable.campus_in_ico);
+    	alertDialog.show();
     }
 
 }

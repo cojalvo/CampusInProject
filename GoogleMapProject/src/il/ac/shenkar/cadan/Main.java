@@ -31,6 +31,7 @@ import il.ac.shenkar.in.services.ModelUpdateService;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
@@ -90,7 +91,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Main extends Activity implements OnPreferenceSelectedListener, OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener, onNewEventAdded,
+public class Main extends Activity implements OnMapClickListener,OnPreferenceSelectedListener, OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener, onNewEventAdded,
 	onNewMassagecreated
 {
     CameraPosition lastPos = new CameraPosition(new LatLng(0, 0), 2, 2, 2);
@@ -98,6 +99,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     private static DrawerLayout mDrawerLayout;
     private LatLng lastMapLongClick = null;
     private Marker lastMarkerClicked = null;
+    private String lastClickedObjId;
     private ActionBarDrawerToggle mDrawerToggle;
     static final LatLng HAMBURG = new LatLng(20, 25);
     static final LatLng KIEL = new LatLng(15, 10);
@@ -271,6 +273,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	mapManager.moveCameraTo(new LatLng(32.089028, 34.80304), 18);
 	mapManager.setOnMapLongClickListener(this);
 	mapManager.setOnMarkerClickListener(this);
+	mapManager.setOnMapClickListener(this);
 	mapManager.getMap().setInfoWindowAdapter(new InfoWindowAdapter()
 	{
 
@@ -557,12 +560,19 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
 	    switch (mapManager.getMarkerType(marker))
 	    {
+	    
+	    //update the obj id that was clicked in order to show the info window when refresh the view
 	    case Event:
+	    lastClickedObjId=mapManager.getEventIdFromMarker(lastMarkerClicked);
+	    controller.addToWatchList(new String(lastClickedObjId));
 		initiatePopupWindow(PopUpKind.Delete);
 		break;
 	    case Person:
+	    lastClickedObjId=mapManager.getPersonIdFromMarker(lastMarkerClicked);
 		break;
 	    case Message:
+	    	lastClickedObjId=mapManager.getMessageIdFromMarker(lastMarkerClicked);
+	    	controller.addToWatchList(new String(lastClickedObjId));
 	    	canISeeTheMessageMarker(marker,true);
 	    	initiatePopupWindow(PopUpKind.Delete);
 	    	break;
@@ -627,7 +637,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		break;
 	    case Delete:
 			layout = inflater.inflate(R.layout.delete_popup, null);
-			pwindo = new PopupWindow(layout, (int) (600 * widthMultScreenFactor), (int) (200 * heightMultScreenFactor), true);
+			pwindo = new PopupWindow(layout, (int) (350 * widthMultScreenFactor), (int) (180 * heightMultScreenFactor), true);
 	    	break;
 	    default:
 		break;
@@ -901,6 +911,12 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	    {
 		if (intent.getAction().equals(CampusInConstant.VIEW_MODEL_UPDATED))
 		{
+			int numberOfNewMessages=intent.getIntExtra("newMessages", 0);
+			int numberOfNewEvents=intent.getIntExtra("newEvents", 0);
+			if(numberOfNewEvents>0||numberOfNewMessages>0)
+			{
+				MessageHalper.showAlertDialog("", createNewEventsAndMessagesMessage(numberOfNewEvents, numberOfNewMessages),Main.this);
+			}
 		    Toast.makeText(Main.this, "view model was updated", 500).show();
 		    updateView();
 		}
@@ -910,6 +926,20 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	registerReceiver(viewModelUpdatedReciever, filterSend);
     }
 
+    private String createNewEventsAndMessagesMessage(int events,int messages)
+    {
+    	String message = null;
+    	if(events>0)
+    	{
+    		message+=events+" אירועים חדשים";
+    	}
+    	if(messages>0)
+    	{
+    		message+="ו "+messages+" הודעות חדשות";
+    	}
+    	message+="התקבלו.";
+    	return message;
+    }
     private void unRegisterViewModelReciever()
     {
 	if (viewModelUpdatedReciever != null)
@@ -954,6 +984,8 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	{
 	    mapManager.addOrUpdateMessageMarker(campusInMessage);
 	}
+	mapManager.showInfoWindowForId(lastClickedObjId);
+
     }
 
     @Override
@@ -1046,28 +1078,47 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 
     public void deleteClick(View v)
     {
+    	String titleName = null;
     	MarkerType type=mapManager.getMarkerType(lastMarkerClicked);
     	switch (type) {
 		case Event:
 				String id=mapManager.getEventIdFromMarker(lastMarkerClicked);
 				controller.deleteMeFromEvent(id);
+				titleName="אירוע";
 			break;
 			
 		case Message:
 			String messageId=mapManager.getMessageIdFromMarker(lastMarkerClicked);
 			controller.deleteMeFromMessage(messageId);
+			titleName="הודעה";
 			break;
 
 		default:
 			break;
 		}
+    	MessageHalper.showYesNoDialog("מחיקת "+titleName+".", " האם אתה בטוח שברצונך למחקות את ה"+ titleName+".", this,new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+		    	lastMarkerClicked.remove();
+		    	mapManager.saveRemovedItem(lastClickedObjId);
+		    	lastClickedObjId=null;
+				
+			}
+		},null);
     	pwindo.dismiss();
-    	lastMarkerClicked.remove();
     }
     public static void closeDrawerLayout()
     {
 	if (mDrawerLayout != null)
 	    mDrawerLayout.closeDrawers();
     }
+
+	@Override
+	public void onMapClick(LatLng point) {
+		//reset the last object id that was clicked
+	lastClickedObjId=null;
+		
+	}
    
 }
