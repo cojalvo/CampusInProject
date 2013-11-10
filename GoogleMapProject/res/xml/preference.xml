@@ -23,11 +23,6 @@
             android:summary="דווח מיקום"
             android:title="דווח מיקום ידנית" />
         <Preference
-            android:icon="@drawable/calendar_icon"
-            android:key="my_calendar"
-            android:summary="הצג את מערכת השעות"
-            android:title="מערכת השעות שלי" />
-        <Preference
             android:icon="@drawable/test_icon"
             android:key="my_tests"
             android:summary="הצג את לוח המבחנים שלי"

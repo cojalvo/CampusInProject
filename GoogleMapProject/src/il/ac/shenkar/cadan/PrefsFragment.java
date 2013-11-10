@@ -103,20 +103,6 @@ public class PrefsFragment extends PreferenceFragment
 		return true;
 	    }
 	});
-	Preference testCalender = findPreference("my_calendar");
-	testCalender.setOnPreferenceClickListener(new OnPreferenceClickListener()
-	{
-
-	    @Override
-	    public boolean onPreferenceClick(Preference preference)
-	    {
-		// startActivity(new Intent(
-		// getActivity().getBaseContext(),
-		// CalendarAvtivity.class));
-		mCallback.onPreferenceSelected(CampusInConstant.SETTINGS_EVENTS);
-		return true;
-	    }
-	});
 	
 	Preference testShow = findPreference("my_tests");
 	testShow.setOnPreferenceClickListener(new OnPreferenceClickListener()

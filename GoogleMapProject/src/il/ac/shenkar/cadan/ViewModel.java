@@ -111,7 +111,7 @@ public class ViewModel
 				campusInUser);
 		    }
 			//done in lazy loading
-			getfacebookProfilePictures();
+			//getfacebookProfilePictures();
 		    updateUsersDone = true;
 		}
 		dao.getUsersLocationInBackground(new DataAccesObjectCallBack<List<CampusInUserLocation>>()
