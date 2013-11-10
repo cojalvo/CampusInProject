@@ -50,6 +50,7 @@ public class Controller implements ICampusInController
     private Boolean updateAgainViewModel = false;
     private Boolean viewModelServiceRunning = false;
     private  List<String> wachedItems=new ArrayList<String>();
+    private  List<String> reported=new ArrayList<String>();
     /**
      * this List will hold all of the Events we want to save to the cloud only
      * if the save is successful the event object will be thrown from the list
@@ -79,7 +80,7 @@ public class Controller implements ICampusInController
 		if (e == null && retObject != null)
 		{
 		    currentUser = retObject;
-		    loadWatchedItems();
+		    //loadWatchedItems();
 		}
 
 	    }
@@ -244,7 +245,11 @@ public class Controller implements ICampusInController
     {
     	int counter=0;
     	for (CampusInEvent event : viewModel.getAllEvents()) {
-			if(!wachedItems.contains(event.getParseId())) counter++;
+			if(!wachedItems.contains(event.getParseId()) && !reported.contains(event.getParseId()))
+				{
+					counter++;
+					reported.add(event.getParseId());
+				}
 		}
     	return counter;
     }
@@ -252,7 +257,11 @@ public class Controller implements ICampusInController
     {
     	int counter=0;
     	for (CampusInMessage message : viewModel.getAllMessages()) {
-			if(!wachedItems.contains(message.getParseId())) counter++;
+			if(!wachedItems.contains(message.getParseId()) && !reported.contains(message.getParseId())) 
+				{
+					counter++;
+					reported.add(message.getParseId());
+				}
 		}
     	return counter;
     }
@@ -529,6 +538,7 @@ public class Controller implements ICampusInController
 					wachedItems=retObject;	
 			}
 		});
+	}
 		
 	public CampusInLocation getLocationFromQRCode(String qrCode) throws Exception
 	{

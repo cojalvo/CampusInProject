@@ -1075,26 +1075,27 @@ public class CloudAccessObject implements IDataAccesObject
 
 	@Override
 	public void hideMe() {
-		if(parseCurrentCampusInUser!=null)
-		{
-			ParseObject loc=parseCurrentCampusInUser.getParseObject("location");
-			if(loc!=null)
-			{
-				loc.deleteInBackground();
-				parseCurrentCampusInUser.remove("location");
-			}
-			parseCurrentCampusInUser.saveInBackground(new SaveCallback() {
-				
-				@Override
-				public void done(ParseException e) {
-					if(e!=null)
-						Log.e("DAO", e.getMessage());
-					
-				}
-			});
+		loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
 			
-		}
-		
+			@Override
+			public void done(ParseObject retObject, Exception e) {
+				ParseObject loc=retObject.getParseObject("location");
+				if(loc!=null)
+				{
+					loc.deleteInBackground();
+					parseCurrentCampusInUser.remove("location");
+				}
+				parseCurrentCampusInUser.saveInBackground(new SaveCallback() {
+					
+					@Override
+					public void done(ParseException e) {
+						if(e!=null)
+							Log.e("DAO", e.getMessage());
+					}
+				});
+				
+			}
+		});
 	}
 
 	@Override

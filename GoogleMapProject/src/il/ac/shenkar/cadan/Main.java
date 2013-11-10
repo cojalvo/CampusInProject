@@ -964,7 +964,7 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 			int numberOfNewEvents=intent.getIntExtra("newEvents", 0);
 			if(numberOfNewEvents>0||numberOfNewMessages>0)
 			{
-				MessageHalper.showAlertDialog("", createNewEventsAndMessagesMessage(numberOfNewEvents, numberOfNewMessages),Main.this);
+				MessageHalper.showAlertDialog(" ", "יש פרטים חדשים על המפה!!!",Main.this);
 			}
 		    Toast.makeText(Main.this, "view model was updated", 500).show();
 		    updateView();
@@ -975,20 +975,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	registerReceiver(viewModelUpdatedReciever, filterSend);
     }
 
-    private String createNewEventsAndMessagesMessage(int events,int messages)
-    {
-    	String message = null;
-    	if(events>0)
-    	{
-    		message+=events+" אירועים חדשים";
-    	}
-    	if(messages>0)
-    	{
-    		message+="ו "+messages+" הודעות חדשות";
-    	}
-    	message+="התקבלו.";
-    	return message;
-    }
     private void unRegisterViewModelReciever()
     {
 	if (viewModelUpdatedReciever != null)
