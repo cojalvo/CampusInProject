@@ -23,6 +23,7 @@ import il.ac.shenkar.common.ParsingHelper;
 import il.ac.shenkar.in.bl.Controller;
 import il.ac.shenkar.in.bl.ControllerCallback;
 import il.ac.shenkar.in.bl.ICampusInController;
+import il.ac.shenkar.in.bl.LocationHelper;
 import il.ac.shenkar.in.dal.CloudAccessObject;
 import il.ac.shenkar.in.dal.DataAccesObjectCallBack;
 import il.ac.shenkar.in.services.InitLocations;
@@ -37,6 +38,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 
@@ -44,6 +47,7 @@ import android.R.integer;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Vibrator;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -207,6 +211,51 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	
     }
 
+
+    /**
+     * Result is the QR Code From the camere 
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent)
+    {
+	if (resultCode == RESULT_CANCELED)
+	{
+	    // user pressed return
+	    Log.i("CampusIn", "User press the back button from the camera");
+	    return;
+	}
+	IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+	if (scanResult != null)
+	{
+	    final String result = scanResult.getContents();
+	    try
+	    {
+		Log.i("CampusIn","String From Qr Code Scanned " +result);
+		CampusInLocation location =controller.getLocationFromQRCode(result);
+		Log.i("CampusIn",location.toString());
+		MessageHalper.showProgressDialog(getString(R.string.updating_your_location), (Context)Main.this);
+		CloudAccessObject.getInstance().updateLocation(location, new DataAccesObjectCallBack<Integer>()
+		{
+		    
+		    @Override
+		    public void done(Integer retObject, Exception e)
+		    {
+			MessageHalper.closeProggresDialog();
+			if (e == null)
+			    MessageHalper.showAlertDialog("מיקום דווח", "your location was reported to: " + result, Main.this);
+			else
+			    MessageHalper.showAlertDialog("מיקום דווח", "your location was not reported: " + e.getMessage(), Main.this);
+		    }
+		});
+	    }
+	    catch (Exception e)
+	    {
+		// the user sccaned an invalid QR code
+		MessageHalper.showAlertDialog("Invalid QR sccaned", e.getMessage(), Main.this);
+	    }
+
+	}
+    }
     private void calcMyScreen()
     {
 	DisplayMetrics mat = GuiHelper.getDisplayMatric(this);

@@ -58,4 +58,6 @@
         <string name="my_friends">החברים שלי</string>
         <string name="my_messages">ההודעות שלי</string>
         <string name="come_closer_to_message">אינך נמצא קרוב מספיק להודעה</string>
+        <string name="load">טוען</string>
+        <string name="updating_your_location">מעדכן את מיקומך בענן...</string>
 </resources>
