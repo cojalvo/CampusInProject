@@ -136,6 +136,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	this.mDrawerLayout =(DrawerLayout) findViewById(R.id.drawer_layout);
 	controller = Controller.getInstance(this);
 	initMapManager();
+	controller.setMapManager(mapManager);
 	// controller.setMapManager(mapManager);
 	// ActionBarDrawerToggle ties together the the proper interactions
 	// between the sliding drawer and the action bar app icon
@@ -274,7 +275,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	mapManager = MapManager.getInstance(((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap(), GoogleMap.MAP_TYPE_NONE);
 
 	mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089518, 34.802128), new LatLng(32.090501, 34.803617), (float) 0.1);
-	mapManager.moveCameraToLocation(new LatLng(32.089028, 34.80304), 18);
+	mapManager.moveCameraTo(new LatLng(32.089028, 34.80304), 18);
 	mapManager.setOnMapLongClickListener(this);
 	mapManager.setOnMarkerClickListener(this);
 	mapManager.getMap().setInfoWindowAdapter(new InfoWindowAdapter()
@@ -362,7 +363,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		    id = mapManager.getMessageIdFromMarker(marker);
 		    CampusInMessage currMessage = controller.getMessage(id);
 		    LinearLayout contentLayout=(LinearLayout) v.findViewById(R.id.info_window_message_content_layout);
-
+		    Boolean canIsee=canISeeTheMessageMarker(marker, false);
 		    // set the image view
 		    /*
 		     * ImageView imageView = (ImageView)
@@ -371,15 +372,29 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		     */
 		    // set the image view
 		    ImageView imageView = (ImageView) v.findViewById(R.id.info_window_message_friend_profile_picture);
-		    imageView.setImageDrawable(controller.getFreindProfilePicture(currMessage.getOwnerId(), 40, 40));
+		    if(canIsee)
+		    	imageView.setImageDrawable(controller.getFreindProfilePicture(currMessage.getOwnerId(), 40, 40));
 		    // set the Name
 		    TextView name = (TextView) v.findViewById(R.id.info_window_messge_friend_name);
-		    name.setText(currMessage.getSenderFullName());
+		    if(canIsee)
+		    	name.setText(currMessage.getSenderFullName());
+		    //show message that he cant see the message
+		    else
+		    	name.setText("אינך יכול לצפות בהודעה.");
 
 		    // set the status
+		    
 		    TextView contennt = (TextView) v.findViewById(R.id.info_window_message_content);
-		    contennt.setText(currMessage.getContent());
-
+		    if(canIsee)
+		    	contennt.setText(currMessage.getContent());
+		    else
+		    	contennt.setText(" עליך להיות בקרבה של לפחות "+currMessage.getReadInRadius()+ " "+"מטר מההודעה. ");
+		    //hide the from label in case the user cant see the message
+		    if(!canIsee)
+		    {
+		    	TextView fromLabel=(TextView) v.findViewById(R.id.info_window_messge_fromlabel);
+		    	fromLabel.setVisibility(View.INVISIBLE);
+		    }
 		    TextView distance = (TextView) v.findViewById(R.id.info_window_message_distance);
 		    distance.setText(getDistanceStringFromMarker(marker));
 
@@ -555,10 +570,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 		//initiatePopupWindow(PopUpKind.FriendInfo);
 		break;
 	    case Message:
-	    	if(!canISeeTheMessageMarker(marker))
-	    		{
-	    			marker.hideInfoWindow();
-	    			return true;	    		}
+	    	canISeeTheMessageMarker(marker,true);
 	    	break;
 	    default:
 		break;
@@ -575,7 +587,7 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
 	return true;
 
     }
-    public Boolean canISeeTheMessageMarker(Marker marker)
+    public Boolean canISeeTheMessageMarker(Marker marker,Boolean displayWarning)
     {
     	if(marker==null) return false;
     	String id= mapManager.getMessageIdFromMarker(marker);
@@ -586,9 +598,11 @@ public class Main extends Activity implements OnPreferenceSelectedListener, OnMa
     	int radius=theMessage.getReadInRadius();
     	if(radius==-1) return true;
     	float mydist=mapManager.getDistanceFromMe(marker);
+    	if(mydist==-1) return false;
     	if(mydist>radius) 
     	{
-    		MessageHalper.showAlertDialog("אינך יכול לצפות בהודעה", " אתה לא מספיק קרוב עליך להדקדם עוד לפחות "+(String.format("%.2f", mydist-radius)) + "  מטר ", this);
+    		if(displayWarning)
+    			MessageHalper.showAlertDialog("אינך יכול לצפות בהודעה", " אתה לא מספיק קרוב עליך להדקדם עוד לפחות "+(String.format("%.2f", mydist-radius)) + "  מטר ", this);
     		return false;
     	}
     	return true;

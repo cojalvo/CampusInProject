@@ -68,7 +68,7 @@ public class DisplayMyMessagesFragment extends DialogFragment
 	friendListView.setAdapter(new MessagesBaseAdapter(getActivity(), this.myMessages, currUser, this));
 	
 	builder.setIcon(R.drawable.campus_in_ico);
-	
+	builder.setView(view);
 	return builder.create();     
     }
 
@@ -103,6 +103,7 @@ public class DisplayMyMessagesFragment extends DialogFragment
     	float mydist;
     	MapManager manager = MapManager.getInstance(null, 0);
     	mydist = manager.getDistanceFromMe(messageID);
+    	if(mydist==-1) return false;
     	if(mydist>radius) 
     	{
     	    return false;

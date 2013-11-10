@@ -67,7 +67,7 @@ public class SendMassageFragment extends AddNewEventFragment
 	}
 	catch (ClassCastException e)
 	{
-	    throw new ClassCastException(activity.toString() + " must implement onNewMassagecreated");
+	    throw new ClassCastException(activity.toString() + " must implement onNewMassagecreated"); //$NON-NLS-1$
 	}
 
     }
@@ -85,8 +85,8 @@ public class SendMassageFragment extends AddNewEventFragment
 	    }
 	});
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-	builder.setTitle("׳©׳�׳— ׳”׳•׳“׳¢׳”");
-	builder.setPositiveButton("׳©׳�׳—", new DialogInterface.OnClickListener()
+	builder.setTitle(Messages.getString("SendMassageFragment.sendMessage")); //$NON-NLS-1$
+	builder.setPositiveButton(Messages.getString("SendMassageFragment.send"), new DialogInterface.OnClickListener() //$NON-NLS-1$
 	{
 
 	    @Override
@@ -140,7 +140,7 @@ public class SendMassageFragment extends AddNewEventFragment
 	    @Override
 	    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 	    {
-		tv.setText(" ׳ ׳™׳×׳ ׳× ׳�׳§׳¨׳™׳�׳” ׳‘׳¨׳“׳™׳•׳¡ ׳©׳� " + progress + " ׳�׳˜׳¨׳™׳� ");
+		tv.setText(Messages.getString("SendMassageFragment.canBeReadInRadius") + progress + Messages.getString("SendMassageFragment.meters")); //$NON-NLS-1$ //$NON-NLS-2$
 
 	    }
 	});
@@ -153,7 +153,7 @@ public class SendMassageFragment extends AddNewEventFragment
 		// show add Friends fragment
 		ChooseFriendsFragment newFragment = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD, isfriendsAdded, addedFriends);
 		newFragment.setTargetFragment(SendMassageFragment.this, 0);
-		newFragment.show(getFragmentManager(), "addFriendsPicher");
+		newFragment.show(getFragmentManager(), "addFriendsPicher"); //$NON-NLS-1$
 	    }
 	});
 
@@ -177,7 +177,7 @@ public class SendMassageFragment extends AddNewEventFragment
 	    if (!addedFriends.isEmpty())
 	    {
 		CampusInUser user = addedFriends.get(0);
-		recivers.setText(user.getFirstName() + " " + user.getLastName() + ", ...");
+		recivers.setText(user.getFirstName() + " " + user.getLastName() + ", ..."); //$NON-NLS-1$ //$NON-NLS-2$
 		Button editFriends = (Button) view.findViewById(R.id.massage_add_friends_button);
 		editFriends.setText(R.string.edit_friends);
 		isfriendsAdded = true;
@@ -211,7 +211,7 @@ public class SendMassageFragment extends AddNewEventFragment
 		    CampusInMessage toReturn = (CampusInMessage) validate();
 		    if (toReturn != null)
 		    {
-			Log.i(getTag(), "new Event was created");
+			Log.i(getTag(), "new Event was created"); //$NON-NLS-1$
 			callBack.onMassageCreated(toReturn);
 			dismiss();
 		    }
@@ -229,10 +229,10 @@ public class SendMassageFragment extends AddNewEventFragment
     public CampusInElement validate()
     {
 	CampusInMessage toReturn = new CampusInMessage();
-	toReturn.setSenderFullName(currentUser.getFirstName() + " " + currentUser.getLastName());
+	toReturn.setSenderFullName(currentUser.getFirstName() + " " + currentUser.getLastName()); //$NON-NLS-1$
 	if (this.addedFriends == null || this.addedFriends.isEmpty())
 	{
-	    Toast.makeText(getActivity(), "please choose friends to send the massage to", 3000).show();
+	    Toast.makeText(getActivity(), "please choose friends to send the massage to", 3000).show(); //$NON-NLS-1$
 	    return null;
 	}
 	else

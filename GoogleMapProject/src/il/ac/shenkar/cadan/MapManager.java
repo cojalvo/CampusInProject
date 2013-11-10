@@ -196,7 +196,6 @@ public class MapManager
 
     }
 
-    
     public void moveCameraToEvent(String eventId)
     {
 	Marker marker;
@@ -207,11 +206,6 @@ public class MapManager
 	    map.animateCamera(cameraUpdate);
 	    marker.showInfoWindow();
 	}
-    }
-
-    public void moveCameraToMessage(String messageId)
-    {
-    		
     }
 
     public void moveCameraToPerson(String PersonId)
@@ -226,10 +220,24 @@ public class MapManager
 	}
     }
 
-    public void moveCameraToLocation(LatLng location, int zoom)
+    public void moveCameraTo(String objId,int zoom)
     {
-	map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoom));
-	map.animateCamera(CameraUpdateFactory.zoomTo(zoom), 3000, null);
+    	Marker m;
+    	if(personMarkerdictionary.containsKey(objId))
+    		m=personMarkerdictionary.get(objId);
+    	else if(messageMarkerdictionary.containsKey(objId))
+    		m=messageMarkerdictionary.get(objId);
+    	else if(eventMarkerdictionary.containsKey(objId))
+    		m=eventMarkerdictionary.get(objId);
+    	else
+    		return;
+    	moveCameraTo(m.getPosition(), zoom);
+    	m.showInfoWindow();
+    }
+    public void moveCameraTo(LatLng location, int zoom)
+    {
+	    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, zoom); 
+	    map.animateCamera(cameraUpdate);
     }
 
     public void addOrUpdatePersonMarker(CampusInUserLocation user)

@@ -66,7 +66,7 @@ public class DisplayFriendListBaseAdapter extends ChooseFriendListBaseAdapter
 		dialog.dismiss();
 		Controller controller = Controller.getInstance(null);
 		controller.closePreferanceView();
-		controller.navigateToUser(navigateTo);
+		controller.navigateTo(navigateTo.getParseUserId());
 
 	    }
 	});

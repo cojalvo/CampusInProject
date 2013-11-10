@@ -28,8 +28,6 @@ public interface ICampusInController
 	void addFriendsToCurrentUserFriendList(List<CampusInUser> friendsTOAdd, ControllerCallback<List<Exception>> callback);
 	void removeFriendsFromCurrentUserFriendList(List<CampusInUser> friendsToRemove,ControllerCallback<String> callback);
 	CampusInEvent getEvent(String eventId);
-	void navigateToEvent(CampusInEvent event);
-	void navigateToUser(CampusInUser user);
 	void addNotificationToEvent(CampusInEvent event);
 	Boolean isMyFriend(CampusInUser user);
 	Boolean isMyFriendToSchool(CampusInUser user);
@@ -40,5 +38,8 @@ public interface ICampusInController
 	CampusInMessage getMessage(String messageId);
 	List<CampusInMessage> getAllMessages();
 	void closePreferanceView();
+	float getMyDistanceFrom(String parseObjId);
+	public void setMapManager(MapManager mapManager);
+	public void navigateTo(String objId);
 	
 }

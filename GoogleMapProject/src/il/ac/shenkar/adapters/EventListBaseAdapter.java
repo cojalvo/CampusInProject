@@ -108,7 +108,7 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 		dialog.dismiss();
 		Controller controller = Controller.getInstance(null);
 		controller.closePreferanceView();
-		controller.navigateToEvent(navigateTo);
+		controller.navigateTo(navigateTo.getParseId());
 
 	    }
 	});

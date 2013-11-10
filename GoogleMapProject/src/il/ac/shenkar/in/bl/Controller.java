@@ -356,30 +356,6 @@ public class Controller implements ICampusInController
     }
 
     @Override
-    public void navigateToUser(CampusInUser user)
-    {
-	if (user != null)
-	{
-	    mapManager = MapManager.getInstance(null, 0);
-	    mapManager.moveCameraToPerson(user.getParseUserId());
-	}
-
-    }
-
-    @Override
-    public void navigateToEvent(CampusInEvent event)
-    {
-	if (event != null)
-	{
-	    // navigate to the location
-	    // in this point the map is already initialized so i pass dummy
-	    // params
-	    mapManager = MapManager.getInstance(null, 0);
-	    mapManager.moveCameraToEvent(event.getParseId());
-	}
-    }
-
-    @Override
     public void addNotificationToEvent(CampusInEvent event)
     {
 	if (notificationManager == null)
@@ -508,5 +484,16 @@ public class Controller implements ICampusInController
 	}
 
     }
+
+	@Override
+	public float getMyDistanceFrom(String parseObjId) {
+		return mapManager.getDistanceFromMe(parseObjId);
+	}
+
+	@Override
+	public void navigateTo(String objId) {
+		mapManager.moveCameraTo(objId, 30);
+		
+	}
 
 }
