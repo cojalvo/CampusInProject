@@ -11,15 +11,6 @@
         android:layout_marginLeft="2dp"
         android:src="@drawable/com_facebook_profile_picture_blank_portrait" />
 
-     <ImageView
-         android:id="@+id/message_navigation_button"
-         android:layout_width="40dp"
-         android:layout_height="40dp"
-         android:layout_centerVertical="true"
-         android:layout_alignParentRight = "true"
-         android:paddingRight="8dp"
-         android:src="@drawable/navigate_img"/>
-
      <TextView
          android:id="@+id/message_display_friend_name"
          android:layout_width="wrap_content"
@@ -51,5 +42,15 @@
             android:maxLength="20"
             android:paddingLeft="5dp"
             android:text="Content" />
+
+        <ImageView
+            android:id="@+id/message_navigation_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@+id/message_display_friend_profile_picture_imageView"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="14dp"
+            android:paddingRight="8dp"
+            android:src="@drawable/navigate_img" />
 
 </RelativeLayout>

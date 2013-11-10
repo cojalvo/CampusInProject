@@ -6,6 +6,7 @@ import il.ac.shenkar.cadan.R.id;
 import il.ac.shenkar.cadan.R.layout;
 import il.ac.shenkar.common.CampusInEvent;
 import il.ac.shenkar.in.bl.Controller;
+import il.ac.shenkar.in.bl.ICampusInController;
 
 import java.util.ArrayList;
 
@@ -31,6 +32,7 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
     private static ArrayList<CampusInEvent> filteredEventArrayList;
     private LayoutInflater l_Inflater;
     private DiaplayEventListFragment dialog;
+    private ICampusInController controller;
 
     public EventListBaseAdapter(Context context, ArrayList<CampusInEvent> arrayList, DiaplayEventListFragment dialog)
     {
@@ -61,7 +63,7 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-	Button currButton;
+    controller=Controller.getInstance(null);
 	ImageView naviButton;
 	ViewHolder holder;
 
@@ -71,6 +73,7 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 	    holder = new ViewHolder();
 	    holder.txt_itemDescription = (TextView) convertView.findViewById(R.id.eventDescription);
 	    holder.txt_itemTitle = (TextView) convertView.findViewById(R.id.eventTitle);
+	    holder.txt_distance = (TextView) convertView.findViewById(R.id.event_distance);
 
 	    convertView.setTag(holder);
 	}
@@ -78,23 +81,6 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 	{
 	    holder = (ViewHolder) convertView.getTag();
 	}
-
-	/*
-	 * Here I get id for the button of this specific view and give him "tag"
-	 * so i could delete it later on
-	 */
-	currButton = (Button) convertView.findViewById(R.id.eventButton);
-	currButton.setOnClickListener(new OnClickListener()
-	{
-
-	    @Override
-	    public void onClick(View v)
-	    {
-		int position = (Integer) v.getTag();
-		Log.i(this.getClass().getSimpleName(), filteredEventArrayList.get(position).getDescription());
-
-	    }
-	});
 	naviButton = (ImageView) convertView.findViewById(R.id.event_navigation_button);
 	naviButton.setOnClickListener(new OnClickListener()
 	{
@@ -114,7 +100,7 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 	});
 	holder.txt_itemDescription.setText(filteredEventArrayList.get(position).getDescription());
 	holder.txt_itemTitle.setText(filteredEventArrayList.get(position).getHeadLine());
-	currButton.setTag(position);
+	holder.txt_distance.setText(getDistanceString(filteredEventArrayList.get(position).getParseId()));
 	naviButton.setTag(position);
 	return convertView;
     }
@@ -132,6 +118,7 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
     {
 	TextView txt_itemDescription;
 	TextView txt_itemTitle;
+	TextView txt_distance;
     }
 
     @Override
@@ -196,5 +183,28 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
 		return results;
 	    }
 	};
+    }
+    private String getDistanceString(String eventId)
+    {
+    	float dist = controller.getMyDistanceFrom(eventId);
+    	if (dist > 0)
+    	{
+    	    String unit;
+    	    String finalDist;
+    	    if (dist > 1000)
+    	    {
+    		unit = "ק״מ";
+
+    		finalDist = String.format("%.2f", dist / 1000);
+    	    }
+    	    else
+    	    {
+    		unit = "מטרים";
+    		finalDist = String.format("%.0f", dist);
+    	    }
+
+    	    return ("נמצא כ " + finalDist + " " + unit + " " + "ממני");
+    	}
+    	return "מרחק לא ידוע.";
     }
 }

@@ -116,6 +116,29 @@ public class PrefsFragment extends PreferenceFragment
 		return true;
 	    }
 	});
+	
+	Preference testShow = findPreference("my_tests");
+	testShow.setOnPreferenceClickListener(new OnPreferenceClickListener()
+	{
+
+	    @Override
+	    public boolean onPreferenceClick(Preference preference)
+	    {
+	    	android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+			Fragment fragment = getFragmentManager().findFragmentByTag("dialog");
+			if (fragment != null)
+			{
+			    transaction.remove(fragment);
+			}
+			transaction.addToBackStack(null);
+			DiaplayEventListFragment newDiaplayEventListFragment = new DiaplayEventListFragment();
+			Bundle args=new Bundle();
+			args.putBoolean("tetsOnly", true);
+			newDiaplayEventListFragment.setArguments(args);
+			newDiaplayEventListFragment.show(transaction, "dialog");
+			return true;
+	    }
+	});
 	Preference addFriends = findPreference("add_friends");
 	addFriends.setOnPreferenceClickListener(new OnPreferenceClickListener()
 	{

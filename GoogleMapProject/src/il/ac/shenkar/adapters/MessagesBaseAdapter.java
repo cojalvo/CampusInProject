@@ -94,7 +94,6 @@ public class MessagesBaseAdapter extends BaseAdapter
 	    @Override
 	    public void onClick(View v)
 	    {
-		Controller controller = Controller.getInstance(null);
 		Integer position = (Integer) v.getTag();
 		String messageId = filteredMessagedsArrayList.get(position).getParseId();
 		controller.closePreferanceView();

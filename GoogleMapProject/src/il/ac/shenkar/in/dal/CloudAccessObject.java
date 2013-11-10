@@ -1,39 +1,23 @@
 package il.ac.shenkar.in.dal;
 
-import il.ac.shenkar.common.CampusInConstant;
 import il.ac.shenkar.common.CampusInEvent;
-import il.ac.shenkar.common.CampusInEvent.CampusInEventType;
 import il.ac.shenkar.common.CampusInLocation;
 import il.ac.shenkar.common.CampusInMessage;
 import il.ac.shenkar.common.CampusInUser;
 import il.ac.shenkar.common.CampusInUserLocation;
-import il.ac.shenkar.common.ParsingHelper;
-import il.ac.shenkar.common.PersonalSettings;
 import il.ac.shenkar.in.bl.Controller;
 
-import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Currency;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
-import android.R.bool;
-import android.animation.ArgbEvaluator;
 import android.graphics.drawable.Drawable;
-import android.net.rtp.RtpStream;
-import android.text.method.DateTimeKeyListener;
 import android.util.Log;
-import android.widget.Toast;
-
 import com.facebook.Request;
 import com.facebook.Response;
 import com.facebook.model.GraphUser;
-import com.google.android.gms.internal.cm;
 import com.google.android.gms.maps.model.LatLng;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -1045,7 +1029,7 @@ public class CloudAccessObject implements IDataAccesObject
 		callback.done(friendsProfilePictures.get(facebookId), null);
 		return;
 	    }
-	FacebookServices.getPictureForFacebookId(facebookId,"type=large", new DataAccesObjectCallBack<Drawable>()
+	FacebookServices.getPictureForFacebookId(facebookId,"type=small", new DataAccesObjectCallBack<Drawable>()
 	{
 	    @Override
 	    public void done(Drawable retPic, Exception e)
