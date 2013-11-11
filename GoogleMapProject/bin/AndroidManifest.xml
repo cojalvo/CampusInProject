@@ -70,8 +70,8 @@
             android:value="@string/app_id" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"   
-            android:value="AIzaSyBtudns6q23WAjzr_VZj6xII2NUrJBHI6c"/>
-          <!--   android:value="AIzaSyA39bAGXYMVlHBn4uyHBsF-4xDQTNIVj3U"/> -->
+            android:value="AIzaSyA39bAGXYMVlHBn4uyHBsF-4xDQTNIVj3U"/>
+          <!--   android:value="AIzaSyBtudns6q23WAjzr_VZj6xII2NUrJBHI6c"/> -->
              
            
 
