@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -384,7 +387,7 @@ public class Controller implements ICampusInController
     @Override
     public void startAutoViewModelUpdatingService()
     {
-	if (ModelUpdateService.isRuning())
+	if ((isMyServiceRunning(ModelUpdateService.class)))
 	    return;
 	Intent i = new Intent(context, ModelUpdateService.class);
 	context.startService(i);
@@ -393,7 +396,8 @@ public class Controller implements ICampusInController
     @Override
     public void stopAutoViewModelUpdatingService()
     {
-	context.stopService(new Intent(context, ModelUpdateService.class));
+    	if(!isMyServiceRunning(ModelUpdateService.class))
+    		context.stopService(new Intent(context, ModelUpdateService.class));
     }
 
     @Override
@@ -563,6 +567,15 @@ public class Controller implements ICampusInController
     public void setContext(Context context)
     {
 	this.context = context;
+    }
+    private boolean isMyServiceRunning(Class serviceClass) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

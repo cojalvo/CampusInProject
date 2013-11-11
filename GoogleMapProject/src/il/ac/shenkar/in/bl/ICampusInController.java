@@ -49,4 +49,5 @@ public interface ICampusInController
 	void addToWatchList(String id);
 	CampusInLocation getLocationFromQRCode(String qrCode) throws Exception;
 	
+	
 }
