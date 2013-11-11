@@ -283,7 +283,8 @@ public class Login extends Activity
     protected void onResume()
     {
         super.onResume();
-        alertDialog.cancel();
+       if  (alertDialog != null)
+	   alertDialog.cancel();
         this.onCreate(null);
         
     }
