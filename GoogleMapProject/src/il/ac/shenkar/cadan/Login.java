@@ -284,8 +284,11 @@ public class Login extends Activity
     {
         super.onResume();
        if  (alertDialog != null)
+       {
 	   alertDialog.cancel();
-        this.onCreate(null);
+	   this.onCreate(null);
+       }
+        
         
     }
     
