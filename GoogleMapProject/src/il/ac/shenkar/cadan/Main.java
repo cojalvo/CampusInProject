@@ -108,7 +108,7 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
     static final LatLng HAMBURG = new LatLng(20, 25);
     static final LatLng KIEL = new LatLng(15, 10);
     private PopupWindow pwindo;
-    private ICampusInController controller;
+    private Controller controller;
     private MapManager mapManager = null;
     private BroadcastReceiver viewModelUpdatedReciever;
     private Vibrator vibrator = null;
@@ -124,7 +124,7 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-
+	
 	if (savedInstanceState == null || !savedInstanceState.getBoolean("initLocationDone"))
 	{
 	    new InitLocations().execute(this);
@@ -141,6 +141,7 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	this.setContentView(R.layout.main);
 	this.mDrawerLayout =(DrawerLayout) findViewById(R.id.drawer_layout);
 	controller = Controller.getInstance(this);
+	controller.setContext(getApplicationContext());
 	currentUser=controller.getCurrentUser();
 	initMapManager();
 	controller.setMapManager(mapManager);

@@ -31,6 +31,7 @@ public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations
     private final String downloadedFile = "downloaded.xml";
     private final String existingFile = "existing.xml";
     private Context context;
+    private DataBaseHealper dataBaseHealper;
 
     @Override
     protected CampusInLocations doInBackground(Context... params)
@@ -38,6 +39,9 @@ public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations
 	context = params[0];
 	File outputFile = new File(params[0].getFilesDir(), downloadedFile);
 	File existingXML = new File(params[0].getFilesDir() + existingFile);
+	dataBaseHealper = DataBaseHealper.getInstance(context);
+	dataBaseHealper.initArrayList();
+	
 	// this code takes xml configuration file from the internet and save it
 	// to local file
 	try
@@ -138,7 +142,6 @@ public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations
 		Log.i("CampusIn", "Files are diffrent -> updating the DB");
 		// the files are diffrent.
 		// update the DB
-		DataBaseHealper dataBaseHealper = DataBaseHealper.getInstance(params[0]);
 		dataBaseHealper.cleanDB();
 		CampusInLocations downloadedObjects = null;
 		try
@@ -186,7 +189,7 @@ public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations
 
     private void addLocationToDB(Context context, JacocDBLocation toAdd)
     {
-	DataBaseHealper.getInstance(context).addNewLocation(toAdd);
+	dataBaseHealper.addNewLocation(toAdd);
     }
 
     private Idevtical compareFiles(File existingFile, File newFile)

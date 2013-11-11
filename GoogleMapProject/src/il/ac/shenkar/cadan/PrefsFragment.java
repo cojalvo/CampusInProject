@@ -285,6 +285,7 @@ public class PrefsFragment extends PreferenceFragment
 	CampusInUser currentUser=controller.getCurrentUser();
 	userName = currentUser.getFirstName() + " " + currentUser.getLastName();
 	me.setTitle(userName);
+	Controller.getInstance(getActivity()).setContext(getActivity());
 	me.setIcon((Controller.getInstance(null).getFreindProfilePicture(currentUser.getParseUserId(), 150, 150)));
     }
 

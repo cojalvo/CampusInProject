@@ -30,6 +30,11 @@ public class LocationHelper implements ILocationHelper
 	this.locationList = (Collection<JacocDBLocation>) DataBaseHealper.getInstance(context).getAllLocations();
 	campusInLocationMap = new HashMap<String, JacocDBLocation>();
 	// initialize the hashMap 
+	initHase();
+    }
+
+    private void initHase()
+    {
 	for (JacocDBLocation location: locationList)
 	{
 	    campusInLocationMap.put(location.getLocationName(), location);
@@ -112,6 +117,8 @@ public class LocationHelper implements ILocationHelper
     {
 	if (qrCode == null)
 	    throw new Exception("QR Code is not availble...");
+	if (campusInLocationMap.size() == 0)
+	    initHase();
 	// get the location object
 	JacocDBLocation dbLocation = campusInLocationMap.get(qrCode);
 	if (dbLocation == null)

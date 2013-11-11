@@ -544,5 +544,9 @@ public class Controller implements ICampusInController
 	{
 	    return locationHelper.getLocationFromQRCode(qrCode);
 	}
+	public void setContext(Context context)
+	{
+	    this.context = context;
+	}
 
 }
