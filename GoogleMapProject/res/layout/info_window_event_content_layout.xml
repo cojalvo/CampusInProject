@@ -19,7 +19,7 @@
             android:id="@+id/info_window_messge_fromlabel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:text="שם:" />
 
@@ -28,12 +28,13 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
-            android:src="@drawable/calendar_icon" />
+            android:src="@drawable/events_icon" />
     </LinearLayout>
     
         <View
             android:layout_width="fill_parent"
             android:layout_height="0.1dp"
+            android:layout_marginTop="5dp"
             android:background="@android:color/darker_gray" />
 
     <LinearLayout

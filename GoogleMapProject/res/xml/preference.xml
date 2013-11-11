@@ -51,7 +51,7 @@
         android:key="my_area"
         android:title="אירועים בקמפוס" >
         <Preference
-            android:icon="@drawable/group_icon"
+            android:icon="@drawable/calendar_icon"
             android:key="show_campus_events"
             android:summary="הצג את האירועים בקמפוס"
             android:title="אירועים בקמפוס" />
@@ -60,7 +60,7 @@
         android:key="my_aea"
         android:title="הודעות" >
         <Preference
-            android:icon="@drawable/group_icon"
+            android:icon="@drawable/message_pref_ico"
             android:key="show_my_messages"
             android:summary="הצג את ההודעות שלי"
             android:title="הצגת הודעות" />
