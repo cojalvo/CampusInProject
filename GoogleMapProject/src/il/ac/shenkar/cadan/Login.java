@@ -122,12 +122,13 @@ public class Login extends Activity {
 					stepTwoDialog.show();
 				}
 				if (v.getId() == R.id.btnNext2) {
-					stepThreeDialog.show();
+					stepOneDialog.hide();
+					stepTwoDialog.hide();
+					updateCurrentUserYearTrend();
 				}
 				if (v.getId() == R.id.btnFinish) {
 					stepThreeDialog.hide();
 					stepOneDialog.hide();
-					stepTwoDialog.hide();
 					updateCurrentUserYearTrend();
 				}
 
@@ -177,7 +178,7 @@ public class Login extends Activity {
 	private void terminateApp()
 	{
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-		alertDialog.setPositiveButton("אישור", new DialogInterface.OnClickListener()
+		alertDialog.setPositiveButton("אירעה שגיאה", new DialogInterface.OnClickListener()
 		{
 			@Override
 			public void onClick(DialogInterface dialog, int which)
@@ -185,14 +186,14 @@ public class Login extends Activity {
 				finish();
 			}
 		});
-		alertDialog.setMessage("אירעה שגיאה בעת החיבור לשרת, אנא נסה במועד מאוחר יותר");
+		alertDialog.setMessage("נראה שהיתה בעיית חיבור לשרת, אנא נסה מאוחר יותר");
 		alertDialog.setTitle(" ");
 		alertDialog.setIcon(R.drawable.campus_in_ico);
 		alertDialog.show();
 	}
 	 private void updateCurrentUserYearTrend()
 	  {
-		 MessageHalper.showProgressDialog("Saving...", Login.this);
+		 MessageHalper.showProgressDialog("שומר...", Login.this);
 	    this.dao.loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
 	    {
 	      public void done(CampusInUser currentCampusUser, Exception e)

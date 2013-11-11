@@ -477,36 +477,35 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 
 	// Handle presses on the action bar items
 	Intent intent;
-	switch (item.getItemId())
-	{
-	case R.id.action_add_friends:
-	    android.app.FragmentTransaction ft1 = getFragmentManager().beginTransaction();
-	    android.app.Fragment prev1 = getFragmentManager().findFragmentByTag("dialog");
-	    if (prev1 != null)
-	    {
-		ft1.remove(prev1);
-	    }
-	    ft1.addToBackStack(null);
-
-	    // Create and show the dialog.
-	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD, false, new ArrayList<CampusInUser>());
-	    newFragment1.show(ft1, "dialog");
-	case R.id.action_remove_friends:
-	    android.app.FragmentTransaction ft11 = getFragmentManager().beginTransaction();
-	    android.app.Fragment prev11 = getFragmentManager().findFragmentByTag("dialog");
-	    if (prev11 != null)
-	    {
-		ft11.remove(prev11);
-	    }
-	    ft11.addToBackStack(null);
-
-	    // Create and show the dialog.
-	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE, false, new ArrayList<CampusInUser>());
-	    newFragment11.show(ft11, "dialog");
-	    return true;
-	default:
+//	switch (item.getItemId())
+//	{
+//	case R.id.action_add_friends:
+//	    android.app.FragmentTransaction ft1 = getFragmentManager().beginTransaction();
+//	    android.app.Fragment prev1 = getFragmentManager().findFragmentByTag("dialog");
+//	    if (prev1 != null)
+//	    {
+//		ft1.remove(prev1);
+//	    }
+//	    ft1.addToBackStack(null);
+//
+//	    // Create and show the dialog.
+//	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD, false, new ArrayList<CampusInUser>());
+//	    newFragment1.show(ft1, "dialog");
+//	case R.id.action_remove_friends:
+//	    android.app.FragmentTransaction ft11 = getFragmentManager().beginTransaction();
+//	    android.app.Fragment prev11 = getFragmentManager().findFragmentByTag("dialog");
+//	    if (prev11 != null)
+//	    {
+//		ft11.remove(prev11);
+//	    }
+//	    ft11.addToBackStack(null);
+//
+//	    // Create and show the dialog.
+//	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE, false, new ArrayList<CampusInUser>());
+//	    newFragment11.show(ft11, "dialog");
+//	    return true;
+//	default:
 	    return super.onOptionsItemSelected(item);
-	}
     }
 
     @Override
@@ -520,8 +519,8 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
     public boolean onCreateOptionsMenu(Menu menu)
     {
 	// Inflate the menu; this adds items to the action bar if it is present.
-	MenuInflater inflater = getMenuInflater();
-	inflater.inflate(R.menu.main, menu);
+	//MenuInflater inflater = getMenuInflater();
+	//inflater.inflate(R.menu.main, menu);
 	return super.onCreateOptionsMenu(menu);
     }
 

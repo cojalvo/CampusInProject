@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
+    android:background="#b5e5fe"
     android:padding="20dp"
     android:orientation="vertical" >
     
@@ -10,7 +11,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What is your trend?"
+        android:text="@string/which_trend"
         android:layout_marginTop="30dp"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     
@@ -29,7 +30,13 @@
         android:id="@+id/btnNext1"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="Next" />
- 
+        android:text="@string/next_button" />
+
+         <ImageView
+             android:id="@+id/imageView1"
+             android:paddingTop="60dp"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:src="@drawable/campus_in_ico" />
 
 </LinearLayout>

@@ -12,9 +12,15 @@
         <item>הנדסת תוכנה</item>
         <item>הנדסת אלקטרוניקה</item>
         <item>הנדסת פלסטיקה</item>
+        <item>הנדסת כימית</item>
+        <item>הנדסת תעשיה וניהול</item>
         <item>עיצוב אופנה</item>
+        <item>עיצוב תעשייתי</item>
+        <item>עיצוב תכשיטים</item>
+        <item>עיצוב פנים</item>
         <item>אמנות</item>
         <item>עיצוב טקסטיל</item>
+        <item>תקשורת חזותית</item>
     </string-array>
     <string-array name="Year">
         <item>ראשונה</item>
@@ -60,4 +66,8 @@
         <string name="come_closer_to_message">אינך נמצא קרוב מספיק להודעה</string>
         <string name="load">טוען</string>
         <string name="updating_your_location">מעדכן את מיקומך בענן...</string>
+        <string name="which_trend">באיזו מגמה אתה לומד?</string>
+        <string name="next_button">הבא</string>
+        <string name="whih_year">באיזו שנה?</string>
+        <string name="next_b">הבא</string>
 </resources>
