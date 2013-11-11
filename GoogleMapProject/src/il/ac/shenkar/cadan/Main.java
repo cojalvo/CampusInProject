@@ -75,6 +75,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.*;
 import android.support.v4.widget.DrawerLayout;
+import android.text.method.HideReturnsTransformationMethod;
 
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -1074,6 +1075,7 @@ public class Main extends Activity implements OnMapClickListener, OnPreferenceSe
 	// stop the report location service
 	Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
 	controller.stopAutoViewModelUpdatingService();
+	controller.HideMe();
 	unRegisterViewModelReciever();
 	MapManager.resetInstance();
     }
