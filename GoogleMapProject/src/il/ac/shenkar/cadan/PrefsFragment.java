@@ -89,7 +89,7 @@ public class PrefsFragment extends PreferenceFragment
 	});
 
 	final CheckBoxPreference showMe = (CheckBoxPreference) findPreference("display_me");
-	showMe.setOnPreferenceClickListener(new OnPreferenceClickListener()
+/*	showMe.setOnPreferenceClickListener(new OnPreferenceClickListener()
 	{
 
 	    @Override
@@ -100,6 +100,19 @@ public class PrefsFragment extends PreferenceFragment
 		inti.setAction(ACTION_INTENT);
 		context.sendBroadcast(inti);
 		return true;
+	    }
+	});*/
+	showMe.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+	{
+	    
+	    @Override
+	    public boolean onPreferenceChange(Preference preference, Object newValue)
+	    {
+		Intent inti = new Intent();
+		inti.setAction(ACTION_INTENT);
+		context.sendBroadcast(inti);
+		return true;
+	
 	    }
 	});
 	
