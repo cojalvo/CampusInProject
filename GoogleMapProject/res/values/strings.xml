@@ -71,4 +71,6 @@
         <string name="whih_year">באיזו שנה?</string>
         <string name="next_b">הבא</string>
         <string name="km">ק\'מ</string>
+        <string name="no_internrt">אין אינטרנט</string>
+        <string name="no_internet_content">האפליקציה דורשת חיבור לאינטרנט, לא ניתן להמשיך... בבקשה התחבר לאינטרנט</string>
 </resources>

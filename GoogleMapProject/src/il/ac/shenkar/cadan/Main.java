@@ -45,11 +45,14 @@ import com.parse.Parse;
 import com.parse.ParseFacebookUtils;
 
 import android.R.integer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.Vibrator;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -94,9 +97,8 @@ import android.widget.PopupWindow;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-
-public class Main extends Activity implements OnMapClickListener,OnPreferenceSelectedListener, OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener, onNewEventAdded,
-	onNewMassagecreated
+public class Main extends Activity implements OnMapClickListener, OnPreferenceSelectedListener, OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener,
+	onNewEventAdded, onNewMassagecreated
 {
     CameraPosition lastPos = new CameraPosition(new LatLng(0, 0), 2, 2, 2);
     GoogleMap map = null;
@@ -120,16 +122,49 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
     private boolean viewModelServiceRunning = false;
     private boolean inExitProcess = false;
     CampusInUser currentUser;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-	
+
 	if (savedInstanceState == null || !savedInstanceState.getBoolean("initLocationDone"))
 	{
 	    new InitLocations().execute(this);
 	}
 	super.onCreate(savedInstanceState);
+
+	if (!isInternetAvailable())
+	{
+	    // i need to display error massage to the user
+	    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+	    // set title
+	    alertDialogBuilder.setTitle(getString(R.string.no_internrt));
+	    // set dialog message
+	    alertDialogBuilder.setMessage(getString(R.string.no_internet_content)).setCancelable(false).setNegativeButton("Turn On WIFI", new DialogInterface.OnClickListener()
+	    {
+		public void onClick(DialogInterface dialog, int which)
+		{
+		    // this button will navigate you to the WIFI setting menu
+		    // so you could easy turn on the WIFI
+		    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+		}
+	    }).setPositiveButton("OK", new DialogInterface.OnClickListener()
+	    {
+		public void onClick(DialogInterface dialog, int id)
+		{
+		    // if this button is clicked, close the dilaog
+		    // send data to google analytic
+		    dialog.cancel();
+		    return;
+		}
+	    });
+	    // create alert dialog
+	    alertDialog = alertDialogBuilder.create();
+	    // show it
+	    alertDialog.show();
+	    return; 
+	}
 	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
 	Log.i("Main", "onCreate was called");
@@ -138,10 +173,10 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	// inflate the drawerLayour
 	// set as content view
 	this.setContentView(R.layout.main);
-	this.mDrawerLayout =(DrawerLayout) findViewById(R.id.drawer_layout);
+	this.mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 	controller = Controller.getInstance(this);
 	controller.setContext(getApplicationContext());
-	currentUser=controller.getCurrentUser();
+	currentUser = controller.getCurrentUser();
 	initMapManager();
 	controller.setMapManager(mapManager);
 	// controller.setMapManager(mapManager);
@@ -156,19 +191,19 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	{
 	    public void onDrawerClosed(View view)
 	    {
-	    	getActionBar().setTitle("CampusIn");
-	    	invalidateOptionsMenu(); // creates call to
-	    	
+		getActionBar().setTitle("CampusIn");
+		invalidateOptionsMenu(); // creates call to
+
 	    }
 
 	    public void onDrawerOpened(View drawerView)
 	    {
-	    	getActionBar().setTitle("CampusIn");
+		getActionBar().setTitle("CampusIn");
 		invalidateOptionsMenu(); // creates call to
 		// onPrepareOptionsMenu()
 	    }
 	};
-	
+
 	// set listener to the menu
 	mDrawerLayout.setDrawerListener(mDrawerToggle);
 	getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -209,12 +244,11 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 
 	updateView();
 	registerViewModelReciever();
-	
+
     }
 
-
     /**
-     * Result is the QR Code From the camere 
+     * Result is the QR Code From the camere
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent)
@@ -231,13 +265,13 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	    final String result = scanResult.getContents();
 	    try
 	    {
-		Log.i("CampusIn","String From Qr Code Scanned " +result);
-		CampusInLocation location =controller.getLocationFromQRCode(result);
-		Log.i("CampusIn",location.toString());
-		MessageHalper.showProgressDialog(getString(R.string.updating_your_location), (Context)Main.this);
+		Log.i("CampusIn", "String From Qr Code Scanned " + result);
+		CampusInLocation location = controller.getLocationFromQRCode(result);
+		Log.i("CampusIn", location.toString());
+		MessageHalper.showProgressDialog(getString(R.string.updating_your_location), (Context) Main.this);
 		CloudAccessObject.getInstance().updateLocation(location, new DataAccesObjectCallBack<Integer>()
 		{
-		    
+
 		    @Override
 		    public void done(Integer retObject, Exception e)
 		    {
@@ -257,6 +291,7 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 
 	}
     }
+
     private void calcMyScreen()
     {
 	DisplayMetrics mat = GuiHelper.getDisplayMatric(this);
@@ -276,7 +311,7 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	if (!isFinishing())
 	{
 	    setPendingIntent();
-	   // controller.pauseAutoViewModelUpdatingService();
+	    // controller.pauseAutoViewModelUpdatingService();
 	}
 
 	super.onPause();
@@ -286,8 +321,9 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
     protected void onResume()
     {
 	Log.i("Main", "onResume was called");
-	//controller.resumeAutoViewModelUpdatingService();
+	// controller.resumeAutoViewModelUpdatingService();
 	super.onResume();
+	alertDialog.cancel();
     }
 
     @Override
@@ -312,7 +348,7 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 
     private void initMapManager()
     {
-	mapManager = MapManager.getInstance(((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap(),currentUser, GoogleMap.MAP_TYPE_NONE);
+	mapManager = MapManager.getInstance(((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap(), currentUser, GoogleMap.MAP_TYPE_NONE);
 
 	mapManager.addGroundOverlay(R.drawable.shenkarmap_1, new LatLng(32.089518, 34.802128), new LatLng(32.090501, 34.803617), (float) 0.1);
 	mapManager.moveCameraTo(new LatLng(32.089028, 34.80304), 18);
@@ -339,7 +375,7 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 
 		if (markerType == MarkerType.Person)
 		{
-			
+
 		    // inflate the view
 		    v = getLayoutInflater().inflate(R.layout.info_window_person_content_layout, null);
 
@@ -358,6 +394,9 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 		    // set the status
 		    TextView status = (TextView) v.findViewById(R.id.info_window_status);
 		    status.setText(currUser.getStatus());
+
+		    TextView distance = (TextView) v.findViewById(R.id.info_window_person_distance);
+		    distance.setText(getDistanceStringFromLastClickMarker());
 
 		    return v;
 		}
@@ -382,16 +421,16 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 		    // set the Date
 		    TextView status = (TextView) v.findViewById(R.id.info_window_date);
 		    status.setText("תאריך - " + ParsingHelper.fromDateToString(currEvent.getDate(), "dd/MM/yyyy"));
-		    
-		    //set the time 
-		    TextView time  = (TextView) v.findViewById(R.id.info_window_event_time);
+
+		    // set the time
+		    TextView time = (TextView) v.findViewById(R.id.info_window_event_time);
 		    time.setText("שעה - " + ParsingHelper.fromDateToString(currEvent.getDate(), "hh:mm:ss"));
 
-		    //set the Location
+		    // set the Location
 		    TextView location = (TextView) v.findViewById(R.id.info_window_location_name);
 		    location.setText("מיקום - " + currEvent.getLocation().getLocationName());
-		    
-		    //set the dictance
+
+		    // set the dictance
 		    TextView dis = (TextView) v.findViewById(R.id.info_window_distance);
 		    dis.setText(getDistanceStringFromLastClickMarker());
 		    return v;
@@ -403,8 +442,8 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 		    // get the marker (which is a person) information
 		    id = mapManager.getMessageIdFromMarker(marker);
 		    CampusInMessage currMessage = controller.getMessage(id);
-		    LinearLayout contentLayout=(LinearLayout) v.findViewById(R.id.info_window_message_content_layout);
-		    Boolean canIsee=canISeeTheMessageMarker(marker, false);
+		    LinearLayout contentLayout = (LinearLayout) v.findViewById(R.id.info_window_message_content_layout);
+		    Boolean canIsee = canISeeTheMessageMarker(marker, false);
 		    // set the image view
 		    /*
 		     * ImageView imageView = (ImageView)
@@ -413,28 +452,28 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 		     */
 		    // set the image view
 		    ImageView imageView = (ImageView) v.findViewById(R.id.info_window_message_friend_profile_picture);
-		    if(canIsee)
-		    	imageView.setImageDrawable(controller.getFreindProfilePicture(currMessage.getOwnerId(), 40, 40));
+		    if (canIsee)
+			imageView.setImageDrawable(controller.getFreindProfilePicture(currMessage.getOwnerId(), 40, 40));
 		    // set the Name
 		    TextView name = (TextView) v.findViewById(R.id.info_window_messge_friend_name);
-		    if(canIsee)
-		    	name.setText(currMessage.getSenderFullName());
-		    //show message that he cant see the message
+		    if (canIsee)
+			name.setText(currMessage.getSenderFullName());
+		    // show message that he cant see the message
 		    else
-		    	name.setText("אינך יכול לצפות בהודעה.");
+			name.setText("אינך יכול לצפות בהודעה.");
 
 		    // set the status
-		    
+
 		    TextView contennt = (TextView) v.findViewById(R.id.info_window_message_content);
-		    if(canIsee)
-		    	contennt.setText(currMessage.getContent());
+		    if (canIsee)
+			contennt.setText(currMessage.getContent());
 		    else
-		    	contennt.setText(" עליך להיות בקרבה של לפחות "+currMessage.getReadInRadius()+ " "+"מטר מההודעה. ");
-		    //hide the from label in case the user cant see the message
-		    if(!canIsee)
+			contennt.setText(" עליך להיות בקרבה של לפחות " + currMessage.getReadInRadius() + " " + "מטר מההודעה. ");
+		    // hide the from label in case the user cant see the message
+		    if (!canIsee)
 		    {
-		    	TextView fromLabel=(TextView) v.findViewById(R.id.info_window_messge_fromlabel);
-		    	fromLabel.setVisibility(View.INVISIBLE);
+			TextView fromLabel = (TextView) v.findViewById(R.id.info_window_messge_fromlabel);
+			fromLabel.setVisibility(View.INVISIBLE);
 		    }
 		    TextView distance = (TextView) v.findViewById(R.id.info_window_message_distance);
 		    distance.setText(getDistanceStringFromMarker(marker));
@@ -473,35 +512,43 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 
 	// Handle presses on the action bar items
 	Intent intent;
-//	switch (item.getItemId())
-//	{
-//	case R.id.action_add_friends:
-//	    android.app.FragmentTransaction ft1 = getFragmentManager().beginTransaction();
-//	    android.app.Fragment prev1 = getFragmentManager().findFragmentByTag("dialog");
-//	    if (prev1 != null)
-//	    {
-//		ft1.remove(prev1);
-//	    }
-//	    ft1.addToBackStack(null);
-//
-//	    // Create and show the dialog.
-//	    ChooseFriendsFragment newFragment1 = ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD, false, new ArrayList<CampusInUser>());
-//	    newFragment1.show(ft1, "dialog");
-//	case R.id.action_remove_friends:
-//	    android.app.FragmentTransaction ft11 = getFragmentManager().beginTransaction();
-//	    android.app.Fragment prev11 = getFragmentManager().findFragmentByTag("dialog");
-//	    if (prev11 != null)
-//	    {
-//		ft11.remove(prev11);
-//	    }
-//	    ft11.addToBackStack(null);
-//
-//	    // Create and show the dialog.
-//	    ChooseFriendsFragment newFragment11 = ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE, false, new ArrayList<CampusInUser>());
-//	    newFragment11.show(ft11, "dialog");
-//	    return true;
-//	default:
-	    return super.onOptionsItemSelected(item);
+	// switch (item.getItemId())
+	// {
+	// case R.id.action_add_friends:
+	// android.app.FragmentTransaction ft1 =
+	// getFragmentManager().beginTransaction();
+	// android.app.Fragment prev1 =
+	// getFragmentManager().findFragmentByTag("dialog");
+	// if (prev1 != null)
+	// {
+	// ft1.remove(prev1);
+	// }
+	// ft1.addToBackStack(null);
+	//
+	// // Create and show the dialog.
+	// ChooseFriendsFragment newFragment1 =
+	// ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD, false, new
+	// ArrayList<CampusInUser>());
+	// newFragment1.show(ft1, "dialog");
+	// case R.id.action_remove_friends:
+	// android.app.FragmentTransaction ft11 =
+	// getFragmentManager().beginTransaction();
+	// android.app.Fragment prev11 =
+	// getFragmentManager().findFragmentByTag("dialog");
+	// if (prev11 != null)
+	// {
+	// ft11.remove(prev11);
+	// }
+	// ft11.addToBackStack(null);
+	//
+	// // Create and show the dialog.
+	// ChooseFriendsFragment newFragment11 =
+	// ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE, false,
+	// new ArrayList<CampusInUser>());
+	// newFragment11.show(ft11, "dialog");
+	// return true;
+	// default:
+	return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -515,8 +562,8 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
     public boolean onCreateOptionsMenu(Menu menu)
     {
 	// Inflate the menu; this adds items to the action bar if it is present.
-	//MenuInflater inflater = getMenuInflater();
-	//inflater.inflate(R.menu.main, menu);
+	// MenuInflater inflater = getMenuInflater();
+	// inflater.inflate(R.menu.main, menu);
 	return super.onCreateOptionsMenu(menu);
     }
 
@@ -604,22 +651,23 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 
 	    switch (mapManager.getMarkerType(marker))
 	    {
-	    
-	    //update the obj id that was clicked in order to show the info window when refresh the view
+
+	    // update the obj id that was clicked in order to show the info
+	    // window when refresh the view
 	    case Event:
-	    lastClickedObjId=mapManager.getEventIdFromMarker(lastMarkerClicked);
-	    controller.addToWatchList(new String(lastClickedObjId));
+		lastClickedObjId = mapManager.getEventIdFromMarker(lastMarkerClicked);
+		controller.addToWatchList(new String(lastClickedObjId));
 		initiatePopupWindow(PopUpKind.Delete);
 		break;
 	    case Person:
-	    lastClickedObjId=mapManager.getPersonIdFromMarker(lastMarkerClicked);
+		lastClickedObjId = mapManager.getPersonIdFromMarker(lastMarkerClicked);
 		break;
 	    case Message:
-	    	lastClickedObjId=mapManager.getMessageIdFromMarker(lastMarkerClicked);
-	    	controller.addToWatchList(new String(lastClickedObjId));
-	    	canISeeTheMessageMarker(marker,true);
-	    	initiatePopupWindow(PopUpKind.Delete);
-	    	break;
+		lastClickedObjId = mapManager.getMessageIdFromMarker(lastMarkerClicked);
+		controller.addToWatchList(new String(lastClickedObjId));
+		canISeeTheMessageMarker(marker, true);
+		initiatePopupWindow(PopUpKind.Delete);
+		break;
 	    default:
 		break;
 	    }
@@ -634,26 +682,34 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	return true;
 
     }
-    public Boolean canISeeTheMessageMarker(Marker marker,Boolean displayWarning)
+
+    public Boolean canISeeTheMessageMarker(Marker marker, Boolean displayWarning)
     {
-    	if(marker==null) return false;
-    	String id= mapManager.getMessageIdFromMarker(marker);
-    	if(id==null) return false;
-    	CampusInMessage theMessage=controller.getMessage(id);
-    	if(theMessage==null) return false;
-    	if(theMessage.getOwnerId().equals(currentUser.getParseUserId())) return true;
-    	int radius=theMessage.getReadInRadius();
-    	if(radius==-1) return true;
-    	float mydist=mapManager.getDistanceFromMe(marker);
-    	if(mydist==-1) return false;
-    	if(mydist>radius) 
-    	{
-    		if(displayWarning)
-    			MessageHalper.showAlertDialog("אינך יכול לצפות בהודעה", " אתה לא מספיק קרוב עליך להדקדם עוד לפחות "+(String.format("%.2f", mydist-radius)) + "  מטר ", this);
-    		return false;
-    	}
-    	return true;
+	if (marker == null)
+	    return false;
+	String id = mapManager.getMessageIdFromMarker(marker);
+	if (id == null)
+	    return false;
+	CampusInMessage theMessage = controller.getMessage(id);
+	if (theMessage == null)
+	    return false;
+	if (theMessage.getOwnerId().equals(currentUser.getParseUserId()))
+	    return true;
+	int radius = theMessage.getReadInRadius();
+	if (radius == -1)
+	    return true;
+	float mydist = mapManager.getDistanceFromMe(marker);
+	if (mydist == -1)
+	    return false;
+	if (mydist > radius)
+	{
+	    if (displayWarning)
+		MessageHalper.showAlertDialog("אינך יכול לצפות בהודעה", " אתה לא מספיק קרוב עליך להדקדם עוד לפחות " + (String.format("%.2f", mydist - radius)) + "  מטר ", this);
+	    return false;
+	}
+	return true;
     }
+
     public void showPopup(View v)
     {
 	PopupMenu popup = new PopupMenu(this, v);
@@ -679,9 +735,9 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 		pwindo = new PopupWindow(layout, (int) (600 * widthMultScreenFactor), (int) (400 * heightMultScreenFactor), true);
 		break;
 	    case Delete:
-			layout = inflater.inflate(R.layout.delete_popup, null);
-			pwindo = new PopupWindow(layout, (int) (350 * widthMultScreenFactor), (int) (180 * heightMultScreenFactor), true);
-	    	break;
+		layout = inflater.inflate(R.layout.delete_popup, null);
+		pwindo = new PopupWindow(layout, (int) (350 * widthMultScreenFactor), (int) (180 * heightMultScreenFactor), true);
+		break;
 	    default:
 		break;
 	    }
@@ -831,20 +887,20 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 		    MessageHalper.showProgressDialog("מוסיף " + friensList.size() + " חברים לרשימת החברים שלך", Main.this);
 		    controller.addFriendsToCurrentUserFriendList(friensList, new ControllerCallback<List<Exception>>()
 		    {
-		        
-		        @Override
-		        public void done(List<Exception> retObject, Exception e)
-		        {
-		            MessageHalper.closeProggresDialog();
-		            if(e == null)
-		            {
-		        	// no errors :)
-		        	MessageHalper.showAlertDialog("בוצע!", friensList.size() + " חברים התווספו לרשימת החברים שלך", Main.this);
-		            }
-		            else
-		        	MessageHalper.showAlertDialog("שגיאה!", friensList.size() + " חברים לא התווספו לרשימת החברים שלך", Main.this);
-		    	
-		        }
+
+			@Override
+			public void done(List<Exception> retObject, Exception e)
+			{
+			    MessageHalper.closeProggresDialog();
+			    if (e == null)
+			    {
+				// no errors :)
+				MessageHalper.showAlertDialog("בוצע!", friensList.size() + " חברים התווספו לרשימת החברים שלך", Main.this);
+			    }
+			    else
+				MessageHalper.showAlertDialog("שגיאה!", friensList.size() + " חברים לא התווספו לרשימת החברים שלך", Main.this);
+
+			}
 		    });
 		}
 		else
@@ -857,9 +913,9 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	    if (friensList != null)
 	    {
 		MessageHalper.showProgressDialog("מסיר " + friensList.size() + " חברים מרשימת החברים שלך", Main.this);
-		controller.removeFriendsFromCurrentUserFriendList(friensList,new ControllerCallback<String>()
+		controller.removeFriendsFromCurrentUserFriendList(friensList, new ControllerCallback<String>()
 		{
-		    
+
 		    @Override
 		    public void done(String retObject, Exception e)
 		    {
@@ -867,12 +923,12 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 			if (e != null)
 			    MessageHalper.showAlertDialog("שגיאת מחיקה", e.getMessage(), Main.this);
 			else
-			    MessageHalper.showAlertDialog("מחיקה הושלמה", friensList.size() +" חברים הוסרו מרשימת החברים שלך" , Main.this);
+			    MessageHalper.showAlertDialog("מחיקה הושלמה", friensList.size() + " חברים הוסרו מרשימת החברים שלך", Main.this);
 		    }
 		});
 	    }
 	    else
-		Log.i("CampusIn","Removed friendList Size: " + 0);
+		Log.i("CampusIn", "Removed friendList Size: " + 0);
 	}
 
     }
@@ -946,12 +1002,12 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	    {
 		if (intent.getAction().equals(CampusInConstant.VIEW_MODEL_UPDATED))
 		{
-			int numberOfNewMessages=intent.getIntExtra("newMessages", 0);
-			int numberOfNewEvents=intent.getIntExtra("newEvents", 0);
-			if(numberOfNewEvents>0||numberOfNewMessages>0)
-			{
-				MessageHalper.showAlertDialog(" ", "יש פרטים חדשים על המפה!!!",Main.this);
-			}
+		    int numberOfNewMessages = intent.getIntExtra("newMessages", 0);
+		    int numberOfNewEvents = intent.getIntExtra("newEvents", 0);
+		    if (numberOfNewEvents > 0 || numberOfNewMessages > 0)
+		    {
+			MessageHalper.showAlertDialog(" ", "יש פרטים חדשים על המפה!!!", Main.this);
+		    }
 		    updateView();
 		}
 
@@ -976,8 +1032,9 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	    @Override
 	    public void done(List<CampusInEvent> retObject, Exception e)
 	    {
-	    	if(e!=null) return;
-	    	mapManager.clearEvents();
+		if (e != null)
+		    return;
+		mapManager.clearEvents();
 		for (CampusInEvent campusInEvent : retObject)
 		{
 		    mapManager.addOrUpdateEventMarker(campusInEvent);
@@ -990,8 +1047,9 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	    @Override
 	    public void done(List<CampusInUserLocation> retObject, Exception e)
 	    {
-	    	if(e!=null) return;
-	    	mapManager.clearPersons();
+		if (e != null)
+		    return;
+		mapManager.clearPersons();
 		for (CampusInUserLocation campusInUserLocation : retObject)
 		{
 		    mapManager.addOrUpdatePersonMarker(campusInUserLocation);
@@ -1095,47 +1153,61 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 
     public void deleteClick(View v)
     {
-    	String titleName = null;
-    	MarkerType type=mapManager.getMarkerType(lastMarkerClicked);
-    	switch (type) {
-		case Event:
-				String id=mapManager.getEventIdFromMarker(lastMarkerClicked);
-				controller.deleteMeFromEvent(id);
-				titleName="אירוע";
-			break;
-			
-		case Message:
-			String messageId=mapManager.getMessageIdFromMarker(lastMarkerClicked);
-			controller.deleteMeFromMessage(messageId);
-			titleName="הודעה";
-			break;
+	String titleName = null;
+	MarkerType type = mapManager.getMarkerType(lastMarkerClicked);
+	switch (type)
+	{
+	case Event:
+	    String id = mapManager.getEventIdFromMarker(lastMarkerClicked);
+	    controller.deleteMeFromEvent(id);
+	    titleName = "אירוע";
+	    break;
 
-		default:
-			break;
-		}
-    	MessageHalper.showYesNoDialog("מחיקת "+titleName+".", " האם אתה בטוח שברצונך למחקות את ה"+ titleName+".", this,new OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-		    	lastMarkerClicked.remove();
-		    	mapManager.saveRemovedItem(lastClickedObjId);
-		    	lastClickedObjId=null;
-				
-			}
-		},null);
-    	pwindo.dismiss();
+	case Message:
+	    String messageId = mapManager.getMessageIdFromMarker(lastMarkerClicked);
+	    controller.deleteMeFromMessage(messageId);
+	    titleName = "הודעה";
+	    break;
+
+	default:
+	    break;
+	}
+	MessageHalper.showYesNoDialog("מחיקת " + titleName + ".", " האם אתה בטוח שברצונך למחקות את ה" + titleName + ".", this, new OnClickListener()
+	{
+
+	    @Override
+	    public void onClick(DialogInterface dialog, int which)
+	    {
+		lastMarkerClicked.remove();
+		mapManager.saveRemovedItem(lastClickedObjId);
+		lastClickedObjId = null;
+
+	    }
+	}, null);
+	pwindo.dismiss();
     }
+
     public static void closeDrawerLayout()
     {
 	if (mDrawerLayout != null)
 	    mDrawerLayout.closeDrawers();
     }
 
-	@Override
-	public void onMapClick(LatLng point) {
-		//reset the last object id that was clicked
-	lastClickedObjId=null;
-		
-	}
-   
+    @Override
+    public void onMapClick(LatLng point)
+    {
+	// reset the last object id that was clicked
+	lastClickedObjId = null;
+
+    }
+
+    public boolean isInternetAvailable()
+    {
+	ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+	NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+	if (activeNetwork == null)
+	    return false;
+	return true;
+
+    }
 }

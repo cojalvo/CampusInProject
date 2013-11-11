@@ -5,7 +5,11 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
+
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -44,6 +48,7 @@ public class Login extends Activity
     private Button next1 = null;
     private Button next2 = null;
     private Button finish = null;
+    private AlertDialog alertDialog;
 
     IDataAccesObject dao = null;
 
@@ -51,6 +56,40 @@ public class Login extends Activity
     protected void onCreate(Bundle savedInstanceState)
     {
 	super.onCreate(savedInstanceState);
+	if (!isInternetAvailable())
+	{
+	    // i need to display error massage to the user
+	    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+	    // set title
+	    alertDialogBuilder.setTitle(getString(R.string.no_internrt));
+	    // set dialog message
+	    alertDialogBuilder.setMessage(getString(R.string.no_internet_content)).setCancelable(false).setNegativeButton("Turn On WIFI", new DialogInterface.OnClickListener()
+	    {
+		public void onClick(DialogInterface dialog, int which)
+		{
+		    // this button will navigate you to the WIFI setting menu
+		    // so you could easy turn on the WIFI
+		    dialog.cancel();
+		    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+		    
+		}
+	    }).setPositiveButton("OK", new DialogInterface.OnClickListener()
+	    {
+		public void onClick(DialogInterface dialog, int id)
+		{
+		    // if this button is clicked, close the dilaog
+		    // send data to google analytic
+		    dialog.cancel();
+		    return;
+		}
+	    });
+	    // create alert dialog
+	    alertDialog = alertDialogBuilder.create();
+	    // show it
+	    alertDialog.show();
+	    return; 
+	}
+	
 	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
 	setContentView(R.layout.activity_main);
@@ -239,6 +278,24 @@ public class Login extends Activity
     protected void onPause()
     {
 	super.onPause();
+    }
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        alertDialog.cancel();
+        this.onCreate(null);
+        
+    }
+    
+    public boolean isInternetAvailable()
+    {
+	ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+	NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+	if (activeNetwork == null)
+	    return false;
+	return true;
+
     }
 
 }
