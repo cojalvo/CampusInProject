@@ -1,54 +1,78 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/info_window_event_imageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="2dp"
-        android:src="@drawable/calendar_icon" 
-        android:layout_alignParentRight="true"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/info_window_event_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@+id/info_window_event_imageView" />
+        <TextView
+            android:id="@+id/info_window_event_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="event Name" />
 
-    <TextView
-        android:id="@+id/info_window_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/info_window_event_name"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@+id/info_window_event_imageView" />
+        <TextView
+            android:id="@+id/info_window_messge_fromlabel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:text="שם:" />
 
-    <TextView
-        android:id="@+id/info_window_event_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/info_window_date"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@+id/info_window_event_imageView" />
-    <TextView 
-        android:id="@+id/info_window_location_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/info_window_event_time"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@+id/info_window_event_imageView"
-        />
-    <TextView 
-        android:id="@+id/info_window_distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/info_window_location_name"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@+id/info_window_event_imageView"/>
+        <ImageView
+            android:id="@+id/info_window_event_imageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="2dp"
+            android:src="@drawable/calendar_icon" />
+    </LinearLayout>
+    
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.1dp"
+            android:background="@android:color/darker_gray" />
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginTop="8dp"
+        android:gravity="right"
+        android:orientation="vertical" >
+                <TextView
+            android:id="@+id/info_window_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:paddingBottom="3dp"
+            android:text="date" />
+
+
+        <TextView
+            android:id="@+id/info_window_event_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:paddingBottom="3dp"
+            android:text="time" />
+        <TextView
+            android:id="@+id/info_window_location_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:paddingBottom="3dp"
+            android:text="location name" />
+        <TextView
+            android:id="@+id/info_window_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="8dp"
+            android:text="distance"
+            android:textColor="@color/common_signin_btn_text_light" />
+    </LinearLayout>
+
+</LinearLayout>
