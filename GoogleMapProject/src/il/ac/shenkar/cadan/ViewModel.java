@@ -253,7 +253,7 @@ public class ViewModel
 	    {
 		if (e == null && retObject != null)
 		    currentUser = retObject;
-		FacebookServices.getPictureForFacebookId(currentUser.getFaceBookUserId(), "width=40&height=30", new DataAccesObjectCallBack<Drawable>()
+		FacebookServices.getPictureForFacebookId(currentUser.getFaceBookUserId(), "width=350&height=250", new DataAccesObjectCallBack<Drawable>()
 		{
 
 		    @Override

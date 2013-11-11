@@ -110,7 +110,7 @@ public class MessagesBaseAdapter extends BaseAdapter
 	}
 	else
 	{
-		holder.txt_senderName.setText("׳�׳� ׳ ׳™׳×׳� ׳�׳¦׳₪׳•׳× ׳‘׳”׳•׳“׳¢׳”");
+		holder.txt_senderName.setText("אינך יכול לצפות בהודעה.");
 	    holder.txt_messageContent.setText(R.string.come_closer_to_message);
 	    holder.sender_picture.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
 	}

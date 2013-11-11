@@ -223,15 +223,15 @@ public class Main extends Activity implements OnMapClickListener, OnPreferenceSe
 	 * } });
 	 */
 
-	// Get the SearchView and set the searchable configuration
-	SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-	SearchView searchView = (SearchView) findViewById(R.id.searchView1);
-	SearchableInfo searchInfo = searchManager.getSearchableInfo(getComponentName());
-	if (searchInfo == null)
-	{
-	}
-	searchView.setSearchableInfo(searchInfo);
-	searchView.setIconifiedByDefault(false); // Do not iconify the widget;
+//	// Get the SearchView and set the searchable configuration
+//	SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//	SearchView searchView = (SearchView) findViewById(R.id.searchView1);
+//	SearchableInfo searchInfo = searchManager.getSearchableInfo(getComponentName());
+//	if (searchInfo == null)
+//	{
+//	}
+//	searchView.setSearchableInfo(searchInfo);
+//	searchView.setIconifiedByDefault(false); // Do not iconify the widget;
 						 // expand it by default
 	// if the bundle is null than it the first time the application is
 	// running
