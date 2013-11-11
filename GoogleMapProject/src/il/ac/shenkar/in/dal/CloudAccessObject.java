@@ -172,7 +172,6 @@ public class CloudAccessObject implements IDataAccesObject
 
 		    ParseQuery<ParseObject> recieverQuery = ParseQuery.getQuery("Message");
 		    recieverQuery.whereEqualTo("recivers", curentCampusInUser.getParseUserId());
-		    
 
 		    List<ParseQuery<ParseObject>> queries = new ArrayList<ParseQuery<ParseObject>>();
 		    queries.add(recieverQuery);
@@ -183,7 +182,7 @@ public class CloudAccessObject implements IDataAccesObject
 		    // (ownerId||reciverId||isPublic))
 		    if (messagesLastUpdate != null)
 			orQuery.whereGreaterThanOrEqualTo("createdAt", messagesLastUpdate);
-		    
+
 		    orQuery.whereNotEqualTo("userDelete", curentCampusInUser.getParseUserId());
 
 		    orQuery.findInBackground(new FindCallback<ParseObject>()
@@ -665,7 +664,7 @@ public class CloudAccessObject implements IDataAccesObject
 	    callBack.done(this.profilePic, null);
 	    return;
 	}
-	FacebookServices.getPictureForFacebookId(this.curentCampusInUser.getFaceBookUserId(),"type=square", new DataAccesObjectCallBack<Drawable>()
+	FacebookServices.getPictureForFacebookId(this.curentCampusInUser.getFaceBookUserId(), "type=square", new DataAccesObjectCallBack<Drawable>()
 	{
 	    @Override
 	    public void done(Drawable retPic, Exception e)
@@ -908,8 +907,9 @@ public class CloudAccessObject implements IDataAccesObject
 		if (e == null && retObjectList != null && retObjectList.size() == 1)
 		{
 		    ParseObject retObject = retObjectList.get(0);
-		    //TODO its a bug i shouldnt load the parseUser att all i have it in the memeory this is will save the state update
-		    parseCurrentCampusInUser=retObject;
+		    // TODO its a bug i shouldnt load the parseUser att all i
+		    // have it in the memeory this is will save the state update
+		    parseCurrentCampusInUser = retObject;
 		    ParseObject loc = retObject.getParseObject("location");
 		    // location is not exist- need to create it
 		    if (loc == null)
@@ -1033,7 +1033,7 @@ public class CloudAccessObject implements IDataAccesObject
 		callback.done(friendsProfilePictures.get(facebookId), null);
 		return;
 	    }
-	FacebookServices.getPictureForFacebookId(facebookId,"type=small", new DataAccesObjectCallBack<Drawable>()
+	FacebookServices.getPictureForFacebookId(facebookId, "type=small", new DataAccesObjectCallBack<Drawable>()
 	{
 	    @Override
 	    public void done(Drawable retPic, Exception e)
@@ -1073,150 +1073,173 @@ public class CloudAccessObject implements IDataAccesObject
 
     }
 
-	@Override
-	public void hideMe() {
-		loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
-			
-			@Override
-			public void done(ParseObject retObject, Exception e) {
-				ParseObject loc=retObject.getParseObject("location");
-				if(loc!=null)
-				{
-					loc.deleteInBackground();
-					parseCurrentCampusInUser.remove("location");
-				}
-				parseCurrentCampusInUser.saveInBackground(new SaveCallback() {
-					
-					@Override
-					public void done(ParseException e) {
-						if(e!=null)
-							Log.e("DAO", e.getMessage());
-					}
-				});
-				
-			}
-		});
-	}
+    @Override
+    public void hideMe()
+    {
+	loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>()
+	{
 
-	@Override
-	public void deleteMeFromEvent(final CampusInEvent theEvent) {
-		loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
-			
-			@Override
-			public void done(final CampusInUser currentUser, Exception e) {
-				if(e==null && currentUser!=null)
-				{
-						ParseQuery<ParseObject> query=ParseQuery.getQuery("Event");
-						query.whereEqualTo("objectId", theEvent.getParseId());
-						query.findInBackground(new FindCallback<ParseObject>() {
-							
-							@Override
-							public void done(List<ParseObject> ret, ParseException e) {
-								if(e==null && ret!=null && ret.size()==1)
-								{
-									//im the owner delete the entire event
-									if(currentUser.getParseUserId().equals(theEvent.getOwnerId()))
-									{
-										ret.get(0).deleteInBackground();	
-									}
-									else
-									{
-										List recivers=ret.get(0).getList("recivers");
-										recivers.remove(currentUser.getParseUserId());
-										ret.get(0).saveInBackground();
-									}
-								}
-								
-							}
-						});
-				}
-				
-			}
-		});
-		
-	}
+	    @Override
+	    public void done(ParseObject retObject, Exception e)
+	    {
+		ParseObject loc = retObject.getParseObject("location");
+		if (loc != null)
+		{
+		    loc.deleteInBackground();
+		    parseCurrentCampusInUser.remove("location");
+		}
+		parseCurrentCampusInUser.saveInBackground(new SaveCallback()
+		{
 
-	@Override
-	public void deleteMeFromMessage(final CampusInMessage theMessage) {
-loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>() {
-			
-			@Override
-			public void done(final CampusInUser currentUser, Exception e) {
-				if(e==null && currentUser!=null)
-				{
-						ParseQuery<ParseObject> query=ParseQuery.getQuery("Message");
-						query.whereEqualTo("objectId", theMessage.getParseId());
-						query.findInBackground(new FindCallback<ParseObject>() {
-							
-							@Override
-							public void done(List<ParseObject> ret, ParseException e) {
-								if(e==null && ret!=null && ret.size()==1)
-								{
-									ret.get(0).add("userDelete",currentUser.getParseUserId());
-									ret.get(0).saveInBackground();
-								}
-								
-								
-							}
-						});
-				}
-				
-			}	
+		    @Override
+		    public void done(ParseException e)
+		    {
+			if (e != null)
+			    Log.e("DAO", e.getMessage());
+		    }
+		});
+
+	    }
 	});
-}
+    }
 
-	@Override
-	public void loadWatchItems(final DataAccesObjectCallBack<List<String>> callBack) {
-		loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
-			
-			@Override
-			public void done(ParseObject retObject, Exception e) {
-				if(retObject!=null && e==null)
-				{
-					
-					ParseQuery<ParseObject> q=retObject.getRelation("wachItems").getQuery();
-					q.findInBackground(new FindCallback<ParseObject>() {
-						
-						@Override
-						public void done(List<ParseObject> retList, ParseException e) {
-							List<String> wachList=new ArrayList<String>();
-							if(e==null)
-							{
-								for (ParseObject parseObject : retList) 
-								{
-									wachList.add(parseObject.getString("watchId"));
-								}
-							}
-							if(callBack!=null)
-								callBack.done(wachList, e);
-						}
-					});
-				}
-				
-			}
-		});
-		
-	}
+    @Override
+    public void deleteMeFromEvent(final CampusInEvent theEvent)
+    {
+	loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
+	{
 
-	@Override
-	public void saveWatchList(final List<String> watchList) {
-		loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>() {
-			
+	    @Override
+	    public void done(final CampusInUser currentUser, Exception e)
+	    {
+		if (e == null && currentUser != null)
+		{
+		    ParseQuery<ParseObject> query = ParseQuery.getQuery("Event");
+		    query.whereEqualTo("objectId", theEvent.getParseId());
+		    query.findInBackground(new FindCallback<ParseObject>()
+		    {
+
 			@Override
-			public void done(ParseObject retObject, Exception e) {
-				if(e==null)
+			public void done(List<ParseObject> ret, ParseException e)
+			{
+			    if (e == null && ret != null && ret.size() == 1)
+			    {
+				// im the owner delete the entire event
+				if (currentUser.getParseUserId().equals(theEvent.getOwnerId()))
 				{
-					ParseRelation<ParseObject> relation=retObject.getRelation("wachItems");
-					for (String id : watchList) {
-						ParseObject watchItem=new ParseObject("watchItem");
-						watchItem.put("watchId", id);
-						relation.add(watchItem);
-					}
-					retObject.saveInBackground();
+				    ret.get(0).deleteInBackground();
 				}
-				
+				else
+				{
+				    List recivers = ret.get(0).getList("recivers");
+				    recivers.remove(currentUser.getParseUserId());
+				    ret.get(0).saveInBackground();
+				}
+			    }
+
 			}
-		});
-		
-	}
+		    });
+		}
+
+	    }
+	});
+
+    }
+
+    @Override
+    public void deleteMeFromMessage(final CampusInMessage theMessage)
+    {
+	loadCurrentCampusInUser(new DataAccesObjectCallBack<CampusInUser>()
+	{
+
+	    @Override
+	    public void done(final CampusInUser currentUser, Exception e)
+	    {
+		if (e == null && currentUser != null)
+		{
+		    ParseQuery<ParseObject> query = ParseQuery.getQuery("Message");
+		    query.whereEqualTo("objectId", theMessage.getParseId());
+		    query.findInBackground(new FindCallback<ParseObject>()
+		    {
+
+			@Override
+			public void done(List<ParseObject> ret, ParseException e)
+			{
+			    if (e == null && ret != null && ret.size() == 1)
+			    {
+				ret.get(0).add("userDelete", currentUser.getParseUserId());
+				ret.get(0).saveInBackground();
+			    }
+
+			}
+		    });
+		}
+
+	    }
+	});
+    }
+
+    @Override
+    public void loadWatchItems(final DataAccesObjectCallBack<List<String>> callBack)
+    {
+	loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>()
+	{
+
+	    @Override
+	    public void done(ParseObject retObject, Exception e)
+	    {
+		if (retObject != null && e == null)
+		{
+
+		    ParseQuery<ParseObject> q = retObject.getRelation("wachItems").getQuery();
+		    q.findInBackground(new FindCallback<ParseObject>()
+		    {
+
+			@Override
+			public void done(List<ParseObject> retList, ParseException e)
+			{
+			    List<String> wachList = new ArrayList<String>();
+			    if (e == null)
+			    {
+				for (ParseObject parseObject : retList)
+				{
+				    wachList.add(parseObject.getString("watchId"));
+				}
+			    }
+			    if (callBack != null)
+				callBack.done(wachList, e);
+			}
+		    });
+		}
+
+	    }
+	});
+
+    }
+
+    @Override
+    public void saveWatchList(final List<String> watchList)
+    {
+	loadParseCurrentCampusInUser(new DataAccesObjectCallBack<ParseObject>()
+	{
+
+	    @Override
+	    public void done(ParseObject retObject, Exception e)
+	    {
+		if (e == null)
+		{
+		    ParseRelation<ParseObject> relation = retObject.getRelation("wachItems");
+		    for (String id : watchList)
+		    {
+			ParseObject watchItem = new ParseObject("watchItem");
+			watchItem.put("watchId", id);
+			relation.add(watchItem);
+		    }
+		    retObject.saveInBackground();
+		}
+
+	    }
+	});
+
+    }
 }

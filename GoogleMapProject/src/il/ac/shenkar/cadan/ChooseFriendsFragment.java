@@ -35,8 +35,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 public class ChooseFriendsFragment extends DialogFragment
 {
@@ -241,7 +240,6 @@ public class ChooseFriendsFragment extends DialogFragment
 			{
 			    if (retObject != null)
 				friensList = retObject;
-			    Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 			    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
 			    friendListView.setAdapter(new ChooseFriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
 			    // progressDialog.dismiss();

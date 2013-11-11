@@ -93,7 +93,7 @@ import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 public class Main extends Activity implements OnMapClickListener,OnPreferenceSelectedListener, OnMapLongClickListener, OnMarkerClickListener, onFriendsAddedListener, onNewEventAdded,
 	onNewMassagecreated
@@ -129,7 +129,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	{
 	    new InitLocations().execute(this);
 	}
-	Toast.makeText(this, "onCreate was called", 150).show();
 	super.onCreate(savedInstanceState);
 	Parse.initialize(this, "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
@@ -194,7 +193,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	SearchableInfo searchInfo = searchManager.getSearchableInfo(getComponentName());
 	if (searchInfo == null)
 	{
-	    Toast.makeText(getApplicationContext(), "Search info is null", 500).show();
 	}
 	searchView.setSearchableInfo(searchInfo);
 	searchView.setIconifiedByDefault(false); // Do not iconify the widget;
@@ -275,7 +273,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
     protected void onPause()
     {
 	Log.i("Main", "onPause was called");
-	Toast.makeText(this, "onPause was called", 150).show();
 	if (!isFinishing())
 	{
 	    setPendingIntent();
@@ -288,8 +285,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
     @Override
     protected void onResume()
     {
-	// TODO Auto-generated method stub
-	Toast.makeText(this, "onResume was called", 150).show();
 	Log.i("Main", "onResume was called");
 	//controller.resumeAutoViewModelUpdatingService();
 	super.onResume();
@@ -633,7 +628,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 	}
 	catch (Exception e)
 	{
-	    Toast.makeText(Main.this, "marker click was failed", 100).show();
 	    Log.e("markerClick", "marker click was failed");
 	}
 
@@ -736,7 +730,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 
     public void addEventClicked(View v)
     {
-	Toast.makeText(this, "add event was clicked on location: lat:" + lastMapLongClick.latitude + " long: " + lastMapLongClick.longitude, 300).show();
 	pwindo.dismiss();
 	createEventProcess();
     }
@@ -759,7 +752,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 
     public void addTestClicked(View v)
     {
-	Toast.makeText(this, "add test was clicked", 300).show();
 	CloudAccessObject.getInstance().getAllCampusInUsersStartWith("R", new DataAccesObjectCallBack<List<CampusInUser>>()
 	{
 
@@ -776,11 +768,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 			    @Override
 			    public void done(Integer intRet, Exception e)
 			    {
-				if (e == null)
-				{
-				    Toast.makeText(Main.this, "new friend wass add:" + retObject.get(0).getFirstName(), 300).show();
-				}
-
 			    }
 			});
 		    }
@@ -861,7 +848,7 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 		    });
 		}
 		else
-		    Toast.makeText(getApplicationContext(), "the user Added: " + 0 + " friends", 3000).show();
+		    Log.i("CAmpusIn", "the user Added: " + 0 + " friends");
 	    }
 	}
 	else
@@ -885,7 +872,7 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 		});
 	    }
 	    else
-		Toast.makeText(getApplication(), "Removed friendList Size: " + 0, 3000).show();
+		Log.i("CampusIn","Removed friendList Size: " + 0);
 	}
 
     }
@@ -907,7 +894,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 		if (retObject != null)
 		{
 		    // event was added
-		    Toast.makeText(getApplicationContext(), "Event Was Added - from Acrivity", 3000).show();
 		    // set a reminder
 		    controller.addNotificationToEvent(controller.getEvent(retObject));
 		    MessageHalper.closeProggresDialog();
@@ -966,7 +952,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
 			{
 				MessageHalper.showAlertDialog(" ", "יש פרטים חדשים על המפה!!!",Main.this);
 			}
-		    Toast.makeText(Main.this, "view model was updated", 500).show();
 		    updateView();
 		}
 
@@ -1026,8 +1011,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
     @Override
     protected void onDestroy()
     {
-	// TODO Auto-generated method stub
-	Toast.makeText(this, "onDestroy was called", 150).show();
 	super.onDestroy();
 	// stop the report location service
 	Main.this.stopService(new Intent(Main.this, LocationReporterServise.class));
@@ -1084,7 +1067,6 @@ public class Main extends Activity implements OnMapClickListener,OnPreferenceSel
     {
 	if (sentMassage != null)
 	{
-	    Toast.makeText(getApplicationContext(), "New Massage creted: '" + sentMassage.getContent() + "'", 4000).show();
 	    CampusInLocation loc = new CampusInLocation();
 	    loc.setLocationName("Shenkar");
 	    loc.setMapLocation(lastMapLongClick);

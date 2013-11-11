@@ -24,7 +24,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.Toast;
+
 
 public class ChooseFriendListBaseAdapter extends BaseAdapter implements Filterable
 {

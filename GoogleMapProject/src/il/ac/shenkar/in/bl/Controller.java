@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.widget.Toast;
 import il.ac.shenkar.cadan.Main;
 import il.ac.shenkar.cadan.MapManager;
 import il.ac.shenkar.cadan.MessageHalper;
@@ -49,8 +48,8 @@ public class Controller implements ICampusInController
     private Boolean updatingViewModel = false;
     private Boolean updateAgainViewModel = false;
     private Boolean viewModelServiceRunning = false;
-    private  List<String> wachedItems=new ArrayList<String>();
-    private  List<String> reported=new ArrayList<String>();
+    private List<String> wachedItems = new ArrayList<String>();
+    private List<String> reported = new ArrayList<String>();
     /**
      * this List will hold all of the Events we want to save to the cloud only
      * if the save is successful the event object will be thrown from the list
@@ -58,7 +57,6 @@ public class Controller implements ICampusInController
     private List<CampusInEvent> saveToCLoudEventQue;
     private List<CampusInMessage> saveToCloudMessageQue;
 
-    
     private Controller(Context context)
     {
 	// private c'tor
@@ -80,7 +78,7 @@ public class Controller implements ICampusInController
 		if (e == null && retObject != null)
 		{
 		    currentUser = retObject;
-		    //loadWatchedItems();
+		    // loadWatchedItems();
 		}
 
 	    }
@@ -106,7 +104,7 @@ public class Controller implements ICampusInController
     @Override
     public CampusInUser getCurrentUser()
     {
-    	return viewModel.getCurrentUser();
+	return viewModel.getCurrentUser();
     }
 
     @Override
@@ -237,33 +235,37 @@ public class Controller implements ICampusInController
 	Intent inti = new Intent();
 	inti.setAction(CampusInConstant.VIEW_MODEL_UPDATED);
 	inti.putExtra("newEvents", newEventsNumber());
-	inti.putExtra("newMessages",newMessagesNumber());
+	inti.putExtra("newMessages", newMessagesNumber());
 	if (context != null)
 	    context.sendBroadcast(inti);
     }
+
     private int newEventsNumber()
     {
-    	int counter=0;
-    	for (CampusInEvent event : viewModel.getAllEvents()) {
-			if(!wachedItems.contains(event.getParseId()) && !reported.contains(event.getParseId()))
-				{
-					counter++;
-					reported.add(event.getParseId());
-				}
-		}
-    	return counter;
+	int counter = 0;
+	for (CampusInEvent event : viewModel.getAllEvents())
+	{
+	    if (!wachedItems.contains(event.getParseId()) && !reported.contains(event.getParseId()))
+	    {
+		counter++;
+		reported.add(event.getParseId());
+	    }
+	}
+	return counter;
     }
+
     private int newMessagesNumber()
     {
-    	int counter=0;
-    	for (CampusInMessage message : viewModel.getAllMessages()) {
-			if(!wachedItems.contains(message.getParseId()) && !reported.contains(message.getParseId())) 
-				{
-					counter++;
-					reported.add(message.getParseId());
-				}
-		}
-    	return counter;
+	int counter = 0;
+	for (CampusInMessage message : viewModel.getAllMessages())
+	{
+	    if (!wachedItems.contains(message.getParseId()) && !reported.contains(message.getParseId()))
+	    {
+		counter++;
+		reported.add(message.getParseId());
+	    }
+	}
+	return counter;
     }
 
     @Override
@@ -327,13 +329,13 @@ public class Controller implements ICampusInController
     @Override
     public Drawable getFreindProfilePicture(String parseId, int width, int height)
     {
-    	Drawable retPic;
-    	if(currentUser.getParseUserId().equals(parseId))
-    		retPic= viewModel.getCurrentUserProfilePic();
-    	else
-    		retPic = viewModel.getUserProfilePicture(parseId);
+	Drawable retPic;
+	if (currentUser.getParseUserId().equals(parseId))
+	    retPic = viewModel.getCurrentUserProfilePic();
+	else
+	    retPic = viewModel.getUserProfilePicture(parseId);
 	if (retPic != null)
-	    	return retPic;
+	    return retPic;
 	return context.getResources().getDrawable(R.drawable.com_facebook_profile_picture_blank_portrait);
     }
 
@@ -384,7 +386,6 @@ public class Controller implements ICampusInController
     {
 	if (ModelUpdateService.isRuning())
 	    return;
-	Toast.makeText(context, "vieModel service is not running- start it", 150).show();
 	Intent i = new Intent(context, ModelUpdateService.class);
 	context.startService(i);
     }
@@ -479,74 +480,89 @@ public class Controller implements ICampusInController
 
     }
 
-	@Override
-	public float getMyDistanceFrom(String parseObjId) {
-		return mapManager.getDistanceFromMe(parseObjId);
-	}
+    @Override
+    public float getMyDistanceFrom(String parseObjId)
+    {
+	return mapManager.getDistanceFromMe(parseObjId);
+    }
 
-	@Override
-	public void navigateTo(String objId) {
-		mapManager.moveCameraTo(objId, 30);
-		
-	}
+    @Override
+    public void navigateTo(String objId)
+    {
+	mapManager.moveCameraTo(objId, 30);
 
-	@Override
-	public void HideMe() {
-		cloudAccessObject.hideMe();
-		
-	}
+    }
 
-	@Override
-	public Boolean CanISeeTheFriend(String userParseId) {
-		CampusInUserLocation ul=viewModel.getUserfriendLocation(userParseId);
-		if(ul==null) return false;
-		return ul.getLocation()!=null;
-	}
+    @Override
+    public void HideMe()
+    {
+	cloudAccessObject.hideMe();
 
-	@Override
-	public void deleteMeFromEvent(String eventId) {
-		CampusInEvent event=viewModel.getEventById(eventId);
-		if(event==null) return;
-		cloudAccessObject.deleteMeFromEvent(event);
-		updateViewModel(null);
-	}
+    }
 
-	@Override
-	public void deleteMeFromMessage(String messageId) {
-		CampusInMessage message=viewModel.getMessageById(messageId);
-		if(message==null) return;
-		cloudAccessObject.deleteMeFromMessage(message);
-		updateViewModel(null);
-	}
+    @Override
+    public Boolean CanISeeTheFriend(String userParseId)
+    {
+	CampusInUserLocation ul = viewModel.getUserfriendLocation(userParseId);
+	if (ul == null)
+	    return false;
+	return ul.getLocation() != null;
+    }
 
-	@Override
-	public void addToWatchList(String id) {
-		if(id!=null && !wachedItems.contains(id))
-			wachedItems.add(id);
-	}
-	public void saveWatchedList()
+    @Override
+    public void deleteMeFromEvent(String eventId)
+    {
+	CampusInEvent event = viewModel.getEventById(eventId);
+	if (event == null)
+	    return;
+	cloudAccessObject.deleteMeFromEvent(event);
+	updateViewModel(null);
+    }
+
+    @Override
+    public void deleteMeFromMessage(String messageId)
+    {
+	CampusInMessage message = viewModel.getMessageById(messageId);
+	if (message == null)
+	    return;
+	cloudAccessObject.deleteMeFromMessage(message);
+	updateViewModel(null);
+    }
+
+    @Override
+    public void addToWatchList(String id)
+    {
+	if (id != null && !wachedItems.contains(id))
+	    wachedItems.add(id);
+    }
+
+    public void saveWatchedList()
+    {
+	cloudAccessObject.saveWatchList(wachedItems);
+    }
+
+    private void loadWatchedItems()
+    {
+	cloudAccessObject.loadWatchItems(new DataAccesObjectCallBack<List<String>>()
 	{
-		cloudAccessObject.saveWatchList(wachedItems);
-	}
-	private void loadWatchedItems()
-	{
-		cloudAccessObject.loadWatchItems(new DataAccesObjectCallBack<List<String>>() {
-			
-			@Override
-			public void done(List<String> retObject, Exception e) {
-				if(e==null && retObject!=null)
-					wachedItems=retObject;	
-			}
-		});
-	}
-		
-	public CampusInLocation getLocationFromQRCode(String qrCode) throws Exception
-	{
-	    return locationHelper.getLocationFromQRCode(qrCode);
-	}
-	public void setContext(Context context)
-	{
-	    this.context = context;
-	}
+
+	    @Override
+	    public void done(List<String> retObject, Exception e)
+	    {
+		if (e == null && retObject != null)
+		    wachedItems = retObject;
+	    }
+	});
+    }
+
+    public CampusInLocation getLocationFromQRCode(String qrCode) throws Exception
+    {
+	return locationHelper.getLocationFromQRCode(qrCode);
+    }
+
+    public void setContext(Context context)
+    {
+	this.context = context;
+    }
 
 }

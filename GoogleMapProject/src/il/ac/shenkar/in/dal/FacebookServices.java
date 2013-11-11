@@ -27,74 +27,80 @@ import com.facebook.model.GraphUser;
 import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
-public class FacebookServices {
+public class FacebookServices
+{
 
-	private static final String TAG = "cadan";
-	private static InputStream inputStream = null;
-	private static Drawable picture = null;
+    private static final String TAG = "cadan";
+    private static InputStream inputStream = null;
+    private static Drawable picture = null;
 
+    public static List<GraphUser> getFriendsList()
+    {
+	final List<GraphUser> returnList = new LinkedList<GraphUser>();
+	Session session = ParseFacebookUtils.getSession();
+	if (session.isOpened())
+	{
+	    Request friendRequest = Request.newMyFriendsRequest(session, new GraphUserListCallback()
+	    {
 
-	public static List<GraphUser> getFriendsList() {
-		final List<GraphUser> returnList = new LinkedList<GraphUser>();
-		Session session = ParseFacebookUtils.getSession();
-		if (session.isOpened()) {
-			Request friendRequest = Request.newMyFriendsRequest(session,
-					new GraphUserListCallback() {
-
-						@Override
-						public void onCompleted(List<GraphUser> users,
-								Response response) {
-							for (GraphUser graphUser : users) {
-								returnList.add(graphUser);
-							}
-						}
-					});
-			friendRequest.executeAsync();
+		@Override
+		public void onCompleted(List<GraphUser> users, Response response)
+		{
+		    for (GraphUser graphUser : users)
+		    {
+			returnList.add(graphUser);
+		    }
 		}
-		return returnList;
+	    });
+	    friendRequest.executeAsync();
 	}
+	return returnList;
+    }
 
-	/**
-	 * Function loads the users facebook profile pic
-	 * 
-	 * @param userID
-	 */
-	public synchronized static void getPictureForFacebookId(final String userId,final String pictureTypeString,
-			final DataAccesObjectCallBack<Drawable> callBack) {
-		new AsyncTask<String, Integer, String>() {
+    /**
+     * Function loads the users facebook profile pic
+     * 
+     * @param userID
+     */
+    public synchronized static void getPictureForFacebookId(final String userId, final String pictureTypeString, final DataAccesObjectCallBack<Drawable> callBack)
+    {
+	new AsyncTask<String, Integer, String>()
+	{
 
-			@Override
-			protected String doInBackground(String... params) {
-				 try
-			        {
-			          FacebookServices.inputStream = new URL("https://graph.facebook.com/" + userId + "/picture?"+pictureTypeString).openStream();
-			          FacebookServices.picture = Drawable.createFromStream(FacebookServices.inputStream, "facebook-pictures");
-			          return null;
-			        }
-			        catch (Exception localException)
-			        {
-			          localException.printStackTrace();
-			        }
-			        return null;
-			}
+	    @Override
+	    protected String doInBackground(String... params)
+	    {
+		try
+		{
+		    FacebookServices.inputStream = new URL("https://graph.facebook.com/" + userId + "/picture?" + pictureTypeString).openStream();
+		    FacebookServices.picture = Drawable.createFromStream(FacebookServices.inputStream, "facebook-pictures");
+		    return null;
+		}
+		catch (Exception localException)
+		{
+		    localException.printStackTrace();
+		}
+		return null;
+	    }
 
-			@Override
-			protected void onPostExecute(String result) {
-				if(callBack!=null)
-					callBack.done(picture, null);
-				picture=null;
-			}
+	    @Override
+	    protected void onPostExecute(String result)
+	    {
+		if (callBack != null)
+		    callBack.done(picture, null);
+		picture = null;
+	    }
 
-		}.execute();
-	}
+	}.execute();
+    }
 
-	/*
-	 * Get me from facebook
-	 */
-	public static void makeMeRequest(final Session session,
-			Request.GraphUserCallback callBack) {
-		Request request = Request.newMeRequest(session, callBack);
-		request.executeAsync();
-	}
+    /*
+     * Get me from facebook
+     */
+    public static void makeMeRequest(final Session session, Request.GraphUserCallback callBack)
+    {
+	Request request = Request.newMeRequest(session, callBack);
+	request.executeAsync();
+    }
 
 }

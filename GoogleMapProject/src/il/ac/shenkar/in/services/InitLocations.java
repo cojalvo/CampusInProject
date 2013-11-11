@@ -24,7 +24,6 @@ import il.ac.shenkar.in.dal.DataBaseHealper;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations>
 {
@@ -41,7 +40,7 @@ public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations
 	File existingXML = new File(params[0].getFilesDir() + existingFile);
 	dataBaseHealper = DataBaseHealper.getInstance(context);
 	dataBaseHealper.initArrayList();
-	
+
 	// this code takes xml configuration file from the internet and save it
 	// to local file
 	try
@@ -101,7 +100,8 @@ public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations
 		{
 		    if (location == null)
 			break;
-		    this.addLocationToDB(params[0], location); //params[0] = context
+		    this.addLocationToDB(params[0], location); // params[0] =
+							       // context
 		}
 		outputFile.renameTo(existingXML);
 		Log.i("CampusIn", "DB was successfuky updated!");
@@ -176,7 +176,6 @@ public class InitLocations extends AsyncTask<Context, Integer, CampusInLocations
     {
 	super.onPostExecute(result);
 
-	Toast.makeText(context, "init Locations Async Task Ended", 3000);
     }
 
     private CampusInLocations getObjectsFromXmlFile(File source) throws Throwable

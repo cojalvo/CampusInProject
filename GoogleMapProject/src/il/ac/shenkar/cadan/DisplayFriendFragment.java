@@ -14,7 +14,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
 {
@@ -71,7 +70,6 @@ public class DisplayFriendFragment extends AddOrRemoveFriendsFromCloudFragment
 			    if (retObject != null)
 			    {
 				friensList = retObject;
-				Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 				if (view == null)
 				    view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);

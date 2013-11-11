@@ -29,13 +29,13 @@ public class LocationHelper implements ILocationHelper
     {
 	this.locationList = (Collection<JacocDBLocation>) DataBaseHealper.getInstance(context).getAllLocations();
 	campusInLocationMap = new HashMap<String, JacocDBLocation>();
-	// initialize the hashMap 
+	// initialize the hashMap
 	initHase();
     }
 
     private void initHase()
     {
-	for (JacocDBLocation location: locationList)
+	for (JacocDBLocation location : locationList)
 	{
 	    campusInLocationMap.put(location.getLocationName(), location);
 	}
@@ -109,8 +109,9 @@ public class LocationHelper implements ILocationHelper
     }
 
     /**
-     * the QR code String is the name of the location and the key to the location HaseMap 
-     * therefor i need only to query the hashMap for the qrCode parameter and get the Location object 
+     * the QR code String is the name of the location and the key to the
+     * location HaseMap therefor i need only to query the hashMap for the qrCode
+     * parameter and get the Location object
      */
     @Override
     public CampusInLocation getLocationFromQRCode(String qrCode) throws Exception
@@ -123,39 +124,38 @@ public class LocationHelper implements ILocationHelper
 	JacocDBLocation dbLocation = campusInLocationMap.get(qrCode);
 	if (dbLocation == null)
 	    throw new Exception("Unknown Code...");
-	//create the CampusIn Location
+	// create the CampusIn Location
 	CampusInLocation toReturn = new CampusInLocation(dbLocation);
-	//manipulate the point with random
+	// manipulate the point with random
 	toReturn = manipulateRandomLocationCordinate(dbLocation, toReturn);
 	return toReturn;
     }
-    
-    private CampusInLocation manipulateRandomLocationCordinate(JacocDBLocation toManipulate,CampusInLocation toReturn)
+
+    private CampusInLocation manipulateRandomLocationCordinate(JacocDBLocation toManipulate, CampusInLocation toReturn)
     {
 	double maxX = toManipulate.getRealLocation().getNorthEast().getLat();
 	double minX = toManipulate.getRealLocation().getSouthWest().getLat();
 	double maxY = toManipulate.getRealLocation().getNorthEast().getLng();
 	double minY = toManipulate.getRealLocation().getSouthWest().getLng();
-	
+
 	double deltaX = maxX - minX;
 	double deltaY = maxY - minY;
-	
-	double newX = minX + deltaX * Math.random(); 
+
+	double newX = minX + deltaX * Math.random();
 	double newY = minY + deltaY * Math.random();
-	
+
 	if (newX > maxX)
 	    Log.i("LocationHealper", "newX > maxX -> algoritem failed");
-	else 
+	else
 	    Log.i("LocationHealper", "newX <= maxX -> algoritem working");
-	
+
 	if (newY > maxY)
 	    Log.i("LocationHealper", "newY > maxY  -> algoritem failed");
-	else 
+	else
 	    Log.i("LocationHealper", "newY <= maxY  -> algoritem working");
-	
+
 	toReturn.setMapLocation(new LatLng(newX, newY));
-	
-	
-	return 	toReturn;
+
+	return toReturn;
     }
 }

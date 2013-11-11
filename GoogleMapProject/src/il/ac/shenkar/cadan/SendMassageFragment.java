@@ -75,18 +75,18 @@ public class SendMassageFragment extends AddNewEventFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-    	currentUser=Controller.getInstance(null).getCurrentUser();
+	currentUser = Controller.getInstance(null).getCurrentUser();
 	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 	builder.setTitle(Messages.getString("SendMassageFragment.sendMessage")); //$NON-NLS-1$
 	builder.setPositiveButton(Messages.getString("SendMassageFragment.send"), new DialogInterface.OnClickListener() //$NON-NLS-1$
-	{
+		{
 
-	    @Override
-	    public void onClick(DialogInterface dialog, int which)
-	    {
+		    @Override
+		    public void onClick(DialogInterface dialog, int which)
+		    {
 
-	    }
-	});
+		    }
+		});
 	builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
 	{
 

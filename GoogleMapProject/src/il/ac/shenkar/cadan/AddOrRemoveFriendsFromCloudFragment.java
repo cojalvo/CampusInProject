@@ -214,7 +214,7 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 					friensList.add(campusInUser);
 				    }
 				}
-				Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
+				
 				ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);
 				friendListView.setAdapter(new ChooseFriendListBaseAdapter(getActivity(), getFriends(), curretntUser));
 				progressDialog.dismiss();
@@ -247,7 +247,6 @@ public class AddOrRemoveFriendsFromCloudFragment extends DialogFragment
 					    friensList.add(campusInUser);
 				    }
 
-				    Toast.makeText(getActivity(), "number of friends:" + retObject.size(), 3000).show();
 				    if (view == null)
 					view = getActivity().getLayoutInflater().inflate(R.layout.add_friends_fragment_layout, null, false);
 				    ListView friendListView = (ListView) view.findViewById(R.id.friends_list_view);

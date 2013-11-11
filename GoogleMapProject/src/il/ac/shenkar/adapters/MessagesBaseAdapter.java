@@ -110,23 +110,23 @@ public class MessagesBaseAdapter extends BaseAdapter
 	}
 	else
 	{
-		holder.txt_senderName.setText("לא ניתן לצפות בהודעה");
+		holder.txt_senderName.setText("׳�׳� ׳ ׳™׳×׳� ׳�׳¦׳₪׳•׳× ׳‘׳”׳•׳“׳¢׳”");
 	    holder.txt_messageContent.setText(R.string.come_closer_to_message);
 	    holder.sender_picture.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
 	}
 	holder.txt_distance.setText(getDistanceString(currMessage.getParseId()));
 	return convertView;
     }
-    private String getDistanceString(String messageId)
+    private String getDistanceString(String eventId)
     {
-    	float dist = controller.getMyDistanceFrom(messageId);
+    	float dist = controller.getMyDistanceFrom(eventId);
     	if (dist > 0)
     	{
     	    String unit;
     	    String finalDist;
     	    if (dist > 1000)
     	    {
-    		unit = "ק״מ";
+    		unit = "ק'מ";
 
     		finalDist = String.format("%.2f", dist / 1000);
     	    }
@@ -136,9 +136,9 @@ public class MessagesBaseAdapter extends BaseAdapter
     		finalDist = String.format("%.0f", dist);
     	    }
 
-    	    return ("נמצא כ " + finalDist + " " + unit + " " + "ממני");
+    	    return ("ההודעה נמצאת: " + finalDist + " " + unit + " " + "ממני");
     	}
-    	return "מרחק לא ידוע.";
+    	return "אתה נמצא ליד ההודעה";
     }
     static class ViewHolder
     {

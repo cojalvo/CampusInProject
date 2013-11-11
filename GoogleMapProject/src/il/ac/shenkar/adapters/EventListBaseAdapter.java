@@ -24,7 +24,6 @@ import android.widget.Filterable;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class EventListBaseAdapter extends BaseAdapter implements Filterable
 {
@@ -193,7 +192,7 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
     	    String finalDist;
     	    if (dist > 1000)
     	    {
-    		unit = "ק״מ";
+    		unit = "ק'מ";
 
     		finalDist = String.format("%.2f", dist / 1000);
     	    }
@@ -203,8 +202,8 @@ public class EventListBaseAdapter extends BaseAdapter implements Filterable
     		finalDist = String.format("%.0f", dist);
     	    }
 
-    	    return ("נמצא כ " + finalDist + " " + unit + " " + "ממני");
+    	    return ("האירוע נמצא: " + finalDist + " " + unit + " " + "ממני");
     	}
-    	return "מרחק לא ידוע.";
+    	return "אתה נמצא באירוע";
     }
 }
