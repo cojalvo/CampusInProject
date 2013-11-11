@@ -90,8 +90,10 @@ public class LoadingActivity extends Activity
     protected void onResume()
     {
         super.onResume();
-        alertDialog.cancel();
-        this.onCreate(null);
-        
+        if (alertDialog != null)
+         {
+            alertDialog.cancel();
+            this.onCreate(null);
+         }        
     }
 }

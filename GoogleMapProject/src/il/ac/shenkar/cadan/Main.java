@@ -320,9 +320,9 @@ public class Main extends Activity implements OnMapClickListener, OnPreferenceSe
     @Override
     protected void onResume()
     {
-	Log.i("Main", "onResume was called");
-	// controller.resumeAutoViewModelUpdatingService();
 	super.onResume();
+	Log.i("Main", "onResume was called");
+	// controller.resumeAutoViewModelUpdatingService();	
 	if (alertDialog != null)
 	    alertDialog.cancel();
     }
