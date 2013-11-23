@@ -277,7 +277,6 @@ public class ViewModel
      * After finish update the view model obj an intent will invoke to update
      * the receivers. (they will update the view with the changes.)
      */
-    // TODO-I think the best location will be in the controller.
     public Collection<CampusInEvent> getAllEvents()
     {
 	return allEvents.values();

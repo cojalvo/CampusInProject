@@ -123,17 +123,6 @@ public class Controller implements ICampusInController
 	if (callBack != null)
 	    callBack.done(new ArrayList<CampusInEvent>(viewModel.getAllEvents()), null);
 
-	// for (int i=0; i<40; i++)
-	// {
-	// currEvent = new CampusInEvent();
-	// currEvent.setDate(new GregorianCalendar());
-	// currEvent.setDescription("description " + i);
-	// currEvent.setHeadLine("Title "+i);
-	// toReturn.add(currEvent);
-	// }
-	//
-	// callBack.done(toReturn, null);
-
     }
 
     @Override
@@ -168,8 +157,6 @@ public class Controller implements ICampusInController
     @Override
     public void saveEvent(CampusInEvent toAdd, final ControllerCallback<String> callBack)
     {
-	// TODO: to draw the event to the user interface before saving it to the
-	// cloud
 	if (toAdd != null)
 	{
 	    // add the toAdd Object to the EventQue;
@@ -396,8 +383,8 @@ public class Controller implements ICampusInController
     @Override
     public void stopAutoViewModelUpdatingService()
     {
-    	if(!isMyServiceRunning(ModelUpdateService.class))
-    		context.stopService(new Intent(context, ModelUpdateService.class));
+	if (!isMyServiceRunning(ModelUpdateService.class))
+	    context.stopService(new Intent(context, ModelUpdateService.class));
     }
 
     @Override
@@ -568,14 +555,18 @@ public class Controller implements ICampusInController
     {
 	this.context = context;
     }
-    private boolean isMyServiceRunning(Class serviceClass) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
+
+    private boolean isMyServiceRunning(Class serviceClass)
+    {
+	ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+	for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE))
+	{
+	    if (serviceClass.getName().equals(service.service.getClassName()))
+	    {
+		return true;
+	    }
+	}
+	return false;
     }
 
 }

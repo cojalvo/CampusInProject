@@ -280,11 +280,6 @@ public class ChooseFriendsFragment extends DialogFragment
     {
 	super.onStart();
 	this.getDialog().setCanceledOnTouchOutside(false);
-	/*
-	 * if (action == ChooseFriendAction.ADD) progressDialog =
-	 * ProgressDialog.show(getActivity(), "Loading Friends",
-	 * "Loading FRiends from cloud");
-	 */
     }
 
 }

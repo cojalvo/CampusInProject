@@ -51,17 +51,18 @@ public class MessageHalper
 	alertDialog.setIcon(R.drawable.campus_in_ico);
 	alertDialog.show();
     }
-    public static void showYesNoDialog(String title, String message, Context context,DialogInterface.OnClickListener yesListener,DialogInterface.OnClickListener noListener)
-    {
-    	AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-    	alertDialog.setTitle(title);
-    	alertDialog.setMessage(message);
-    	alertDialog.setButton(alertDialog.BUTTON_POSITIVE, "אישור", yesListener);
-    	alertDialog.setButton(alertDialog.BUTTON_NEGATIVE, "ביטול", noListener);
 
-    	// Set the Icon for the Dialog
-    	alertDialog.setIcon(R.drawable.campus_in_ico);
-    	alertDialog.show();
+    public static void showYesNoDialog(String title, String message, Context context, DialogInterface.OnClickListener yesListener, DialogInterface.OnClickListener noListener)
+    {
+	AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+	alertDialog.setTitle(title);
+	alertDialog.setMessage(message);
+	alertDialog.setButton(alertDialog.BUTTON_POSITIVE, "אישור", yesListener);
+	alertDialog.setButton(alertDialog.BUTTON_NEGATIVE, "ביטול", noListener);
+
+	// Set the Icon for the Dialog
+	alertDialog.setIcon(R.drawable.campus_in_ico);
+	alertDialog.show();
     }
 
 }

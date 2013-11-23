@@ -61,7 +61,7 @@ public class PrefsFragment extends PreferenceFragment
 	Parse.initialize(getActivity(), "3kRz2kNhNu5XxVs3mI4o3LfT1ySuQDhKM4I6EblE", "UmGc3flrvIervInFbzoqGxVKapErnd9PKnXy4uMC");
 	ParseFacebookUtils.initialize("635010643194002");
 	context = getActivity().getBaseContext();
-	controller=Controller.getInstance(null);
+	controller = Controller.getInstance(null);
 	// update the full name and the profile picture of current user
 	// Load the preferences from an XML resource
 	addPreferencesFromResource(R.xml.preference);
@@ -89,22 +89,9 @@ public class PrefsFragment extends PreferenceFragment
 	});
 
 	final CheckBoxPreference showMe = (CheckBoxPreference) findPreference("display_me");
-/*	showMe.setOnPreferenceClickListener(new OnPreferenceClickListener()
-	{
-
-	    @Override
-	    public boolean onPreferenceClick(Preference preference)
-	    {
-
-		Intent inti = new Intent();
-		inti.setAction(ACTION_INTENT);
-		context.sendBroadcast(inti);
-		return true;
-	    }
-	});*/
 	showMe.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
 	{
-	    
+
 	    @Override
 	    public boolean onPreferenceChange(Preference preference, Object newValue)
 	    {
@@ -112,10 +99,10 @@ public class PrefsFragment extends PreferenceFragment
 		inti.setAction(ACTION_INTENT);
 		context.sendBroadcast(inti);
 		return true;
-	
+
 	    }
 	});
-	
+
 	Preference testShow = findPreference("my_tests");
 	testShow.setOnPreferenceClickListener(new OnPreferenceClickListener()
 	{
@@ -123,19 +110,19 @@ public class PrefsFragment extends PreferenceFragment
 	    @Override
 	    public boolean onPreferenceClick(Preference preference)
 	    {
-	    	android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
-			Fragment fragment = getFragmentManager().findFragmentByTag("dialog");
-			if (fragment != null)
-			{
-			    transaction.remove(fragment);
-			}
-			transaction.addToBackStack(null);
-			DiaplayEventListFragment newDiaplayEventListFragment = new DiaplayEventListFragment();
-			Bundle args=new Bundle();
-			args.putBoolean("tetsOnly", true);
-			newDiaplayEventListFragment.setArguments(args);
-			newDiaplayEventListFragment.show(transaction, "dialog");
-			return true;
+		android.app.FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		Fragment fragment = getFragmentManager().findFragmentByTag("dialog");
+		if (fragment != null)
+		{
+		    transaction.remove(fragment);
+		}
+		transaction.addToBackStack(null);
+		DiaplayEventListFragment newDiaplayEventListFragment = new DiaplayEventListFragment();
+		Bundle args = new Bundle();
+		args.putBoolean("tetsOnly", true);
+		newDiaplayEventListFragment.setArguments(args);
+		newDiaplayEventListFragment.show(transaction, "dialog");
+		return true;
 	    }
 	});
 	Preference addFriends = findPreference("add_friends");
@@ -162,7 +149,7 @@ public class PrefsFragment extends PreferenceFragment
 	Preference removeFriends = findPreference("remove_friends");
 	removeFriends.setOnPreferenceClickListener(new OnPreferenceClickListener()
 	{
-	    
+
 	    @Override
 	    public boolean onPreferenceClick(Preference preference)
 	    {
@@ -204,7 +191,7 @@ public class PrefsFragment extends PreferenceFragment
 	Preference showMyFriends = findPreference("show_my_friends");
 	showMyFriends.setOnPreferenceClickListener(new OnPreferenceClickListener()
 	{
-	    
+
 	    @Override
 	    public boolean onPreferenceClick(Preference preference)
 	    {
@@ -225,7 +212,7 @@ public class PrefsFragment extends PreferenceFragment
 	Preference showMyMesseges = findPreference("show_my_messages");
 	showMyMesseges.setOnPreferenceClickListener(new OnPreferenceClickListener()
 	{
-	    
+
 	    @Override
 	    public boolean onPreferenceClick(Preference preference)
 	    {
@@ -238,16 +225,16 @@ public class PrefsFragment extends PreferenceFragment
 		ft1111.addToBackStack(null);
 
 		// Create and show the dialog.
-		DisplayMyMessagesFragment newFragment1111 =  DisplayMyMessagesFragment.newInstance();
+		DisplayMyMessagesFragment newFragment1111 = DisplayMyMessagesFragment.newInstance();
 		newFragment1111.show(ft1111, "dialog");
 		return true;
 	    }
 	});
-	
+
 	Preference reportLocationManualy = findPreference("report_location");
 	reportLocationManualy.setOnPreferenceClickListener(new OnPreferenceClickListener()
 	{
-	    
+
 	    @Override
 	    public boolean onPreferenceClick(Preference preference)
 	    {
@@ -294,7 +281,7 @@ public class PrefsFragment extends PreferenceFragment
     {
 	// use FacebookService object to get the user profile object
 	final Preference me = (Preference) findPreference("me");
-	CampusInUser currentUser=controller.getCurrentUser();
+	CampusInUser currentUser = controller.getCurrentUser();
 	userName = currentUser.getFirstName() + " " + currentUser.getLastName();
 	me.setTitle(userName);
 	Controller.getInstance(getActivity()).setContext(getActivity());

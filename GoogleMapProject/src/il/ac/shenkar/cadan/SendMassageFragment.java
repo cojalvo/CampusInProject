@@ -48,10 +48,6 @@ public class SendMassageFragment extends AddNewEventFragment
     static SendMassageFragment newInstance(Bundle args)
     {
 	SendMassageFragment f = new SendMassageFragment();
-
-	// // Supply num input as an argument.
-	// Bundle args = new Bundle();
-	// args.putInt("num", num);
 	f.setArguments(args);
 
 	return f;

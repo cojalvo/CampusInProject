@@ -34,7 +34,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapManager
 {
-	private CampusInUser me;
+    private CampusInUser me;
     private static MapManager instance = null;
     private GoogleMap map = null;
     private HashMap<String, Marker> personMarkerdictionary;
@@ -43,18 +43,16 @@ public class MapManager
     private static HashMap<Marker, String> markerMessageDictiobnary;
     private HashMap<Marker, String> markerPersondictiobnary;
     private HashMap<Marker, String> markerEventDictionary;
-    private List<String> removedItems=new ArrayList<String>();
-    private final LatLng shenkarLatLong=new LatLng(32.090049, 34.802807);
+    private List<String> removedItems = new ArrayList<String>();
+    private final LatLng shenkarLatLong = new LatLng(32.090049, 34.802807);
     private GroundOverlayOptions campusOverlay;
     private float myLastDistance;
-    private final int lowDist=800;
-    private final int mediumDist=2000;
-    
-    
+    private final int lowDist = 800;
+    private final int mediumDist = 2000;
+
     // the key is the lat+long -as string
     private HashMap<String, HashMap<String, Marker>> positionMarkerDic;
     private LatLng lastlongClicked = null;
-
 
     public void resetLastLongClicked()
     {
@@ -66,6 +64,7 @@ public class MapManager
 	if (listener != null)
 	    this.map.setOnMapLongClickListener(listener);
     }
+
     public void setOnMapClickListener(OnMapClickListener listener)
     {
 	if (listener != null)
@@ -77,44 +76,52 @@ public class MapManager
 	if (listener != null)
 	    this.map.setOnMarkerClickListener(listener);
     }
+
     private void setOnMyLocationChangedListener()
     {
-    	if(map!=null)
-    		map.setOnMyLocationChangeListener(new OnMyLocationChangeListener() {
-				
-				@Override
-				public void onMyLocationChange(Location location) {
-					float currDistance=getDistanceFromMe(shenkarLatLong);
-					if(shouldupdateMapState(currDistance))
-						setMapState(currDistance);	
-					myLastDistance=currDistance;
-				}
-			});
+	if (map != null)
+	    map.setOnMyLocationChangeListener(new OnMyLocationChangeListener()
+	    {
+
+		@Override
+		public void onMyLocationChange(Location location)
+		{
+		    float currDistance = getDistanceFromMe(shenkarLatLong);
+		    if (shouldupdateMapState(currDistance))
+			setMapState(currDistance);
+		    myLastDistance = currDistance;
+		}
+	    });
     }
-    
+
     private Boolean shouldupdateMapState(float currentDist)
     {
-    	if(currentDist==myLastDistance) return false;
-    	if(currentDist<lowDist && myLastDistance<lowDist && myLastDistance>0) return false;
-    	if((currentDist>lowDist && currentDist<mediumDist) && (myLastDistance>lowDist && myLastDistance<mediumDist)) return false;
-    	if(currentDist>mediumDist && myLastDistance>mediumDist) return false;
-    	return true;
-    	
+	if (currentDist == myLastDistance)
+	    return false;
+	if (currentDist < lowDist && myLastDistance < lowDist && myLastDistance > 0)
+	    return false;
+	if ((currentDist > lowDist && currentDist < mediumDist) && (myLastDistance > lowDist && myLastDistance < mediumDist))
+	    return false;
+	if (currentDist > mediumDist && myLastDistance > mediumDist)
+	    return false;
+	return true;
+
     }
+
     private void setMapState(float myDistanceFromCampus)
     {
-    	//if the user didnt put ground overlay
-    	if(campusOverlay==null)
-    	{
-    		map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-    		return;
-    	}
-    	if(myDistanceFromCampus<lowDist && myDistanceFromCampus >0)
-    	{
-    		map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-    		return;
-    	}	
-    		map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+	// if the user didnt put ground overlay
+	if (campusOverlay == null)
+	{
+	    map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+	    return;
+	}
+	if (myDistanceFromCampus < lowDist && myDistanceFromCampus > 0)
+	{
+	    map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+	    return;
+	}
+	map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
     }
 
     public LatLng getLastLongClicked()
@@ -122,22 +129,22 @@ public class MapManager
 	return lastlongClicked;
     }
 
-    private MapManager(GoogleMap map,CampusInUser currentUser, int mapType)
+    private MapManager(GoogleMap map, CampusInUser currentUser, int mapType)
     {
 	this.map = map;
 	this.map.setMapType(mapType);
 	this.map.getUiSettings().setZoomControlsEnabled(false);
 	this.map.setMyLocationEnabled(true);
-	this.me=currentUser;
+	this.me = currentUser;
 	personMarkerdictionary = new HashMap<String, Marker>();
 	eventMarkerdictionary = new HashMap<String, Marker>();
 	positionMarkerDic = new HashMap<String, HashMap<String, Marker>>();
-	messageMarkerdictionary=new HashMap<String, Marker>();
+	messageMarkerdictionary = new HashMap<String, Marker>();
 	markerMessageDictiobnary = new HashMap<Marker, String>();
-    markerPersondictiobnary = new HashMap<Marker, String>();
-    markerEventDictionary = new HashMap<Marker, String>();
+	markerPersondictiobnary = new HashMap<Marker, String>();
+	markerEventDictionary = new HashMap<Marker, String>();
 	setOnMyLocationChangedListener();
-	myLastDistance=getDistanceFromMe(shenkarLatLong);
+	myLastDistance = getDistanceFromMe(shenkarLatLong);
 	setMapState(myLastDistance);
     }
 
@@ -146,10 +153,10 @@ public class MapManager
 	instance = null;
     }
 
-    public static MapManager getInstance(GoogleMap map,CampusInUser currentUser, int mapType)
+    public static MapManager getInstance(GoogleMap map, CampusInUser currentUser, int mapType)
     {
 	if (instance == null)
-	    instance = new MapManager(map,currentUser, mapType);
+	    instance = new MapManager(map, currentUser, mapType);
 	return instance;
     }
 
@@ -161,46 +168,53 @@ public class MapManager
 	LatLngBounds bounds = new LatLngBounds(southWest, northEast); // get a
 								      // bounds
 	// Adds a ground overlay with 10% transparency.
-	campusOverlay=new GroundOverlayOptions().image(image).positionFromBounds(bounds).transparency(transparency);
+	campusOverlay = new GroundOverlayOptions().image(image).positionFromBounds(bounds).transparency(transparency);
 	map.addGroundOverlay(campusOverlay);
     }
+
     public void clearEvents()
     {
-    	for (Marker eventMarker : eventMarkerdictionary.values()) {
-			eventMarker.remove();
-		}
-    	eventMarkerdictionary.clear();
-    	markerEventDictionary.clear();
+	for (Marker eventMarker : eventMarkerdictionary.values())
+	{
+	    eventMarker.remove();
+	}
+	eventMarkerdictionary.clear();
+	markerEventDictionary.clear();
     }
-    
+
     public void clearPersons()
     {
-    	for (Marker personMarker : personMarkerdictionary.values()) {
-    		personMarker.remove();
-		}
-    	markerPersondictiobnary.clear();
-    	personMarkerdictionary.clear();
+	for (Marker personMarker : personMarkerdictionary.values())
+	{
+	    personMarker.remove();
+	}
+	markerPersondictiobnary.clear();
+	personMarkerdictionary.clear();
     }
+
     public void clearMessages()
     {
-      	for (Marker messageMarker : messageMarkerdictionary.values()) {
-      		messageMarker.remove();
-      		
-		}
-		messageMarkerdictionary.clear();
-		markerMessageDictiobnary.clear();
+	for (Marker messageMarker : messageMarkerdictionary.values())
+	{
+	    messageMarker.remove();
+
+	}
+	messageMarkerdictionary.clear();
+	markerMessageDictiobnary.clear();
     }
-    
+
     public void disableMap()
     {
-    	if(map!=null)
-    		map.getUiSettings().setAllGesturesEnabled(false);
+	if (map != null)
+	    map.getUiSettings().setAllGesturesEnabled(false);
     }
+
     public void enableMap()
     {
-    	if(map!=null)
-    		map.getUiSettings().setAllGesturesEnabled(true);
+	if (map != null)
+	    map.getUiSettings().setAllGesturesEnabled(true);
     }
+
     private void InsertMarkers()
     {
 
@@ -211,8 +225,8 @@ public class MapManager
 	Marker marker;
 	if (eventId != null)
 	{
-	    marker= eventMarkerdictionary.get(eventId);
-	    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 40); 
+	    marker = eventMarkerdictionary.get(eventId);
+	    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 40);
 	    map.animateCamera(cameraUpdate);
 	    marker.showInfoWindow();
 	}
@@ -221,51 +235,53 @@ public class MapManager
     public void moveCameraToPerson(String PersonId)
     {
 	Marker marker;
-	marker= personMarkerdictionary.get(PersonId);
+	marker = personMarkerdictionary.get(PersonId);
 	if (marker != null)
-	{ 
-	    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 40); 
+	{
+	    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 40);
 	    map.animateCamera(cameraUpdate);
 	    marker.showInfoWindow();
 	}
     }
 
-    public void moveCameraTo(String objId,int zoom)
+    public void moveCameraTo(String objId, int zoom)
     {
-    	Marker m;
-    	if(personMarkerdictionary.containsKey(objId))
-    		m=personMarkerdictionary.get(objId);
-    	else if(messageMarkerdictionary.containsKey(objId))
-    		m=messageMarkerdictionary.get(objId);
-    	else if(eventMarkerdictionary.containsKey(objId))
-    		m=eventMarkerdictionary.get(objId);
-    	else
-    		return;
-    	moveCameraTo(m.getPosition(), zoom);
-    	m.showInfoWindow();
+	Marker m;
+	if (personMarkerdictionary.containsKey(objId))
+	    m = personMarkerdictionary.get(objId);
+	else if (messageMarkerdictionary.containsKey(objId))
+	    m = messageMarkerdictionary.get(objId);
+	else if (eventMarkerdictionary.containsKey(objId))
+	    m = eventMarkerdictionary.get(objId);
+	else
+	    return;
+	moveCameraTo(m.getPosition(), zoom);
+	m.showInfoWindow();
     }
+
     public void moveCameraTo(LatLng location, int zoom)
     {
-	    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, zoom); 
-	    map.animateCamera(cameraUpdate);
+	CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(location, zoom);
+	map.animateCamera(cameraUpdate);
     }
 
     public void addOrUpdatePersonMarker(CampusInUserLocation user)
     {
 	Marker marker;
-	    if (user == null || user.getLocation() == null)
-	    {
-		return;
-	    }
-	    marker = map.addMarker(new MarkerOptions().position(user.getLocation().getMapLocation()).title(user.getUser().getFirstName() + " " + user.getUser().getLastName())
-		    .icon(BitmapDescriptorFactory.fromResource(R.drawable.student_marker)));
-	    this.personMarkerdictionary.put(user.getUser().getParseUserId(), marker);
-	    markerPersondictiobnary.put(marker, user.getUser().getParseUserId());
+	if (user == null || user.getLocation() == null)
+	{
+	    return;
+	}
+	marker = map.addMarker(new MarkerOptions().position(user.getLocation().getMapLocation()).title(user.getUser().getFirstName() + " " + user.getUser().getLastName())
+		.icon(BitmapDescriptorFactory.fromResource(R.drawable.student_marker)));
+	this.personMarkerdictionary.put(user.getUser().getParseUserId(), marker);
+	markerPersondictiobnary.put(marker, user.getUser().getParseUserId());
     }
 
     public void addOrUpdateEventMarker(CampusInEvent event)
     {
-    	if(removedItems.contains(event.getParseId())) return;
+	if (removedItems.contains(event.getParseId()))
+	    return;
 	// create and config the marker Option
 	MarkerOptions markerOptions = new MarkerOptions();
 	markerOptions.position(event.getLocation().getMapLocation());
@@ -279,19 +295,20 @@ public class MapManager
 
     public void addOrUpdateMessageMarker(CampusInMessage message)
     {
-    	if(removedItems.contains(message.getParseId())) return;
-    	// create and config the marker Option
-    	MarkerOptions markerOptions = new MarkerOptions();
-    	markerOptions.position(message.getLocation().getMapLocation());
-    	markerOptions.title("from: "+message.getSenderFullName());
-    	if(message.getOwnerId().equals(me.getParseUserId()))
-    		markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.message_marker_green));
-    	else
-    		markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.message_marker_blue));
-    	markerOptions.snippet(message.getContent());
-    	Marker messageMarker = map.addMarker(markerOptions);
-    	messageMarkerdictionary.put(message.getParseId(), messageMarker);
-    	markerMessageDictiobnary.put(messageMarker, message.getParseId());
+	if (removedItems.contains(message.getParseId()))
+	    return;
+	// create and config the marker Option
+	MarkerOptions markerOptions = new MarkerOptions();
+	markerOptions.position(message.getLocation().getMapLocation());
+	markerOptions.title("from: " + message.getSenderFullName());
+	if (message.getOwnerId().equals(me.getParseUserId()))
+	    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.message_marker_green));
+	else
+	    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.message_marker_blue));
+	markerOptions.snippet(message.getContent());
+	Marker messageMarker = map.addMarker(markerOptions);
+	messageMarkerdictionary.put(message.getParseId(), messageMarker);
+	markerMessageDictiobnary.put(messageMarker, message.getParseId());
     }
 
     public void removePersonMarker(String id)
@@ -348,6 +365,7 @@ public class MapManager
 	    return markerEventDictionary.get(marker);
 	return null;
     }
+
     public String getMessageIdFromMarker(Marker marker)
     {
 	if (markerMessageDictiobnary.containsKey(marker))
@@ -361,68 +379,74 @@ public class MapManager
 	    return markerPersondictiobnary.get(marker);
 	return null;
     }
+
     public GoogleMap getMap()
     {
-        return map;
+	return map;
     }
+
     public float getDistanceFromMe(String id)
     {
-    	Marker dest;
-    	if(personMarkerdictionary.containsKey(id))
-    		dest=personMarkerdictionary.get(id);
-    	else if(eventMarkerdictionary.containsKey(id))
-    		dest=eventMarkerdictionary.get(id);
-    	else if(messageMarkerdictionary.containsKey(id))
-    		dest=messageMarkerdictionary.get(id);
-    	else
-    		return -1;
-    	return getDistanceFromMe(dest.getPosition());
+	Marker dest;
+	if (personMarkerdictionary.containsKey(id))
+	    dest = personMarkerdictionary.get(id);
+	else if (eventMarkerdictionary.containsKey(id))
+	    dest = eventMarkerdictionary.get(id);
+	else if (messageMarkerdictionary.containsKey(id))
+	    dest = messageMarkerdictionary.get(id);
+	else
+	    return -1;
+	return getDistanceFromMe(dest.getPosition());
     }
-    
+
     private float getDistanceFromMe(LatLng p)
     {
-    	Location destLocation = new Location("point A");
-    	destLocation.setLatitude(p.latitude);
-    	destLocation.setLongitude(p.longitude);
-    	Location myLocation=map.getMyLocation();
-    	if(myLocation==null) return -1;
-    	return myLocation.distanceTo(destLocation);
+	Location destLocation = new Location("point A");
+	destLocation.setLatitude(p.latitude);
+	destLocation.setLongitude(p.longitude);
+	Location myLocation = map.getMyLocation();
+	if (myLocation == null)
+	    return -1;
+	return myLocation.distanceTo(destLocation);
     }
-    
+
     public float getDistanceFromMe(Marker marker)
     {
-    	if(marker==null) return -1;
-    	return getDistanceFromMe(marker.getPosition());
+	if (marker == null)
+	    return -1;
+	return getDistanceFromMe(marker.getPosition());
     }
+
     public static Marker getMarkerKeyFromStringValue(String markerID)
     {
-	for (Entry<Marker, String> entry : markerMessageDictiobnary.entrySet()) 
+	for (Entry<Marker, String> entry : markerMessageDictiobnary.entrySet())
 	{
-	    if (entry.getValue().equals(markerID)) 
+	    if (entry.getValue().equals(markerID))
 	    {
 		return entry.getKey();
 	    }
 	}
 	return null;
     }
-    
-    //check if we have marker of this user on the map
+
+    // check if we have marker of this user on the map
     public Boolean CanISeeThefriend(String friendId)
     {
-    	return personMarkerdictionary.containsKey(friendId);
+	return personMarkerdictionary.containsKey(friendId);
     }
-    
+
     public void showInfoWindowForId(String id)
     {
-    	if(eventMarkerdictionary.containsKey(id))
-    		eventMarkerdictionary.get(id).showInfoWindow();
-    	else if(personMarkerdictionary.containsKey(id))
-    		personMarkerdictionary.get(id).showInfoWindow();
-    	else if(messageMarkerdictionary.containsKey(id))
-    		messageMarkerdictionary.get(id).showInfoWindow();	
+	if (eventMarkerdictionary.containsKey(id))
+	    eventMarkerdictionary.get(id).showInfoWindow();
+	else if (personMarkerdictionary.containsKey(id))
+	    personMarkerdictionary.get(id).showInfoWindow();
+	else if (messageMarkerdictionary.containsKey(id))
+	    messageMarkerdictionary.get(id).showInfoWindow();
     }
+
     public void saveRemovedItem(String id)
     {
-    	removedItems.add(id);
+	removedItems.add(id);
     }
 }

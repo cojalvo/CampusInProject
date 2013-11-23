@@ -208,35 +208,7 @@ public class Main extends Activity implements OnMapClickListener, OnPreferenceSe
 	// set listener to the menu
 	mDrawerLayout.setDrawerListener(mDrawerToggle);
 	getActionBar().setDisplayHomeAsUpEnabled(true);
-	// getActionBar().setHomeButtonEnabled(true);
-	/*
-	 * // Move the camera instantly to hamburg with a zoom of 15.
-	 * map.setOnCameraChangeListener(new OnCameraChangeListener() {
-	 * 
-	 * @Override public void onCameraChange(CameraPosition position) {
-	 * if(position
-	 * .target.latitude<0||position.target.latitude>40||position.target
-	 * .longitude<0||position.target.longitude>50) {
-	 * map.moveCamera(CameraUpdateFactory.newCameraPosition(lastPos)); }
-	 * else { lastPos=position; } // TODO Auto-generated method stub
-	 * 
-	 * } });
-	 */
 
-//	// Get the SearchView and set the searchable configuration
-//	SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//	SearchView searchView = (SearchView) findViewById(R.id.searchView1);
-//	SearchableInfo searchInfo = searchManager.getSearchableInfo(getComponentName());
-//	if (searchInfo == null)
-//	{
-//	}
-//	searchView.setSearchableInfo(searchInfo);
-//	searchView.setIconifiedByDefault(false); // Do not iconify the widget;
-						 // expand it by default
-	// if the bundle is null than it the first time the application is
-	// running
-	// if not check if the locationServiceStart flag is true; (this might be
-	// redundant but maybe in the future we will need to use it
 	if (savedInstanceState == null || !savedInstanceState.getBoolean("locationServiceStart"))
 	{
 	    startLocationReportServise();
@@ -512,44 +484,6 @@ public class Main extends Activity implements OnMapClickListener, OnPreferenceSe
 	    return true;
 	}
 
-	// Handle presses on the action bar items
-	Intent intent;
-	// switch (item.getItemId())
-	// {
-	// case R.id.action_add_friends:
-	// android.app.FragmentTransaction ft1 =
-	// getFragmentManager().beginTransaction();
-	// android.app.Fragment prev1 =
-	// getFragmentManager().findFragmentByTag("dialog");
-	// if (prev1 != null)
-	// {
-	// ft1.remove(prev1);
-	// }
-	// ft1.addToBackStack(null);
-	//
-	// // Create and show the dialog.
-	// ChooseFriendsFragment newFragment1 =
-	// ChooseFriendsFragment.newInstance(ChooseFriendAction.ADD, false, new
-	// ArrayList<CampusInUser>());
-	// newFragment1.show(ft1, "dialog");
-	// case R.id.action_remove_friends:
-	// android.app.FragmentTransaction ft11 =
-	// getFragmentManager().beginTransaction();
-	// android.app.Fragment prev11 =
-	// getFragmentManager().findFragmentByTag("dialog");
-	// if (prev11 != null)
-	// {
-	// ft11.remove(prev11);
-	// }
-	// ft11.addToBackStack(null);
-	//
-	// // Create and show the dialog.
-	// ChooseFriendsFragment newFragment11 =
-	// ChooseFriendsFragment.newInstance(ChooseFriendAction.REMOVE, false,
-	// new ArrayList<CampusInUser>());
-	// newFragment11.show(ft11, "dialog");
-	// return true;
-	// default:
 	return super.onOptionsItemSelected(item);
     }
 
@@ -569,16 +503,6 @@ public class Main extends Activity implements OnMapClickListener, OnPreferenceSe
 	return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
-    public void onPreferenceSelected(String selected)
-    {
-	if (selected.equals(CampusInConstant.SETTINGS_EVENTS))
-	{
-	    startActivity(new Intent(this, EventsActivity.class));
-	    return;
-	}
-
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event)
@@ -853,20 +777,7 @@ public class Main extends Activity implements OnMapClickListener, OnPreferenceSe
 
     }
 
-    public void FriendChoose(View v)
-    {
-	/*
-	 * CheckBox checkBox = (CheckBox) v; // Fragment fragment =
-	 * getFragmentManager();
-	 * 
-	 * ListView friendListView = (ListView)
-	 * fragment.getView().findViewById(R.id.friends_list_view);
-	 * CampusInUserChecked item = (CampusInUserChecked)
-	 * friendListView.getAdapter().getItem((Integer) checkBox.getTag()); if
-	 * (checkBox.isChecked()) item.setChecked(true); else
-	 * item.setChecked(false);
-	 */
-    }
+
 
     @Override
     public void onFriendsWereChoosen(final ArrayList<CampusInUser> friensList, Fragment targetedFragment, ChooseFriendAction action)
@@ -1213,4 +1124,8 @@ public class Main extends Activity implements OnMapClickListener, OnPreferenceSe
 	return true;
 
     }
+
+    @Override
+    public void onPreferenceSelected(String selected)
+    {}
 }
